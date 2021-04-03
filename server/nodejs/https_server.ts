@@ -157,6 +157,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     }
     else if(req.session.passport.user != "admin")
     {
+      console.log('a');
       res.sendFile('index.html', {root: rootdirectory});
       console.log(req.session.passport.user);
       next();

@@ -136,6 +136,7 @@ function everyRequest(req, res, next) {
         next();
     }
     else if (req.session.passport.user != "admin") {
+        console.log('a');
         res.sendFile('index.html', { root: rootdirectory });
         console.log(req.session.passport.user);
         next();
