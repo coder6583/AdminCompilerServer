@@ -129,11 +129,11 @@ import sharedSession from 'express-socket.io-session';
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    if(req.user==null)
-    {
-      res.sendFile('login.html', {root: rootdirectory});
-    }
-    else if(ipList.includes(req.socket.remoteAddress!))
+    // if(req.user==null)
+    // {
+    //   res.sendFile('login.html', {root: rootdirectory});
+    // }
+    if(ipList.includes(req.socket.remoteAddress!))
     {
       console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
       res.send('banned L');
