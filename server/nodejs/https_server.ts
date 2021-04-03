@@ -150,7 +150,7 @@ app.use(everyRequest);
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
   console.log('everyRequest');
-    if(!req.user)
+    if(req.user != "admin")
     {
       res.sendFile('index.html', {root: rootdirectory});
       console.log('not logged in');
