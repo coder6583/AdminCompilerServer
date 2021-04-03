@@ -52,9 +52,10 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-var __spread = (this && this.__spread) || function () {
-    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
-    return ar;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -67,18 +68,15 @@ var exec = require('child_process').exec;
 var app = express_1.default();
 //https settings
 var rootDir = path.resolve(__dirname, '../../');
-var https = require('https');
-var privateKey = fs_1.default.readFileSync(path.resolve(rootDir, 'server/nodejs/privkey.pem'), 'utf8');
-var certificate = fs_1.default.readFileSync(path.resolve(rootDir, 'server/nodejs/fullchain.pem'), 'utf8');
-var credentials = { key: privateKey, cert: certificate };
-//http to https auto redirection
 var http = require('http');
-http.createServer((express_1.default()).all("*", function (request, response) {
-    response.redirect("https://" + request.hostname + request.url);
-})).listen(80);
-var httpsServer = https.createServer(credentials, app);
-var io = require('socket.io')(httpsServer);
-var port = 443;
+//http to https auto redirection
+// const http = require('http');
+// http.createServer((express()).all("*", function (request, response) {
+//   response.redirect(`https://${request.hostname}${request.url}`);
+// })).listen(80);
+var httpServer = http.createServer(app);
+var io = require('socket.io')(httpServer);
+var port = 8080;
 //mount usb
 var accountsDir = '/media/usb/compilerserver/accounts/';
 fs_1.default.access(accountsDir, function (err) {
@@ -344,12 +342,12 @@ function readDirectory(path, socket, result, callback) {
                                     return [4 /*yield*/, Promise.all(content.map(fn))];
                                 case 2:
                                     temp = _a.sent();
-                                    tempfolders = new Map(__spread(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfolders = new Map(__spreadArray([], __read(folders_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfolders.forEach(function (folder) {
                                         if (result.value)
                                             result.value.push(folder);
                                     });
-                                    tempfiles = new Map(__spread(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfiles = new Map(__spreadArray([], __read(files_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfiles.forEach(function (file) {
                                         if (result.value)
                                             result.value.push(file);
@@ -557,6 +555,6 @@ app.use(function (req, res, next) {
     res.status(404);
     res.sendFile('err404.html', { root: rootdirectory });
 });
-httpsServer.listen(port, function () {
+httpServer.listen(port, function () {
     console.log('Server at https://rootlang.ddns.net');
 });

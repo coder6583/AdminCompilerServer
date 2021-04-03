@@ -10,18 +10,15 @@ const {exec} = require('child_process');
 const app: express.Express = express();
 //https settings
 const rootDir: string = path.resolve(__dirname, '../../');
-const https = require('https');
-const privateKey = fs.readFileSync(path.resolve(rootDir, 'server/nodejs/privkey.pem'), 'utf8');
-const certificate = fs.readFileSync(path.resolve(rootDir, 'server/nodejs/fullchain.pem'), 'utf8');
-const credentials = {key: privateKey, cert: certificate};
-//http to https auto redirection
 const http = require('http');
-http.createServer((express()).all("*", function (request, response) {
-  response.redirect(`https://${request.hostname}${request.url}`);
-})).listen(80);
-const httpsServer = https.createServer(credentials, app);
-const io = require('socket.io')(httpsServer);
-const port : number = 443;
+//http to https auto redirection
+// const http = require('http');
+// http.createServer((express()).all("*", function (request, response) {
+//   response.redirect(`https://${request.hostname}${request.url}`);
+// })).listen(80);
+const httpServer = http.createServer(app);
+const io = require('socket.io')(httpServer);
+const port : number = 8080;
 //mount usb
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
 fs.access(accountsDir, (err) => {
@@ -548,6 +545,6 @@ app.use((req :express.Request, res :express.Response, next) => {
   res.sendFile('err404.html', {root: rootdirectory});
 });
 
-  httpsServer.listen(port, () => {
+  httpServer.listen(port, () => {
     console.log('Server at https://rootlang.ddns.net');
   })
