@@ -91,7 +91,6 @@ passport.use(new LocalStrategy(
     console.log('hello');
     if(username == 'admin')
     {
-
       bcrypt.compare(password, hash, (err, isMatch) => {
         if(err) console.log(err);
         if(isMatch)
@@ -154,7 +153,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     //   res.sendFile('index.html', {root: rootdirectory});
     //   next();
     // }
-    console.log(req.user);
+    console.log(req);
     if(ipList.includes(req.socket.remoteAddress!))
     {
       console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
