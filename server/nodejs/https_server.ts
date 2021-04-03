@@ -163,11 +163,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.sendFile('admin.html', {root: rootdirectory});
+    res.sendFile('index.html', {root: rootdirectory});
 })
 
 app.get('/login', (req: express.Request, res: express.Response) => {
-    res.sendFile('login.html', {root: rootdirectory});
+    res.sendFile('index.html', {root: rootdirectory});
 })
 
 app.post('/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
