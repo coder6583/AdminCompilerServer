@@ -127,6 +127,21 @@ import session from 'express-session';
 import sharedSession from 'express-socket.io-session';
 
 //request時に実行するmiddleware function
+app.use(express.static(rootdirectory));
+
+app.use(everyRequest);
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+var sessionMiddleware = session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true
+});
+app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
+
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
     if(!req.user)
@@ -147,20 +162,6 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     }
 }
 
-app.use(express.static(rootdirectory));
-
-app.use(everyRequest);
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
-var sessionMiddleware = session({
-  secret: 'secret',
-  resave: true,
-  saveUninitialized: true
-});
-app.use(sessionMiddleware);
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile('index.html', {root: rootdirectory});
@@ -185,55 +186,6 @@ let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
 let usersProjectDirectory: Map<string, string> = new Map();
 
-//ディレクトリー読むための再帰関数
-async function readDirectory(path: string, socket: any, result: dirObject, callback: Function)
-{
-  return new Promise((resolve, reject) => {
-    fs.readdir(path, {withFileTypes: true},async (err: NodeJS.ErrnoException | null, content: fs.Dirent[])=>{
-      if(err)
-      {
-        console.log('couldnt load project', err);
-        socket.emit('loadedProject', {
-          value: 'Could not load folder ' + path,
-          style: 'err'
-        });
-      }
-      else
-      {
-        let files: Map<string, dirObject> = new Map();
-        let folders: Map<string, dirObject> = new Map();
-        let fn = function processContent(element: fs.Dirent) {
-          if(element.isFile())
-          {
-            files.set(element.name, {type: 'file', name : element.name});
-            return {type: 'file', name : element.name};
-          }
-          else if(element.isDirectory())
-          {
-            return readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, value: []}, (val: dirObject) => {
-              folders.set(element.name, val);
-             return val;
-            });
-          }
-        }
-        
-        let temp = await Promise.all(content.map(fn));
-        let tempfolders: Map<string, dirObject> = new Map([...folders].sort((a, b) => Number(a[0] > b[0])));
-        tempfolders.forEach(folder => {
-          if(result.value)
-            result.value.push(folder);
-        })
-        let tempfiles: Map<string, dirObject> = new Map([...files].sort((a, b) => Number(a[0] > b[0])));
-        tempfiles.forEach(file => {
-          if(result.value)
-            result.value.push(file);
-        }); 
-      }
-      resolve(result);
-      return callback(result);
-    });
-  })
-}
 io.use(sharedSession(sessionMiddleware, {
 
 }));
