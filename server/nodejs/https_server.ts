@@ -142,10 +142,10 @@ var sessionMiddleware = session({
   resave: true,
   saveUninitialized: true
 });
-app.use(everyRequest);
 app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
