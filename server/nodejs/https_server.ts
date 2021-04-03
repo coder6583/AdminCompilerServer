@@ -129,6 +129,7 @@ const rootdirectory: string = path.resolve(rootDir, 'client');
 //express session
 import session from 'express-session';
 import sharedSession from 'express-socket.io-session';
+import e from "express";
 
 //request時に実行するmiddleware function
 app.use(express.static(rootdirectory));
@@ -148,12 +149,16 @@ app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    if(!req.session.passport.user)
+    if(!req.session.passport)
     {
       res.sendFile('index.html', {root: rootdirectory});
       next();
     }
-    console.log(req.session.passport.user);
+    else if(req.session.passport.user != "admin")
+    {
+      res.sendFile('index.html', {root: rootdirectory});
+      next();
+    }
     if(ipList.includes(req.socket.remoteAddress!))
     {
       console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);

@@ -130,11 +130,14 @@ app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
-    if (!req.session.passport.user) {
+    if (!req.session.passport) {
         res.sendFile('index.html', { root: rootdirectory });
         next();
     }
-    console.log(req.session.passport.user);
+    else if (req.session.passport.user != "admin") {
+        res.sendFile('index.html', { root: rootdirectory });
+        next();
+    }
     if (ipList.includes(req.socket.remoteAddress)) {
         console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
         res.send('banned L');
