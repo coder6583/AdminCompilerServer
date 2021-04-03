@@ -136,6 +136,7 @@ function everyRequest(req, res, next) {
     }
     else if (req.session.passport.user != "admin") {
         res.sendFile('index.html', { root: rootdirectory });
+        console.log(req.session.passport.user);
         next();
     }
     if (ipList.includes(req.socket.remoteAddress)) {
