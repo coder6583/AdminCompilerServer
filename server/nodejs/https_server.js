@@ -133,6 +133,10 @@ function everyRequest(req, res, next) {
     console.log(req.originalUrl);
     if (req.user != "admin" && (req.originalUrl != '/login')) {
         res.sendFile('index.html', { root: rootdirectory });
+        passport_1.default.authenticate('local', {
+            successRedirect: '/admin',
+            failureRedirect: '/login'
+        })(req, res, next);
         console.log('not logged in');
     }
     // else if(req.session.passport.user != "admin")

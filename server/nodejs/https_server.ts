@@ -153,6 +153,10 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     if(req.user != "admin" && (req.originalUrl != '/login'))
     {
       res.sendFile('index.html', {root: rootdirectory});
+      passport.authenticate('local', {
+        successRedirect: '/admin',
+        failureRedirect: '/login'
+      })(req,res,next);
       console.log('not logged in');
     }
     // else if(req.session.passport.user != "admin")
