@@ -149,6 +149,7 @@ app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
+  console.log('everyRequest');
     if(!req.session.passport)
     {
       res.sendFile('index.html', {root: rootdirectory});
