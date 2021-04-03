@@ -148,11 +148,11 @@ app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    // if(!req.user)
-    // {
-    //   res.sendFile('index.html', {root: rootdirectory});
-    //   next();
-    // }
+    if(!req.session.passport.user)
+    {
+      res.sendFile('index.html', {root: rootdirectory});
+      next();
+    }
     console.log(req);
     if(ipList.includes(req.socket.remoteAddress!))
     {
