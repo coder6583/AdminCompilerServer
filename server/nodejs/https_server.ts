@@ -134,7 +134,6 @@ import sharedSession from 'express-socket.io-session';
 //request時に実行するmiddleware function
 app.use(express.static(rootdirectory));
 
-app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -146,6 +145,7 @@ var sessionMiddleware = session({
 app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {

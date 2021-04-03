@@ -117,7 +117,6 @@ var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //request時に実行するmiddleware function
 app.use(express_1.default.static(rootdirectory));
-app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -129,6 +128,7 @@ var sessionMiddleware = express_session_1.default({
 app.use(sessionMiddleware);
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
+app.use(everyRequest);
 function everyRequest(req, res, next) {
     // if(!req.user)
     // {
