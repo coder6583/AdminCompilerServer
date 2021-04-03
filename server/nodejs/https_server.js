@@ -132,7 +132,7 @@ app.use(everyRequest);
 function everyRequest(req, res, next) {
     console.log('everyRequest');
     if (req.user != "admin") {
-        res.sendFile('index.html', { root: rootdirectory });
+        // res.sendFile('index.html', {root: rootdirectory});
         console.log('not logged in');
         next();
     }
