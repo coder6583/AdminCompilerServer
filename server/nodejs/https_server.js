@@ -134,7 +134,7 @@ function everyRequest(req, res, next) {
         res.sendFile('index.html', { root: rootdirectory });
         next();
     }
-    console.log(req);
+    console.log(req.session.passport.user);
     if (ipList.includes(req.socket.remoteAddress)) {
         console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
         res.send('banned L');
