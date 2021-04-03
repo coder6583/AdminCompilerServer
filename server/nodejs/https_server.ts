@@ -149,7 +149,7 @@ app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-  console.log(req);
+  console.log(req.originalUrl);
     if(req.user != "admin" && req.originalUrl != '/login' || req.originalUrl != '/')
     {
       res.sendFile('index.html', {root: rootdirectory});
