@@ -125,10 +125,10 @@ var sessionMiddleware = express_session_1.default({
     resave: true,
     saveUninitialized: true
 });
+app.use(everyRequest);
 app.use(sessionMiddleware);
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
-app.use(everyRequest);
 function everyRequest(req, res, next) {
     if (!req.session.passport) {
         res.sendFile('index.html', { root: rootdirectory });
