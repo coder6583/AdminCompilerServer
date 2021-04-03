@@ -1,1 +1,15 @@
-.field{margin:0 auto;background-color:lightgray;padding:10px;margin:10px}.field .form-group{margin:10px 0 20px 0}.field .form-group label{font-weight:bold}
+.field {
+  margin: 0 auto;
+  background-color: lightgray;
+  padding: 10px;
+  margin: 10px;
+}
+
+.field .form-group {
+  margin: 10px 0 20px 0;
+}
+
+.field .form-group label {
+  font-weight: bold;
+}
+/*# sourceMappingURL=style.css.map */
