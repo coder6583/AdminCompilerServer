@@ -1,0 +1,14 @@
+.field {
+	margin: 0 auto;
+	background-color: lightgray;
+	padding: 10px;
+	margin: 10px;
+
+	.form-group {
+		margin: 10px 0 20px 0;
+
+		label {
+			font-weight: bold;
+		}
+	}
+}

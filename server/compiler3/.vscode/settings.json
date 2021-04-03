@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "cstddef": "cpp",
+        "cwchar": "cpp",
+        "type_traits": "cpp",
+        "cmath": "cpp",
+        "limits": "cpp",
+        "*.ipp": "c",
+        "array": "c",
+        "functional": "c",
+        "istream": "c",
+        "ostream": "c",
+        "tuple": "c",
+        "utility": "c"
+    }
+}

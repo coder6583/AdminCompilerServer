@@ -1,0 +1,572 @@
+@import 'common';
+
+@font-face {
+	font-family: 'My Consolas';
+	src: url('../assets/fonts/Consolas.ttf');
+}
+
+html, body, main.container {
+	max-width: 100%;
+	width: 100%;
+	height: 100%;
+}
+
+div.spliter {
+	padding: 0;
+	background-color: rgb(202, 202, 202);
+
+	&.h-spliter {
+		width: 4px;
+		height: 100%;
+		cursor: w-resize;
+	}
+	&.v-spliter {
+		width: 100%;
+		height: 4px;
+		cursor: s-resize;
+	}
+}
+
+.side-menu {
+	display: none;
+}
+
+div.explorer {
+	min-width: 100px;
+	width: 250px;
+	max-width: 500px;
+	background-color: whitesmoke;
+	overflow: auto;
+
+	.exp-header {
+		display: flex;
+		align-items: center;
+		flex-direction: row;
+		height: 45px;
+		padding: 0 5px;
+		background-color: $color-accent;
+
+		span {
+			color: #eee;
+			cursor: default;
+			font-weight: bold;
+			@include text-overflow;
+		}
+
+		.btn {
+			width: 32px;
+			height: 32px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 2px 5px;
+
+			svg {
+				width: 24px;
+				height: 24px;
+			}
+		}
+	}
+
+	.exp-view {
+		height: calc(100% - 45px);
+
+		ul {
+			margin: 0;
+			padding: 0;
+
+			.ui-dir {
+				list-style: none;
+				user-select: none;
+
+				box-sizing: border-box;
+				width: auto;
+				max-width: 100%;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow-x: hidden;
+
+				&.ui-folder {
+					&::before {
+						content: '';
+
+						display: inline-block;
+						width: 12px;
+						height: 12px;
+
+						position: absolute;
+						margin-left: -20px;
+						margin-top: 6px;
+					}
+
+					&:not(.opened) {
+						&::before { background-image: url('../assets/icons/folder-close.svg'); }
+
+						& + ul { display: none; }
+					}
+					&.opened {
+							&::before { background-image: url('../assets/icons/folder-open.svg'); }
+
+						& + ul { display: block; }
+					}
+				}
+
+				&:hover {
+					background-color: rgba(black, .05);
+				}
+			}
+		}
+	}
+}
+
+.editor {
+	background-color: $color-bg;
+	display: flex;
+	flex-direction: column;
+	
+	.settings {
+		display: flex;
+		flex-direction: row-reverse;
+		height: 48px;
+		margin: 10px 10px 0 0;
+
+		.account-menu {
+			.btn-setting {
+				box-shadow: none;
+				
+				&::after {
+					vertical-align: .5em;
+				}
+				&:hover::after {
+					border-top-color: #666;
+				}
+				
+				.avatar {
+					display: inline-flex;
+					justify-content: center;
+					align-items: center;
+					width: 32px;
+					height: 32px;
+					background-color: rgb(165, 165, 165);
+					border-radius: 50%;
+
+					#avatar-img {
+						width: 26px;
+						height: 26px;
+						border-radius: 50%;
+					}
+				}
+			}
+
+			.dropdown-menu.guest {
+				.guest { display: block; }
+				.user { display: none; }
+			}
+			.dropdown-menu:not(.guest) {
+				.guest { display: none; }
+				.user { display: block; }
+			}
+		}
+	}
+
+	.editor-btns {
+		display: inline-block;
+		height: 32px;
+		margin: 0 0 20px 60px;
+
+		.btn-editor {
+			margin: 0 5px;
+			
+			&.btn-compile::before {
+				content: 'コンパイル＆実行';
+			}
+			&.btn-save::before {
+				content: '保存';
+			}
+			&.btn-load::before {
+				content: 'プロジェクトをロード';
+			}
+			&.btn-newproject::before {
+				content: '新しいプロジェクト';
+			}
+			&:hover::before, &:hover::after {
+				visibility: visible;
+				opacity: 1;
+			}
+			&::before {
+				position: absolute;
+				visibility: hidden;
+				opacity: 0;
+				transition: all .2s;
+				margin-top: -34px;
+				padding: 1px 5px;
+				border-radius: 3px;
+				background-color: rgba(black, .4);
+				pointer-events: none;
+				transform: translateX(calc(16px - 50%));
+			}
+			&::after {
+				content: '';
+				display: inline-block;
+				position: absolute;
+				visibility: hidden;
+				opacity: 0;
+				transition: all .2s;
+				margin-top: -8px;
+				width: 10px;
+				height: 10px;
+				border: solid transparent 6px;
+				border-top: solid rgba(black, .4) 6px;
+				transform: translateX(-22px);
+			}
+
+			svg {
+				color: #eee;
+				width: 32px;
+			}
+		}
+	}
+
+	.editor-main {
+		height: calc(100% - 290px);
+		overflow-y: hidden;
+	}
+
+	.console-spliter {
+		width: 100%;
+		height: 2px;
+	}
+
+	.editor-console {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		background-color: rgb(30, 30, 30);
+
+		.console-label {
+			height: 30px;
+			border-bottom: solid lightgray 1px;
+
+			p {
+				color: rgb(216, 228, 228);
+				margin: 0 0 0 10px;
+				line-height: 30px;
+			}
+		}
+
+		#editor-console {
+			display: flex;
+			flex-direction: column-reverse;
+			flex: 1;
+			padding-bottom: 5px;
+			overflow: hidden scroll;
+			font-family: 'My Consolas', sans-serif;
+
+			&::-webkit-scrollbar {
+				width: 10px;
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background-color: rgba(white, .1);
+
+				&:hover {
+					background-color: rgba(white, .2);
+				}
+				&:active {
+					background-color: rgba(white, .3);
+				}
+			}
+
+			div {
+				display: flex;
+				padding: 0 5px 0 10px;
+				font-size: .9rem;
+
+				&.log .output-value { color: rgb(181, 192, 192); }
+				&.err .output-value { color: #f33; }
+				&.info .output-value { color: #0a0; }
+
+				&:hover {
+					background-color: rgba(white, .02);
+
+					.output-timestamp {
+						color: #ddd;
+					}
+				}
+				.output-timestamp {
+					color: #888;
+					margin-left: auto;
+					user-select: none;
+				}
+			}
+		}
+	}
+}
+
+#overlay {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 10;
+	background-color: rgba(black, .3);
+	visibility: hidden;
+	opacity: 0;
+	transition: all .1s;
+
+	.overlay-box {
+		width: 400px;
+		border-top: solid $color-accent 10px;
+		padding: 20px;
+		background-color: whitesmoke;
+
+		label, input {
+			display: block;
+			width: 100%;
+			margin-bottom: 15px;
+		}
+		input {
+			outline: 0;
+			padding: 2px 10px;
+			border: none;
+			border-bottom: solid #555 1px;
+			background-color: transparent;
+		}
+
+		.buttons {
+			display: flex;
+			margin-top: 20px;
+
+			button {
+				padding: 3px 5px;
+				margin-right: 10px;
+
+				&:first-of-type {
+					margin-left: auto;
+				}
+			}
+		}
+	}
+
+	&.show {
+		visibility: visible;
+		opacity: 1;
+	}
+}
+
+#popup-message {
+	position: fixed;
+	width: 300px;
+	height: 100%;
+	top: 10px;
+	right: 10px;
+
+	pointer-events: none;
+
+	.popup {
+		display: flex;
+		align-items: center;
+		pointer-events: all;
+
+		width: 300px;
+		height: 40px;
+
+		background-color: rgba(black, .5);
+		color: whitesmoke;
+
+		&.err {
+			background-color: rgba(rgb(184, 12, 0), .7);
+
+			&::after {
+				background-color: rgba(rgb(153, 10, 0), .9);
+			}
+		}
+
+		margin-bottom: 10px;
+
+		@keyframes popup {
+			0% {
+				transform: translateX(30px);
+				opacity: 0;
+			}
+			100% {
+				transform: translateX(0);
+				opacity: 1;
+			}
+		}
+		@keyframes popup-end {
+			0% {
+				height: 40px;
+				opacity: 1;
+				margin-bottom: 10px;
+			}
+			100% {
+				height: 0;
+				opacity: 0;
+				margin-bottom: 0;
+			}
+		}
+		animation: popup .5s forwards, popup-end .5s 5.5s;
+
+		&.close {
+			@keyframes popup-end2 {
+				0% {
+					height: 40px;
+					opacity: 1;
+					margin-bottom: 10px;
+				}
+				100% {
+					height: 0;
+					opacity: 0;
+					margin-bottom: 0;
+				}
+			}
+
+			animation: popup-end2 .5s forwards;
+
+			&::after {
+				@keyframes popup-progress-end2 {
+					0% {
+						margin-top: 37px;
+					}
+					100% {
+						margin-top: -3px;
+					}
+				}
+				animation: popup-progress-end2 .5s;
+			}
+		}
+
+		span {
+			margin-left: 10px;
+		}
+
+		button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			margin: 0 10px 0 auto;
+			
+			background-color: transparent;
+			outline: 0;
+			border: none;
+			pointer-events: all;
+
+			cursor: pointer;
+
+			svg {
+				color: #ddd;
+				width: 16px;
+			}
+		}
+
+		&::after {
+			content: '';
+
+			display: inline-block;
+
+			position: absolute;
+			margin-top: 37px;
+			height: 3px;
+
+			background-color: rgba(black, .5);
+			
+			animation: popup-progress 5s .5s linear forwards, popup-progress-end .5s 5.5s;
+			@keyframes popup-progress {
+				0% {
+					width: 0;
+				}
+				100% {
+					width: 100%;
+				}
+			}
+			@keyframes popup-progress-end {
+				0% {
+					margin-top: 37px;
+				}
+				100% {
+					margin-top: -3px;
+				}
+			}
+		}
+	}
+}
+
+div.CodeMirror {
+	height: 100%;
+	padding: 0;
+	font-family: 'My Consolas', sans-serif;
+	font-size: .9rem;
+	background-color: whitesmoke;
+
+	.CodeMirror-vscrollbar {
+		overflow: auto scroll;
+
+		&::-webkit-scrollbar {
+			width: 10px;
+			background-color: rgb(233, 233, 233);
+		}
+		&::-webkit-scrollbar-thumb {
+			width: 10px;
+			background-color: darkgray;
+		}
+	}
+	.CodeMirror-sizer {
+		// margin-left: 45px!important;
+		padding-right: 10px!important;
+	}
+	.CodeMirror-cursor {
+		height: 20px!important;
+		border-width: 2px;
+	}
+	.CodeMirror-code {
+		div {
+			height: 20px;
+		}
+		.CodeMirror-matchingbracket {
+			outline: rgb(184, 184, 184) solid 1px;
+			// color: inherit;
+		}
+	}
+	.CodeMirror-lines {
+		padding: 0;
+	}
+	.CodeMirror-gutters {
+		left: 0px!important;
+		width: 65px;
+		background-color: whitesmoke;
+
+		.CodeMirror-linenumbers {
+			width: 50px!important;
+		}
+		.CodeMirror-foldgutter {
+			width: 15px!important;
+		}
+	}
+	.CodeMirror-gutter-wrapper {
+		.CodeMirror-linenumber {
+			width: 40px!important;
+			color: #333;
+		}
+		.CodeMirror-gutter-elt:not(.CodeMirror-linenumber) {
+			left: 55px!important;
+			
+			.CodeMirror-guttermarker-subtle::after {
+				position: relative;
+				top: -6px;
+				font-size: 1.5em;
+			}
+		}
+	}
+	.CodeMirror-selected, .CodeMirror-activeline-background, .CodeMirror-activeline-gutter {
+		background-color: #d7e6fa;
+	}
+	.CodeMirror-activeline-gutter {
+		font-weight: bold;
+	}
+}

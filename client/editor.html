@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Laze Editor - Laze</title>
+
+	<!-- ファビコン -->
+	<link rel="shortcut icon" href="assets/icons/favicon.svg" type="image/x-icon">
+
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<!-- jQuery Resizable -->
+	<script src="../node_modules/jquery-resizable-dom/src/jquery-resizable.js"></script>
+
+	<!-- Socket.IO -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.js"></script>
+
+	<!-- Moment.js -->
+	<script src="./js/moment.js"></script>
+
+	<!-- CodeMirror -->
+	<link rel="stylesheet" href="lib/codemirror.css">
+	<script src="lib/codemirror.js"></script>
+	<!-- CodeMirror Modes -->
+	<script src="mode/javascript/javascript.js"></script>
+	<!-- CodeMirror MatchBrackets -->
+	<script src="addon/edit/matchbrackets.js"></script>
+	<!-- CodeMirror CloseBrackets -->
+	<script src="addon/edit/closebrackets.js"></script>
+	<!-- CodeMirror ActiveLine -->
+	<script src="addon/selection/active-line.js"></script>
+	<!-- CodeMirror Intellisense -->
+	<link rel="stylesheet" href="addon/hint/show-hint.css">
+	<script src="addon/hint/show-hint.js"></script>
+	<!-- CodeMirror FoldCode -->
+  <link rel="stylesheet" href="addon/fold/foldgutter.css" />
+  <script src="addon/fold/foldcode.js"></script>
+  <script src="addon/fold/foldgutter.js"></script>
+  <script src="addon/fold/brace-fold.js"></script>
+  <script src="addon/fold/xml-fold.js"></script>
+  <script src="addon/fold/indent-fold.js"></script>
+  <script src="addon/fold/markdown-fold.js"></script>
+  <script src="addon/fold/comment-fold.js"></script>
+
+	<!-- My Code -->
+	<link rel="stylesheet" href="./css/editor.css">
+	<script src="./js/editor.js"></script>
+</head>
+<body>
+	<main class="container w-100 h-100 m-0 p-0">
+		<div class="row h-100 w-100 m-0">
+			<!-- サイドメニューバー -->
+			<div class="side-menu main-content col-2">
+				
+			</div>
+			
+			<!-- エクスプローラー -->
+			<div class="explorer main-content col-auto container">
+				<div class="exp-header row">
+					<span id="project-name-label" class="col">Project1</span>
+					<button id="btn-newfile" class="btn btn-outline-light p-0 col-auto" title="新規ファイル">
+						<svg viewBox="0 0 64 64">
+							<use xlink:href="assets/icons/icons.svg#new-file"></use>
+						</svg>
+					</button>
+					<button id="btn-newfolder" class="btn btn-outline-light p-0 col-auto" title="新規フォルダ">
+						<svg viewBox="0 0 64 64">
+							<use xlink:href="assets/icons/icons.svg#new-project"></use>
+						</svg>
+					</button>
+				</div>
+
+				<div class="exp-view row" id="exp-view">
+					<ul></ul>
+				</div>
+			</div>
+			<div class="exp-spliter spliter h-spliter col-auto"></div>
+			
+			<!-- エディター -->
+			<div class="editor main-content col p-0 h-100">
+				<div class="settings">
+					<div class="dropdown account-menu">
+						<button class="btn btn-setting dropdown-toggle p-0" id="account-menu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<div class="avatar">
+								<img src="assets/icons/guest.svg" id="avatar-img">
+							</div>
+						</button>
+						<ul class="dropdown-menu guest" aria-labelledby="account-menu">
+							<span class="dropdown-header"><strong id="account-name"></strong>としてログイン中</span>
+							<div class="dropdown-divider"></div>
+							<div class="guest">
+								<li class="dropdown-item"><a class="dropdown-content" href="/login">ログイン</a></li>
+							</div>
+							<div class="user">
+								<li class="dropdown-item"><a class="dropdown-content" href="/profile">プロフィール</a></li>
+								<li class="dropdown-item"><a class="dropdown-content" href="/logout">ログアウト</a></li>
+							</div>
+						</ul>
+					</div>
+				</div>
+
+				<div class="editor-btns">
+					<button class="btn btn-secondary btn-editor p-0 btn-compile" id="btn-compile">
+						<svg viewBox="0 0 64 64">
+							<use xlink:href="assets/icons/icons.svg#check"></use>
+						</svg>
+					</button>
+					<button class="btn btn-secondary btn-editor p-0 btn-save" id="btn-save">
+						<svg viewBox="0 0 64 64">
+							<use xlink:href="assets/icons/icons.svg#save"></use>
+						</svg>						
+					</button>
+					<button class="btn btn-secondary btn-editor p-0 btn-load" id="btn-load">
+						<svg viewBox="0 0 64 64">
+							<use xlink:href="assets/icons/icons.svg#load-project"></use>
+						</svg>
+					</button>
+					<button class="btn btn-secondary btn-editor p-0 btn-newproject" id="btn-newproject">
+						<svg viewBox="0 0 64 64">
+							<use xlink:href="assets/icons/icons.svg#new-project"></use>
+						</svg>
+					</button>
+				</div>
+
+				<div class="editor-main">
+					<textarea id="editor" class="h-100 w-100"></textarea>
+				</div>
+
+				<div class="spliter console-spliter v-spliter"></div>
+				<div class="editor-console">
+					<div class="console-label">
+						<p>出力</p>
+					</div>
+
+					<div id="editor-console">
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<div id="overlay" class="overlay">
+		<div class="overlay-box">
+			<form id="setname">
+				<label for="project-name">プロジェクト名を決めてください</label>
+				<input type="text" name="project-name" id="project-name" autofocus>
+				<small id="project-name-warning" class="text-danger"></small>
+				<div class="buttons">
+					<button type="button" id="setname-cancel" class="btn btn-secondary">キャンセル</button>
+					<button type="submit" id="setname-submit" class="btn btn-primary">作成</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="popup-message">
+		
+	</div>
+
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
+</body>
+</html>

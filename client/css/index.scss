@@ -1,0 +1,33 @@
+@import 'common';
+
+body .container {
+	max-width: 100%;
+	width: 100%;
+}
+
+.img-icon {
+	width: 32px;
+}
+
+header {
+	padding: 10px 20px;
+	background-color: $color-accent;
+}
+
+.links {
+	display: flex;
+	align-items: center;
+
+	a {
+		display: inline-block;
+		margin: 0 10px;
+		font-size: 1.2rem;
+		color: white;
+		text-decoration: none;
+		transition: color .2s;
+		
+		&:hover {
+			color: rgb(172, 227, 255);
+		}
+	}
+}
