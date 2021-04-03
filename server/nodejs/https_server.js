@@ -80,17 +80,19 @@ var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
     console.log('hello');
-    bcrypt_1.default.compare(password, hash, function (err, isMatch) {
-        if (err)
-            console.log(err);
-        if (isMatch) {
-            console.log('logged in!');
-            return done(null, hash);
-        }
-        else {
-            return done(err, false, { message: 'password incorrect' });
-        }
-    });
+    if (username == 'admin') {
+        bcrypt_1.default.compare(password, hash, function (err, isMatch) {
+            if (err)
+                console.log(err);
+            if (isMatch) {
+                console.log('logged in!');
+                return done(null, username);
+            }
+            else {
+                return done(err, false, { message: 'password incorrect' });
+            }
+        });
+    }
 }));
 passport_1.default.serializeUser(function (user, done) {
     console.log(user, 'serialize');

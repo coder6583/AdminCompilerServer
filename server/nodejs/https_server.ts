@@ -89,18 +89,22 @@ const LocalStrategy = require('passport-local').Strategy;
 passport.use(new LocalStrategy( 
   {usernameField: 'loginId', passwordField: 'loginPassword'}, (username: string, password: string, done: any) => {
     console.log('hello');
-    bcrypt.compare(password, hash, (err, isMatch) => {
-      if(err) console.log(err);
-      if(isMatch)
-      {
-        console.log('logged in!');
-        return done(null, hash);
-      }
-      else 
-      {
-        return done(err, false, {message: 'password incorrect'});
-      }
-    })
+    if(username == 'admin')
+    {
+
+      bcrypt.compare(password, hash, (err, isMatch) => {
+        if(err) console.log(err);
+        if(isMatch)
+        {
+          console.log('logged in!');
+          return done(null, username);
+        }
+        else 
+        {
+          return done(err, false, {message: 'password incorrect'});
+        }
+      })
+    }
   }
 ));
 passport.serializeUser((user: any, done) => {
