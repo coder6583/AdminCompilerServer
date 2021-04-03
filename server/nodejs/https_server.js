@@ -131,7 +131,7 @@ app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
     console.log(req.originalUrl);
-    if (req.user != "admin" && req.originalUrl != '/login' || req.originalUrl != '/') {
+    if (req.user != "admin" && (req.originalUrl != '/login')) {
         res.sendFile('index.html', { root: rootdirectory });
         console.log('not logged in');
     }
