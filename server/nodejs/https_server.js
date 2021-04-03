@@ -134,7 +134,6 @@ function everyRequest(req, res, next) {
     if (req.user != "admin") {
         // res.sendFile('index.html', {root: rootdirectory});
         console.log('not logged in');
-        next();
     }
     // else if(req.session.passport.user != "admin")
     // {
