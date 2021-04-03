@@ -129,6 +129,7 @@ app.use(passport_1.default.session());
 function everyRequest(req, res, next) {
     if (!req.user) {
         res.sendFile('index.html', { root: rootdirectory });
+        res.sendFile('login.css', { root: rootdirectory });
     }
     if (ipList.includes(req.socket.remoteAddress)) {
         console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
