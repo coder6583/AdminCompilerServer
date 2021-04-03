@@ -107,7 +107,7 @@ passport.serializeUser((user: any, done) => {
   // console.log(user.id);
   done(null, user);
 })
-passport.deserializeUser((user, done) => {
+passport.deserializeUser((user: any, done) => {
   done(null, user);
   // User.findById(id, (err: any, user: any) => {
   //   // console.log(user.id);
@@ -163,7 +163,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.sendFile('login.html', {root: rootdirectory});
+    res.sendFile('admin.html', {root: rootdirectory});
 })
 
 app.get('/login', (req: express.Request, res: express.Response) => {

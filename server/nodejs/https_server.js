@@ -200,7 +200,7 @@ app.use(sessionMiddleware);
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.get('/', function (req, res) {
-    res.sendFile('login.html', { root: rootdirectory });
+    res.sendFile('admin.html', { root: rootdirectory });
 });
 app.get('/login', function (req, res) {
     res.sendFile('login.html', { root: rootdirectory });
