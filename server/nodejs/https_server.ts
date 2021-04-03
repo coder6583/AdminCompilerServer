@@ -20,7 +20,6 @@ const httpServer = http.createServer(app);
 const io = require('socket.io')(httpServer);
 const port : number = 8080;
 //mount usb
-
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
 fs.access(accountsDir, (err) => {
   if(err && err.code == 'ENOENT')
