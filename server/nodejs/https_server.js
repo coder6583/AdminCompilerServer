@@ -151,13 +151,14 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
 }));
 passport_1.default.serializeUser(function (user, done) {
     // console.log(user.id);
-    done(null, user.id);
+    done(null, user);
 });
-passport_1.default.deserializeUser(function (id, done) {
-    User.findById(id, function (err, user) {
-        // console.log(user.id);
-        done(err, user);
-    });
+passport_1.default.deserializeUser(function (user, done) {
+    done(null, user);
+    // User.findById(id, (err: any, user: any) => {
+    //   // console.log(user.id);
+    //   done(err, user);
+    // })
 });
 //Login with Google
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
