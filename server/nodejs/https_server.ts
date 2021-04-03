@@ -154,6 +154,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     //   res.sendFile('index.html', {root: rootdirectory});
     //   next();
     // }
+    console.log(req.user);
     if(ipList.includes(req.socket.remoteAddress!))
     {
       console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
