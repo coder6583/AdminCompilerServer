@@ -144,11 +144,11 @@ app.use(passport.session());
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    if(!req.user)
-    {
-      res.sendFile('index.html', {root: rootdirectory});
-      next();
-    }
+    // if(!req.user)
+    // {
+    //   res.sendFile('index.html', {root: rootdirectory});
+    //   next();
+    // }
     if(ipList.includes(req.socket.remoteAddress!))
     {
       console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
