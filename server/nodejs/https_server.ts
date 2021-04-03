@@ -131,7 +131,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 {
     if(!req.user)
     {
-      res.sendFile('login.html', {root: rootdirectory});
+      res.sendFile('index.html', {root: rootdirectory});
     }
     if(ipList.includes(req.socket.remoteAddress!))
     {
