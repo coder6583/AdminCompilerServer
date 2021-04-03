@@ -93,11 +93,11 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
     });
 }));
 passport_1.default.serializeUser(function (user, done) {
-    // console.log(user.id);
+    console.log(user, 'serialize');
     done(null, user);
 });
 passport_1.default.deserializeUser(function (user, done) {
-    console.log(user);
+    console.log(user, 'deserialize');
     done(null, user);
     // User.findById(id, (err: any, user: any) => {
     //   // console.log(user.id);
