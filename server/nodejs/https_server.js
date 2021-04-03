@@ -132,42 +132,21 @@ mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserve
 }).then(function () { console.log('connected'); });
 mongoose_1.default.Promise = global.Promise;
 //passport
+var hash = "$2b$10$aha8xyjAjp971NX3MXzq.Ouj6YhstYcBCXlsdrpBB5xrJxjI5RoOe";
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
     console.log('hello');
-    User.findOne({ email: username }).then(function (user) {
-        if (!user) {
-            User.findOne({ username: username }).then(function (user_) {
-                if (!user_) {
-                    console.log('account not found');
-                    return done(null, false, { message: 'That email is not registered' });
-                }
-                bcrypt_1.default.compare(password, user_.password, function (err, isMatch) {
-                    if (err)
-                        console.log(err);
-                    if (isMatch) {
-                        console.log('logged in!');
-                        return done(null, user_);
-                    }
-                    else {
-                        return done(err, false, { message: 'password incorrect' });
-                    }
-                });
-            });
-            return;
+    bcrypt_1.default.compare(password, hash, function (err, isMatch) {
+        if (err)
+            console.log(err);
+        if (isMatch) {
+            console.log('logged in!');
+            return done(null, hash);
         }
-        bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
-            if (err)
-                console.log(err);
-            if (isMatch) {
-                console.log('logged in!');
-                return done(null, user);
-            }
-            else {
-                return done(err, false, { message: 'password incorrect' });
-            }
-        });
+        else {
+            return done(err, false, { message: 'password incorrect' });
+        }
     });
 }));
 passport_1.default.serializeUser(function (user, done) {
@@ -216,92 +195,20 @@ app.use(sessionMiddleware);
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.get('/', function (req, res) {
-    res.sendFile('index.html', { root: rootdirectory });
+    res.sendFile('login.html', { root: rootdirectory });
 });
 app.get('/login', function (req, res) {
     res.sendFile('login.html', { root: rootdirectory });
 });
 app.post('/login', function (req, res, next) {
-    console.log(req.body, 124);
+    console.log(req.body);
     passport_1.default.authenticate('local', {
-        successRedirect: '/editor',
+        successRedirect: '/admin',
         failureRedirect: '/login'
     })(req, res, next);
 });
-app.get('/editor', function (req, res) {
-    console.log(req.user);
-    res.sendFile('editor.html', { root: rootdirectory });
-});
-app.get('/docs', function (req, res) {
-    res.sendFile('docs.html', { root: rootdirectory });
-});
 app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
-});
-app.get('/register', function (req, res) {
-    res.sendFile('register.html', { root: rootdirectory });
-});
-app.post('/register', function (req, res) {
-    // console.log(req.body);
-    var _a = req.body, id = _a.id, username = _a.username, email = _a.email, password = _a.password, passwordCheck = _a.passwordCheck;
-    var newUser = new User({
-        email: email,
-        username: id,
-        displayName: username || id,
-        password: password
-    });
-    fs_1.default.mkdir(path.resolve(accountsDir, id), function () {
-        console.log('created account folder');
-    });
-    bcrypt_1.default.genSalt(10, function (err, salt) {
-        bcrypt_1.default.hash(newUser.password, salt, function (err, hash) {
-            if (err)
-                console.log('Error hashing password.');
-            newUser.password = hash;
-            newUser.save().then(function (value) {
-                console.log(value);
-                res.redirect('/login');
-            });
-        });
-    });
-});
-app.get('/pass_reset', function (req, res) {
-    res.sendFile('pass_reset.html', { root: rootdirectory });
-});
-app.get('/register_check/id', function (req, res) {
-    console.log(req.query);
-    if (req.query.id) {
-        var userId = req.query.id;
-        console.log(userId);
-        User.findOne({ username: userId }).exec(function (err, user) {
-            if (user) {
-                console.log('there is already an account');
-                res.json({ success: false });
-            }
-            else {
-                res.json({ success: true });
-            }
-        });
-    }
-});
-app.get('/register_check/email', function (req, res) {
-    console.log(req.query);
-    if (req.query.email) {
-        var emailAddress = req.query.email;
-        console.log(emailAddress);
-        User.findOne({ email: emailAddress }).exec(function (err, user) {
-            if (user) {
-                res.json({ success: false });
-            }
-            else {
-                res.json({ success: true });
-            }
-        });
-    }
-});
-app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (req, res) {
-    console.log('get node modules');
-    res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', { root: rootDir });
 });
 var users = new Map();
 var usersDirectory = new Map();
@@ -365,190 +272,6 @@ function readDirectory(path, socket, result, callback) {
 }
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
-    var address = socket.handshake.address;
-    console.log('New connection from ' + JSON.stringify(address) + socket.id);
-    //defaultはguestとして入る
-    users.set(socket.id, "guest");
-    fs_1.default.mkdir(accountsDir + 'guest/' + socket.id, function (err) {
-        if (err) {
-            console.log('could not create ' + accountsDir + 'guest/' + socket.id);
-        }
-    });
-    usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    var userId;
-    if (!(socket.handshake.session.passport === undefined))
-        userId = socket.handshake.session.passport.user;
-    else
-        userId = 'guest';
-    User.findOne({ _id: userId }).exec(function (err, user) {
-        console.log(user);
-        if (err) {
-            socket.emit('login', {
-                id: 'guest',
-                username: 'ゲスト',
-                avatar: ''
-            });
-            users.set(socket.id, 'guest');
-            usersDirectory.set(socket.id, path.resolve(accountsDir, 'guest'));
-            usersProjectDirectory.set(socket.id, path.resolve(usersDirectory.get(socket.id), 'none'));
-        }
-        else {
-            socket.emit('login', {
-                id: user.username,
-                username: user.displayName,
-                avatar: ''
-            });
-            users.set(socket.id, user.username);
-            usersDirectory.set(socket.id, path.resolve(accountsDir, user.username));
-            usersProjectDirectory.set(socket.id, path.resolve(usersDirectory.get(socket.id), 'none'));
-        }
-    });
-    socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            // コンパイル
-            exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, function (err, stdout, stderr) {
-                if (err) {
-                    socket.emit('output', {
-                        value: stderr,
-                        style: 'err'
-                    });
-                }
-                exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', function (err, stdout, stderr) {
-                    // 出力
-                    console.log(err, stdout, stderr);
-                    if (err) {
-                        socket.emit('output', {
-                            value: stderr,
-                            style: 'err'
-                        });
-                        exec('sudo rm -f ' + input.filename + ' .' + input.filename);
-                    }
-                    else {
-                        if (stdout) {
-                            socket.emit('output', {
-                                value: stdout,
-                                style: 'log'
-                            });
-                        }
-                        if (stderr) {
-                            socket.emit('output', {
-                                value: stderr,
-                                style: 'log'
-                            });
-                        }
-                        exec('sudo rm -f ' + input.filename + ' .' + input.filename);
-                    }
-                    return;
-                });
-            });
-            return [2 /*return*/];
-        });
-    }); });
-    socket.on('save', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            //ファイルにセーブ
-            if (users.get(socket.id) == 'guest') {
-                socket.emit('saved', {
-                    value: 'If you want to save a file, please create an account.',
-                    style: 'err',
-                    success: false
-                });
-            }
-            else {
-                if (usersProjectDirectory.get(socket.id) == path.resolve(usersDirectory.get(socket.id), 'none')) {
-                    socket.emit('saved', {
-                        value: 'Load a project first.',
-                        style: 'err',
-                        success: false
-                    });
-                }
-                else {
-                    exec('echo \"' + input.value + '\" > ' + usersProjectDirectory.get(socket.id) + '/' + input.filename, function (err, stdout, stderr) {
-                        if (err) {
-                            socket.emit('saved', {
-                                value: stderr + ' : Save not complete.',
-                                style: 'err',
-                                success: false
-                            });
-                        }
-                        else {
-                            socket.emit('saved', {
-                                value: 'Save complete.',
-                                style: 'info',
-                                success: true
-                            });
-                        }
-                        return;
-                    });
-                }
-            }
-            ;
-            return [2 /*return*/];
-        });
-    }); });
-    //すでに作られたProjectをロードする
-    socket.on('loadProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        var result;
-        return __generator(this, function (_a) {
-            if (users.get(socket.id) != 'guest') {
-                result = { type: 'folder', name: input.projectName, value: [] };
-                // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
-                readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, function () { }).then(function (val) {
-                    socket.emit('loadedProject', {
-                        value: val,
-                        style: 'log'
-                    });
-                });
-            }
-            else {
-                socket.emit('loadedProject', {
-                    value: 'Sign in to load a project.',
-                    style: 'log'
-                });
-            }
-            return [2 /*return*/];
-        });
-    }); });
-    //Projectを作る
-    socket.on('newProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            if (users.get(socket.id) != 'guest') {
-                fs_1.default.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
-                    if (err) {
-                        socket.emit('newProjectCreated', {
-                            value: 'Could not create project ' + input.projectName,
-                            style: 'err'
-                        });
-                    }
-                    else {
-                        socket.emit('newProjectCreated', {
-                            value: 'Created project ' + input.projectName,
-                            style: 'log'
-                        });
-                    }
-                });
-                usersProjectDirectory.set(socket.id, usersDirectory.get(socket.id) + '/' + input.projectName);
-            }
-            else {
-                socket.emit('newProjectCreated', {
-                    value: 'Sign in to create a new project',
-                    style: 'err'
-                });
-            }
-            return [2 /*return*/];
-        });
-    }); });
-    //disconnectしたとき
-    socket.on('disconnect', function () {
-        console.log("a");
-        if (users.get(socket.id) == 'guest') {
-            if (usersDirectory.get(socket.id)) {
-                fs_1.default.rmdir((usersDirectory.get(socket.id)), function (err) {
-                    console.log(usersDirectory.get(socket.id));
-                });
-            }
-        }
-    });
 });
 // 404
 app.use(function (req, res, next) {

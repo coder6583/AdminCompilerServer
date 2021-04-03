@@ -82,48 +82,24 @@ mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mo
 
 mongoose.Promise = global.Promise;
 //passport
+const hash = "$2b$10$aha8xyjAjp971NX3MXzq.Ouj6YhstYcBCXlsdrpBB5xrJxjI5RoOe";
 import passport from 'passport';
 const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy( 
   {usernameField: 'loginId', passwordField: 'loginPassword'}, (username: string, password: string, done: any) => {
     console.log('hello');
-    User.findOne({email: username}).then((user: any) => {
-      if(!user)
+    bcrypt.compare(password, hash, (err, isMatch) => {
+      if(err) console.log(err);
+      if(isMatch)
       {
-        User.findOne({username: username}).then((user_: any) => {
-          if(!user_)
-          {
-            console.log('account not found');
-            return done(null, false, {message: 'That email is not registered'});
-          }
-          bcrypt.compare(password, user_.password, (err, isMatch) => {
-            if(err) console.log(err);
-            if(isMatch)
-            {
-              console.log('logged in!');
-              return done(null, user_);
-            }
-            else 
-            {
-              return done(err, false, {message: 'password incorrect'});
-            }
-          })
-        })
-        return;
+        console.log('logged in!');
+        return done(null, hash);
       }
-      bcrypt.compare(password, user.password, (err, isMatch) => {
-        if(err) console.log(err);
-        if(isMatch)
-        {
-          console.log('logged in!');
-          return done(null, user);
-        }
-        else 
-        {
-          return done(err, false, {message: 'password incorrect'});
-        }
-      })
+      else 
+      {
+        return done(err, false, {message: 'password incorrect'});
+      }
     })
   }
 ));
@@ -182,7 +158,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.sendFile('index.html', {root: rootdirectory});
+    res.sendFile('login.html', {root: rootdirectory});
 })
 
 app.get('/login', (req: express.Request, res: express.Response) => {
@@ -190,102 +166,14 @@ app.get('/login', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.log(req.body, 124);
+  console.log(req.body);
   passport.authenticate('local', {
-    successRedirect: '/editor',
+    successRedirect: '/admin',
     failureRedirect: '/login'
   })(req,res,next);
 })
-
-app.get('/editor', (req: express.Request, res: express.Response) => {
-    console.log(req.user);
-    res.sendFile('editor.html', {root: rootdirectory});
-})
-
-app.get('/docs', (req: express.Request, res: express.Response) => {
-    res.sendFile('docs.html', {root: rootdirectory});
-})
-
 app.get('/admin', (req: express.Request, res: express.Response) => {
     res.sendFile('admin.html', {root: rootdirectory});
-})
-
-app.get('/register', (req: express.Request, res: express.Response) => {
-  res.sendFile('register.html', {root: rootdirectory});
-})
-
-app.post('/register', (req: express.Request, res: express.Response) => {
-  // console.log(req.body);
-  const {id, username, email, password, passwordCheck} = req.body;
-
-  const newUser = new User({
-    email: email,
-    username: id,
-    displayName: username || id,
-    password: password 
-  });
-  fs.mkdir(path.resolve(accountsDir, id), () => {
-    console.log('created account folder');
-  })
-  bcrypt.genSalt(10, (err: Error, salt) => {
-    bcrypt.hash(newUser.password, salt,(err: Error, hash) => {
-      if(err) console.log('Error hashing password.');
-      newUser.password = hash;
-      newUser.save().then((value: any) => {
-        console.log(value);
-        res.redirect('/login');
-      });
-    });
-  });
-})
-
-app.get('/pass_reset', (req: express.Request, res: express.Response) => {
-  res.sendFile('pass_reset.html', {root: rootdirectory});
-})
-
-app.get('/register_check/id', (req: express.Request, res: express.Response) => {
-  console.log(req.query);
-  if(req.query.id)
-  {
-    let userId : any = req.query.id;
-    console.log(userId);
-    User.findOne({username: userId}).exec((err: any, user: any) => {
-      if(user)
-      {
-        console.log('there is already an account');
-        res.json({success: false});
-      }
-      else
-      {
-        res.json({success: true});
-      }
-    });
-  }
-});
-
-app.get('/register_check/email', (req: express.Request, res: express.Response) => {
-  console.log(req.query);
-  if(req.query.email)
-  {
-    let emailAddress : any = req.query.email;
-    console.log(emailAddress);
-    User.findOne({email: emailAddress}).exec((err: any, user: any) => {
-      if(user)
-      {
-        res.json({success: false});
-      }
-      else
-      {
-        res.json({success: true});
-      }
-    });
-  }
-});
-
-
-app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
-  console.log('get node modules');
-  res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', {root: rootDir});
 })
 
 let users: Map<string, string> = new Map();
@@ -345,199 +233,8 @@ io.use(sharedSession(sessionMiddleware, {
 
 }));
 io.sockets.on('connection', (socket:any) => {
-    var address = socket.handshake.address;
-    console.log('New connection from ' + JSON.stringify(address) + socket.id);
-    //defaultはguestとして入る
-    users.set(socket.id, "guest");
-    fs.mkdir(accountsDir + 'guest/' + socket.id, (err) => {
-      if(err)
-      {
-        console.log('could not create ' + accountsDir + 'guest/' + socket.id);
-      }
-    });
-    usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    let userId;
-    if(!(socket.handshake.session.passport === undefined))
-      userId = socket.handshake.session.passport.user;
-    else
-      userId = 'guest';
-    User.findOne({_id: userId}).exec((err: any, user: any) => {
-      console.log(user);
-      if(err)
-      {
-        socket.emit('login', {
-          id: 'guest',
-          username: 'ゲスト',
-          avatar: ''
-        });
-        users.set(socket.id, 'guest');
-        usersDirectory.set(socket.id, path.resolve(accountsDir, 'guest'));
-        usersProjectDirectory.set(socket.id, path.resolve(usersDirectory.get(socket.id), 'none'));
-      }
-      else
-      {
-        socket.emit('login', {
-          id: user.username,
-          username: user.displayName,
-          avatar: ''
-        });
-        users.set(socket.id, user.username);
-        usersDirectory.set(socket.id, path.resolve(accountsDir, user.username));
-        usersProjectDirectory.set(socket.id, path.resolve(usersDirectory.get(socket.id), 'none'));
-      }
-    })
-    socket.on('compile', async (input: compileData) => {
-      // コンパイル
-      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
-        if(err)
-        {
-          socket.emit('output', {
-            value: stderr,
-            style: 'err'
-          })
-        }
-        exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) =>
-        {
-          // 出力
-          console.log(err, stdout, stderr);
-          if(err) {
-            socket.emit('output', {
-              value: stderr,
-              style: 'err'
-            });
-            exec('sudo rm -f ' + input.filename + ' .' + input.filename);
-          }else {
-            if(stdout)
-            {
-              socket.emit('output', {
-                value: stdout,
-                style: 'log'
-              });
-            }
-            if(stderr)
-            {
-              socket.emit('output', {
-                value: stderr,
-                style: 'log'
-              });
-            }
-            exec('sudo rm -f ' + input.filename + ' .' + input.filename);
-          }
-          return;
-        });
-      });
-      
-  
-    })
-    socket.on('save', async (input: saveData) => {
-      //ファイルにセーブ
-      if(users.get(socket.id) == 'guest')
-      {
-        socket.emit('saved', {
-          value: 'If you want to save a file, please create an account.',
-          style: 'err',
-          success: false
-        })
-      }
-      else{
-        if(usersProjectDirectory.get(socket.id) == path.resolve(usersDirectory.get(socket.id), 'none'))
-        {
-          socket.emit('saved', {
-            value: 'Load a project first.',
-            style: 'err',
-            success: false
-          })
-        }
-        else
-        {
-          exec('echo \"' + input.value + '\" > ' + usersProjectDirectory.get(socket.id) + '/' + input.filename, 
-          (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
-            if(err) {
-              socket.emit('saved', {
-                value: stderr + ' : Save not complete.',
-                style : 'err',
-                success: false
-              })
-            }
-            else
-            {
-              socket.emit('saved', {
-                value: 'Save complete.',
-                style: 'info',
-                success: true
-              })
-            }
-            return;
-          });
-        }
-      };
-    });
-    //すでに作られたProjectをロードする
-    socket.on('loadProject', async (input: loadProjectData) => 
-    {
-      if(users.get(socket.id) != 'guest')
-      {
-        let result: dirObject = {type: 'folder', name: input.projectName, value: []};
-        // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
-        readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, () => {}).then((val) => {
-          socket.emit('loadedProject', {
-            value: val,
-            style: 'log'
-          });
-        });
-      }
-      else
-      {
-        socket.emit('loadedProject', {
-          value: 'Sign in to load a project.',
-          style: 'log'
-        });
-      }
-    });
-    //Projectを作る
-    socket.on('newProject', async (input: createProjectData) => {
-      if(users.get(socket.id) != 'guest')
-      {
-        fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
-          if(err)
-          {
-            socket.emit('newProjectCreated', {
-              value: 'Could not create project '+ input.projectName,
-              style: 'err'
-            })
-          }
-          else
-          {
-            socket.emit('newProjectCreated', {
-              value: 'Created project ' + input.projectName,
-              style: 'log'
-            })
-          }
-        });
-        usersProjectDirectory.set(socket.id, usersDirectory.get(socket.id) + '/' + input.projectName);
-      }
-      else
-      {
-        socket.emit('newProjectCreated', {
-          value: 'Sign in to create a new project',
-          style: 'err'
-        })
-      }
-    })
-    //disconnectしたとき
-    socket.on('disconnect', () => {
-      console.log("a");
-      if(users.get(socket.id) == 'guest')
-      {
-        if(usersDirectory.get(socket.id))
-        {
-          fs.rmdir((usersDirectory.get(socket.id)!), (err: NodeJS.ErrnoException | null) => {
-            console.log(usersDirectory.get(socket.id));
-          });        
-        }
-      }
-    })
-  });
+    
+});
   
 // 404
 app.use((req :express.Request, res :express.Response, next) => {
