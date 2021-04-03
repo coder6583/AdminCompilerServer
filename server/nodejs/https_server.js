@@ -171,10 +171,9 @@ var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
-    // if(req.user===undefined)
-    // {
-    //   res.sendFile('login.html', {root: rootdirectory});
-    // }
+    if (!req.user) {
+        res.sendFile('login.html', { root: rootdirectory });
+    }
     if (ipList.includes(req.socket.remoteAddress)) {
         console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
         res.send('banned L');
