@@ -143,15 +143,17 @@ function everyRequest(req, res, next) {
     //   console.log(req.session.passport.user);
     //   next();
     // }
-    if (ipList.includes(req.socket.remoteAddress)) {
-        console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
-        res.send('banned L');
-        res.end();
-    }
     else {
-        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-        // console.log(req.user, 'everyRequest');
-        next();
+        if (ipList.includes(req.socket.remoteAddress)) {
+            console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+            res.send('banned L');
+            res.end();
+        }
+        else {
+            console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+            // console.log(req.user, 'everyRequest');
+            next();
+        }
     }
 }
 app.get('/', function (req, res) {
