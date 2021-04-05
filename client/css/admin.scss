@@ -1,0 +1,100 @@
+@import 'common';
+
+@font-face {
+	font-family: 'My Consolas';
+	src: url('../assets/fonts/Consolas.ttf');
+}
+
+nav.navigation {
+	width: 200px;
+	background-color: $color-accent;
+	color: whitesmoke;
+
+	ul {
+		margin: 0;
+		list-style: none;
+
+		li {
+			height: 32px;
+			box-sizing: content-box;
+			padding: 6px 10px;
+			display: flex;
+			align-items: center;
+			cursor: pointer;
+			transition: all .05s;
+
+			i {
+				font-size: 1.5rem;
+				margin-right: 10px;
+			}
+
+			&:not(.selected):hover {
+				background-color: rgba(white, .08);
+			}
+
+			&[data-bind="console"].selected::after {
+				border-right-color: rgb(30, 30, 30);
+			}
+			&.selected {
+				background-color: rgba(white, .6);
+				color: darken($color-accent, 15%);
+
+				&::after {
+					content: '';
+					position: absolute;
+					margin-left: 178px;
+					border: solid transparent 6px;
+					border-right: solid white 6px;
+				}
+			}
+		}
+	}
+}
+
+.contents {
+	.content {
+		display: none;
+		height: 100%;
+
+		&.show {
+			display: block;
+		}
+	}
+}
+
+$color-terminal-bg: rgb(30, 30, 30);
+$color-terminal-text: rgb(216, 228, 228);
+
+.cmd, .cmd span:not(.fas):not(.far):not(.fa), .terminal, .terminal-output>:not(.raw), .terminal-output>:not(.raw) a, .terminal-output>:not(.raw) span:not(.fas):not(.far):not(.fa) {
+	font-family: 'My Consolas', 'sans-serif';
+}
+.cmd, .cmd div, .cmd span[data-text]:not(.cmd-inverted):not(.token):not(.emoji), .terminal, .terminal-output>:not(.raw) a, .terminal-output>:not(.raw) div, .terminal-output>:not(.raw) span[data-text]:not(.token):not(.inverted):not(.terminal-inverted):not(.cmd-inverted):not(.terminal-error):not(.emoji) {
+	color: $color-terminal-text;
+	background-color: $color-terminal-bg;
+}
+.terminal {
+	background-color: $color-terminal-bg;
+
+	.terminal-command > div {
+		background-color: $color-terminal-bg;
+	}
+
+	&::-webkit-scrollbar {
+		width: 8px;
+		background-color: $color-terminal-bg;
+	}
+	&::-webkit-scrollbar-thumb {
+		background-color: rgba(white, .2);
+
+		&:hover {
+			background-color: rgba(white, .3);
+		}
+		&:active {
+			background-color: rgba(white, .4);
+		}
+	}
+}
+
+.tab-users {
+
+}

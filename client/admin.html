@@ -1,35 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" style = "height: 100%">
+<html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compiler Server</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.js"></script>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Laze Admin Page - Laze</title>
+
+	<!-- ファビコン -->
+	<link rel="shortcut icon" href="assets/icons/favicon.svg" type="image/x-icon">
+
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<!-- jQuery Terminal -->
+	<script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
+
+	<!-- Socket.IO -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.js"></script>
+
+	<!-- Moment.js -->
+	<script src="./js/moment.js"></script>
+
+	<!-- My Code -->
+	<link rel="stylesheet" href="./css/admin.css">
+	<script src="./js/admin.js"></script>
 </head>
-<body style = "text-align: center; height: 100%; width: 100%; overflow: hidden; margin: 0; padding: 0">
-    <header style = "width: 100%; background-color: blue; margin: 0; padding: 0"><span style = "font-size: 100px; background-color: blue; width: 100%">管理者ページ</span></header>
-    <p style = "font-size: 35px;">ここにコマンド入れてください</p>
-    <input style = "width: 80%; height: 10%; font-size: 50px" id = "adminCommand"></input>
-    <br>
-    <br>
-    <button style =  "padding: 0" id = "adminExecuteBtn" onclick="adminExecuteBtnClicked()">
-        <p style = "font-size: 50px; padding: 0; margin: 0">
-            実行
-        </p>
-    </button>
-    <br>
-    <p style = "font-size: 35px;">出力</p>
-    <div style = "margin: 0 auto; width: 80%; padding: 0; height: 30%"> 
-        <p id = "adminOutput" style = "text-align: left; background-color: lightblue; height: 100%; font-size: 20px;">
-            
-        </p>
-    </div>
-    <br>
-    <button style =  "padding: 0" id = "adminLogoutBtn" onclick="adminLogoutBtnClicked()">
-        <p style = "font-size: 25px; padding: 0; margin: 0">
-            ログアウト
-        </p>
-    </button>
-    <script src = '../javascript/editor.js'></script>
+<body class="container-fluid">
+	<div class="row h-100">
+		<nav class="navigation col-auto h-100 p-0">
+			<ul class="p-0">
+				<li class="nav-content selected" data-bind="console"><i class="bi bi-terminal"></i>コンソール</li>
+				<li class="nav-content" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
+			</ul>
+		</nav>
+		
+		<div class="contents col p-0 h-100">
+			<!-- コンソール -->
+			<div class="content tab-console show h-100">
+				<div id="console" class="w-100 h-100">
+
+				</div>
+			</div>
+			<!-- ユーザーの一覧 -->
+			<div class="content tab-users">
+				<p>ユーザーの一覧だよー</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">	
 </body>
 </html>
