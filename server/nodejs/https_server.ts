@@ -214,7 +214,7 @@ io.sockets.on('connection', (socket:any) => {
       let words = input.command.split(' ');
       socket.emit('result', {
         success: true,
-        result: words[0]
+        result: {value: 'test'}
       });
     });
 });
