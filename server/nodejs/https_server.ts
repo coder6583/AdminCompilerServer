@@ -210,7 +210,13 @@ io.use(sharedSession(sessionMiddleware, {
 
 }));
 io.sockets.on('connection', (socket:any) => {
-    
+    socket.on('command', async (input: any) => {
+      let words = input.command.split(' ');
+      socket.emit('result', {
+        success: true,
+        result: words[0]
+      });
+    });
 });
   
 // 404
