@@ -287,23 +287,23 @@ io.sockets.on('connection', function (socket) {
                             if (err)
                                 socket.emit('result', {
                                     success: false,
-                                    result: stdout + ' ' + stderr
+                                    result: stdout + '\n' + stderr
                                 });
                             else
                                 socket.emit('result', {
                                     success: true,
-                                    result: stdout + ' ' + stderr
+                                    result: stdout + '\n' + stderr
                                 });
                             exec('chmod +x /home/pi/AdminCompilerServer/server/nodejs/https_server.js', function (err, stdout, stderr) {
                                 if (err)
                                     socket.emit('result', {
                                         success: false,
-                                        result: stdout + ' ' + stderr
+                                        result: stdout + '\n' + stderr
                                     });
                                 else
                                     socket.emit('result', {
                                         success: true,
-                                        result: stdout + ' ' + stderr
+                                        result: stdout + '\n' + stderr
                                     });
                             });
                         });
@@ -337,8 +337,32 @@ io.sockets.on('connection', function (socket) {
                     });
                 }
                 else if (words[1] == 'main') {
+                    exec('sudo systemctl restart compilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '再起動成功'
+                            });
+                    });
                 }
                 else if (words[1] == 'admin') {
+                    exec('sudo systemctl restart admincompilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '再起動成功'
+                            });
+                    });
                 }
                 else if (words[1] != 'main' && words[1] != 'admin') {
                     socket.emit('result', {
@@ -368,8 +392,32 @@ io.sockets.on('connection', function (socket) {
                     });
                 }
                 else if (words[1] == 'main') {
+                    exec('sudo systemctl start compilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '起動成功'
+                            });
+                    });
                 }
                 else if (words[1] == 'admin') {
+                    exec('sudo systemctl start admincompilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '起動成功'
+                            });
+                    });
                 }
                 else if (words[1] != 'main' && words[1] != 'admin') {
                     socket.emit('result', {
@@ -399,8 +447,32 @@ io.sockets.on('connection', function (socket) {
                     });
                 }
                 else if (words[1] == 'main') {
+                    exec('sudo systemctl stop compilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '停止成功'
+                            });
+                    });
                 }
                 else if (words[1] == 'admin') {
+                    exec('sudo systemctl stop admincompilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '停止成功'
+                            });
+                    });
                 }
                 else if (words[1] != 'main' && words[1] != 'admin') {
                     socket.emit('result', {

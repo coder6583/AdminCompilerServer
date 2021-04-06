@@ -285,23 +285,23 @@ io.sockets.on('connection', (socket:any) => {
               if(err)
                 socket.emit('result', {
                   success: false,
-                  result: stdout + ' ' + stderr
+                  result: stdout + '\n' + stderr
                 });
               else
                 socket.emit('result', {
                   success: true,
-                  result: stdout + ' ' + stderr
+                  result: stdout + '\n' + stderr
                 })
               exec('chmod +x /home/pi/AdminCompilerServer/server/nodejs/https_server.js', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
                 if(err)
                   socket.emit('result', {
                     success: false,
-                    result: stdout + ' ' + stderr
+                    result: stdout + '\n' + stderr
                   });
                 else
                   socket.emit('result', {
                     success: true,
-                    result: stdout + ' ' + stderr
+                    result: stdout + '\n' + stderr
                   })
               })
             })
@@ -341,11 +341,33 @@ io.sockets.on('connection', (socket:any) => {
         }
         else if(words[1] == 'main')
         {
-          
+          exec('sudo systemctl restart compilerserver', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+            if(err)
+              socket.emit('result', {
+                success: false,
+                value: stdout + '\n' + stderr
+              })
+            else
+              socket.emit('result', {
+                success: true,
+                value: '再起動成功'
+              })
+          });
         }
         else if(words[1] == 'admin')
         {
-
+          exec('sudo systemctl restart admincompilerserver', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+            if(err)
+              socket.emit('result', {
+                success: false,
+                value: stdout + '\n' + stderr
+              })
+            else
+              socket.emit('result', {
+                success: true,
+                value: '再起動成功'
+              })
+          });
         }
         else if(words[1] != 'main' && words[1] != 'admin')
         {
@@ -381,11 +403,33 @@ io.sockets.on('connection', (socket:any) => {
         }
         else if(words[1] == 'main')
         {
-
+          exec('sudo systemctl start compilerserver', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+            if(err)
+              socket.emit('result', {
+                success: false,
+                value: stdout + '\n' + stderr
+              })
+            else
+              socket.emit('result', {
+                success: true,
+                value: '起動成功'
+              })
+          });
         }
         else if(words[1] == 'admin')
         {
-
+          exec('sudo systemctl start admincompilerserver', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+            if(err)
+              socket.emit('result', {
+                success: false,
+                value: stdout + '\n' + stderr
+              })
+            else
+              socket.emit('result', {
+                success: true,
+                value: '起動成功'
+              })
+          });
         }
         else if(words[1] != 'main' && words[1] != 'admin')
         {
@@ -421,11 +465,33 @@ io.sockets.on('connection', (socket:any) => {
         }
         else if(words[1] == 'main')
         {
-
+          exec('sudo systemctl stop compilerserver', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+            if(err)
+              socket.emit('result', {
+                success: false,
+                value: stdout + '\n' + stderr
+              })
+            else
+              socket.emit('result', {
+                success: true,
+                value: '停止成功'
+              })
+          });
         }
         else if(words[1] == 'admin')
         {
-
+          exec('sudo systemctl stop admincompilerserver', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+            if(err)
+              socket.emit('result', {
+                success: false,
+                value: stdout + '\n' + stderr
+              })
+            else
+              socket.emit('result', {
+                success: true,
+                value: '停止成功'
+              })
+          });
         }
         else if(words[1] != 'main' && words[1] != 'admin')
         {
