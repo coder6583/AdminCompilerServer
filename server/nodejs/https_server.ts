@@ -53,7 +53,7 @@ fs.readFile('/home/pi/ipBlacklist', (err, data) => {
   {
     let blacklistData: string = data.toString();
     ipList = blacklistData.split(';\n');
-    console.log(ipList);
+    console.log(ipList.length + ' blocked ip addresses.');
   }
 });
 // const ipfilter = require('express-ipfilter').IpFilter;
