@@ -231,11 +231,81 @@ io.sockets.on('connection', (socket:any) => {
         }
         else if(words[1] == 'main')
         {
-
+          exec('git -C /home/pi/Compiler stash', (err: NodeJS.ErrnoException| null, stdout: any, stderr: any) => {
+            if(err) 
+              socket.emit('result', {
+                success: false,
+                result: 'スタッシュ失敗'
+              });
+            else
+              socket.emit('result', {
+                success: true,
+                result: 'スタッシュ失敗'
+              });
+            exec('git -C /home/pi/Compiler pull', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+              if(err)
+                socket.emit('result', {
+                  success: false,
+                  result: stdout + ' ' + stderr
+                });
+              else
+                socket.emit('result', {
+                  success: true,
+                  result: stdout + ' ' + stderr
+                })
+              exec('chmod +x /home/pi/Compiler/server/nodejs/https_server.js', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+                if(err)
+                  socket.emit('result', {
+                    success: false,
+                    result: stdout + ' ' + stderr
+                  });
+                else
+                  socket.emit('result', {
+                    success: true,
+                    result: stdout + ' ' + stderr
+                  })
+              })
+            })
+          })
         }
         else if(words[1] == 'admin')
         {
-
+          exec('git -C /home/pi/AdminCompilerServer stash', (err: NodeJS.ErrnoException| null, stdout: any, stderr: any) => {
+            if(err) 
+              socket.emit('result', {
+                success: false,
+                result: 'スタッシュ失敗'
+              });
+            else
+              socket.emit('result', {
+                success: true,
+                result: 'スタッシュ失敗'
+              });
+            exec('git -C /home/pi/AdminCompilerServer pull', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+              if(err)
+                socket.emit('result', {
+                  success: false,
+                  result: stdout + ' ' + stderr
+                });
+              else
+                socket.emit('result', {
+                  success: true,
+                  result: stdout + ' ' + stderr
+                })
+              exec('chmod +x /home/pi/AdminCompilerServer/server/nodejs/https_server.js', (err: NodeJS.ErrnoException| null, stdout: string, stderr: string) => {
+                if(err)
+                  socket.emit('result', {
+                    success: false,
+                    result: stdout + ' ' + stderr
+                  });
+                else
+                  socket.emit('result', {
+                    success: true,
+                    result: stdout + ' ' + stderr
+                  })
+              })
+            })
+          })
         }
         else if(words[1] != 'main' && words[1] != 'admin')
         {
@@ -271,7 +341,7 @@ io.sockets.on('connection', (socket:any) => {
         }
         else if(words[1] == 'main')
         {
-
+          
         }
         else if(words[1] == 'admin')
         {

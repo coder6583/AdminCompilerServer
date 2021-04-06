@@ -234,8 +234,80 @@ io.sockets.on('connection', function (socket) {
                     });
                 }
                 else if (words[1] == 'main') {
+                    exec('git -C /home/pi/Compiler stash', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                result: 'スタッシュ失敗'
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                result: 'スタッシュ失敗'
+                            });
+                        exec('git -C /home/pi/Compiler pull', function (err, stdout, stderr) {
+                            if (err)
+                                socket.emit('result', {
+                                    success: false,
+                                    result: stdout + ' ' + stderr
+                                });
+                            else
+                                socket.emit('result', {
+                                    success: true,
+                                    result: stdout + ' ' + stderr
+                                });
+                            exec('chmod +x /home/pi/Compiler/server/nodejs/https_server.js', function (err, stdout, stderr) {
+                                if (err)
+                                    socket.emit('result', {
+                                        success: false,
+                                        result: stdout + ' ' + stderr
+                                    });
+                                else
+                                    socket.emit('result', {
+                                        success: true,
+                                        result: stdout + ' ' + stderr
+                                    });
+                            });
+                        });
+                    });
                 }
                 else if (words[1] == 'admin') {
+                    exec('git -C /home/pi/AdminCompilerServer stash', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                result: 'スタッシュ失敗'
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                result: 'スタッシュ失敗'
+                            });
+                        exec('git -C /home/pi/AdminCompilerServer pull', function (err, stdout, stderr) {
+                            if (err)
+                                socket.emit('result', {
+                                    success: false,
+                                    result: stdout + ' ' + stderr
+                                });
+                            else
+                                socket.emit('result', {
+                                    success: true,
+                                    result: stdout + ' ' + stderr
+                                });
+                            exec('chmod +x /home/pi/AdminCompilerServer/server/nodejs/https_server.js', function (err, stdout, stderr) {
+                                if (err)
+                                    socket.emit('result', {
+                                        success: false,
+                                        result: stdout + ' ' + stderr
+                                    });
+                                else
+                                    socket.emit('result', {
+                                        success: true,
+                                        result: stdout + ' ' + stderr
+                                    });
+                            });
+                        });
+                    });
                 }
                 else if (words[1] != 'main' && words[1] != 'admin') {
                     socket.emit('result', {
