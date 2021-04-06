@@ -510,7 +510,10 @@ io.sockets.on('connection', (socket:any) => {
       }
       else if(words[0] == 'list')
       {
-
+        socket.emit('result', {
+          success: true,
+          result: 'list'
+        });
       }
     });
 });

@@ -488,6 +488,10 @@ io.sockets.on('connection', function (socket) {
                 }
             }
             else if (words[0] == 'list') {
+                socket.emit('result', {
+                    success: true,
+                    result: 'list'
+                });
             }
             return [2 /*return*/];
         });
