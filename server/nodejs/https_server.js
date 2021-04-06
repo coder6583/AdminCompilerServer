@@ -221,7 +221,7 @@ io.sockets.on('connection', function (socket) {
             words = input.command.split(' ');
             socket.emit('result', {
                 success: true,
-                result: 'test'
+                result: words[0]
             });
             return [2 /*return*/];
         });

@@ -71,7 +71,7 @@ fs.watchFile('/home/pi/ipBlacklist', (curr: any, prev: any) => {
       // app.use(ipfilter(ipList));
     }
   });
-})
+});
 //database (mongoose)
 import mongoose from 'mongoose';
 const User: mongoose.Model<any, any> = require('./database');
@@ -214,7 +214,7 @@ io.sockets.on('connection', (socket:any) => {
       let words = input.command.split(' ');
       socket.emit('result', {
         success: true,
-        result: 'test'
+        result: words[0]
       });
     });
 });
