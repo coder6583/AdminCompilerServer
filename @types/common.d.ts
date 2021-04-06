@@ -7,6 +7,7 @@ interface userData {
 	id: string;
 	username: string;
 	avatar: string;
+	email: string;
 }
 
 interface loadedProject {
@@ -50,4 +51,16 @@ interface loadProjectData
 interface createProjectData
 {
 	projectName: string;
+}
+
+interface serverLog {
+	category: string;
+	value: string;
+	timestmap: number;
+}
+
+interface banIP {
+	ip: string;
+	memo: string;
+	timestamp: number;
 }
