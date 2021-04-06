@@ -212,10 +212,170 @@ io.use(sharedSession(sessionMiddleware, {
 io.sockets.on('connection', (socket:any) => {
     socket.on('command', async (input: any) => {
       let words = input.command.split(' ');
-      socket.emit('result', {
-        success: true,
-        result: words[0]
-      });
+      //update
+      if(words[0] == 'update')
+      {
+        if(words.length == 1)
+        {
+          socket.emit('result', {
+            success: false,
+            result: 'アップデートするサーバーを選んでください。(main, admin)'
+          });
+        }
+        else if(words.length > 2)
+        {
+          socket.emit('result', {
+            success: false,
+            result: 'パラメターが多すぎます。'
+          })
+        }
+        else if(words[1] == 'main')
+        {
+
+        }
+        else if(words[1] == 'admin')
+        {
+
+        }
+        else if(words[1] != 'main' && words[1] != 'admin')
+        {
+          socket.emit('result', {
+            success: false,
+            result: 'アップデートするサーバーを選んでください。(main, admin)'
+          });
+        }
+        else
+        {
+          socket.emit('result', {
+            success: false,
+            result: '変なことしないでください'
+          });
+        }
+      }
+      //restart
+      else if(words[0] == 'restart')
+      {
+        if(words.length == 1)
+        {
+          socket.emit('result', {
+            success: false,
+            result: '再起動するサーバーを選んでください。(main, admin)'
+          });
+        }
+        else if(words.length > 2)
+        {
+          socket.emit('result', {
+            success: false,
+            result: 'パラメターが多すぎます。'
+          })
+        }
+        else if(words[1] == 'main')
+        {
+
+        }
+        else if(words[1] == 'admin')
+        {
+
+        }
+        else if(words[1] != 'main' && words[1] != 'admin')
+        {
+          socket.emit('result', {
+            success: false,
+            result: '再起動するサーバーを選んでください。(main, admin)'
+          });
+        }
+        else
+        {
+          socket.emit('result', {
+            success: false,
+            result: '変なことしないでください'
+          });
+        }
+      }
+      //start
+      else if(words[0] == 'start')
+      {
+        if(words.length == 1)
+        {
+          socket.emit('result', {
+            success: false,
+            result: '起動するサーバーを選んでください。(main, admin)'
+          });
+        }
+        else if(words.length > 2)
+        {
+          socket.emit('result', {
+            success: false,
+            result: 'パラメターが多すぎます。'
+          })
+        }
+        else if(words[1] == 'main')
+        {
+
+        }
+        else if(words[1] == 'admin')
+        {
+
+        }
+        else if(words[1] != 'main' && words[1] != 'admin')
+        {
+          socket.emit('result', {
+            success: false,
+            result: '起動するサーバーを選んでください。(main, admin)'
+          });
+        }
+        else
+        {
+          socket.emit('result', {
+            success: false,
+            result: '変なことしないでください'
+          });
+        }
+      }
+      //stop
+      else if(words[0] == 'stop')
+      {
+        if(words.length == 1)
+        {
+          socket.emit('result', {
+            success: false,
+            result: '停止するサーバーを選んでください。(main, admin)'
+          });
+        }
+        else if(words.length > 2)
+        {
+          socket.emit('result', {
+            success: false,
+            result: 'パラメターが多すぎます。'
+          })
+        }
+        else if(words[1] == 'main')
+        {
+
+        }
+        else if(words[1] == 'admin')
+        {
+
+        }
+        else if(words[1] != 'main' && words[1] != 'admin')
+        {
+          socket.emit('result', {
+            success: false,
+            result: '停止するサーバーを選んでください。(main, admin)'
+          });
+        }
+        else
+        {
+          socket.emit('result', {
+            success: false,
+            result: '変なことしないでください'
+          });
+        }
+      }
+      else if(words[0] == 'list')
+      {
+
+      }
     });
 });
   
