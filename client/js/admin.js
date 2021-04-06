@@ -58,6 +58,39 @@ $(function () {
     }, {
         greetings: 'Welcome to Laze Admin Console',
     });
+    // オーバーレイ
+    $('.button-overlay').on('click', function () {
+        var overlay = this.dataset.overlay;
+        $(".overlay-" + overlay).addClass('show');
+    });
+    $('.overlay-window').on('click', function () {
+        this.classList.remove('show');
+    });
+    $('.overlay-content').on('click', function () { return false; });
+    $('.overlay-close').on('click', function () {
+        var _a;
+        (_a = this.closest('.overlay-window')) === null || _a === void 0 ? void 0 : _a.classList.remove('show');
+    });
+    var logs = [];
+    for (var i = 0; i < 20; i++) {
+        logs.push({
+            category: 'info',
+            value: 'ログ',
+            timestmap: 1617702127000 + i * 200000
+        });
+    }
+    parseServerLog(logs);
+    parseBanIP([{
+            ip: '192.168.10.9',
+            memo: '',
+            timestamp: 1617708382000
+        }]);
+    parseUsers([{
+            avatar: 'https://yt3.ggpht.com/yti/ANoDKi5CBrHWvjnpuTFnhDQFsZni4l7RXVKgu8QsA6OF=s88-c-k-c0x00ffffff-no-rj-mo',
+            id: 'cp20',
+            username: 'cp20',
+            email: 'expample@gmail.com',
+        }]);
 });
 // @ts-ignore
 var socket = io.connect('');
@@ -87,5 +120,29 @@ function evalCommand(cmd, terminal) {
                     return [2 /*return*/];
             }
         });
+    });
+}
+function parseServerLog(logs) {
+    var resolveCategory = function (category) {
+        var categorys = {
+            info: '情報',
+            warn: '警告',
+            error: 'エラー'
+        };
+        // @ts-ignore
+        return categorys[category] || '';
+    };
+    logs.forEach(function (log) {
+        $('#server-log > tbody').append("<tr><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + log.value + "</td><td>" + moment(new Date(log.timestmap)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
+    });
+}
+function parseBanIP(banIPs) {
+    banIPs.forEach(function (banIP) {
+        $('#ban-ip > tbody').append("<tr><td>" + banIP.ip + "</td><td>" + banIP.memo + "</td><td>" + moment(new Date(banIP.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
+    });
+}
+function parseUsers(users) {
+    users.forEach(function (user) {
+        $('#users > tbody').append("<tr><td><img src=\"" + user.avatar + "\"></td><td>" + user.id + "</td><td>" + user.username + "</td><td>" + user.email + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
     });
 }

@@ -32,8 +32,10 @@
 			<nav class="navigation col-auto h-100 p-0">
 				<ul class="p-0">
 					<li class="nav-content" data-bind="console"><i class="bi bi-terminal"></i>コンソール</li>
-					<li class="nav-content selected" data-bind="server-log"><i class="bi bi-file-earmark-ruled"></i>サーバーログ</li>
-					<li class="nav-content" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
+					<li class="nav-content" data-bind="server-log"><i class="bi bi-file-earmark-ruled"></i>サーバーログ</li>
+					<li class="nav-content selected" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
+					<li class="nav-content" data-bind="ban-ip"><i class="bi bi-person-x"></i>アクセス禁止IP</li>
+					<li class="nav-content" data-bind="status"><i class="bi bi-bar-chart-line"></i>サーバーの状態</li>
 				</ul>
 			</nav>
 			
@@ -45,9 +47,18 @@
 					</div>
 				</div>
 
-				<div class="content tab-server-log show h-100 container p-0">
+				<!-- サーバーログ -->
+				<div class="content tab-server-log list-tab h-100 container p-0">
 					<div class="label row m-0">
-						<h2 class="m-0">サーバーログ</h2>
+						<h2 class="m-0">
+							<span>サーバーログ</span>
+							<form id="log-filter">
+								<input id="log-filter-box" type="text" placeholder="フィルターを入力">
+								<label>
+									<i class="bi bi-question-circle button-overlay" data-overlay="hint"></i>
+								</label>
+							</form>
+						</h2>
 					</div>
 					<table id="server-log" class="table table-fixed row m-0">
 						<thead class="thread-light">
@@ -58,112 +69,85 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>2021/04/05 22:37:17</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
-							<tr>
-								<td class="info">情報</td>
-								<td>ここにログが入ります</td>
-								<td>21:10</td>
-							</tr>
 						</tbody>
 					</table>
 				</div>
 
 				<!-- ユーザーの一覧 -->
-				<div class="content tab-users h-100">
-					<p>ユーザーの一覧だよー</p>
+				<div class="content tab-users list-tab h-100 container p-0 show">
+					<div class="label row m-0">
+						<h2 class="m-0">
+							<span>登録済みユーザーの一覧</span>
+						</h2>
+					</div>
+					<table id="users" class="table table-fixed row m-0">
+						<thead class="thread-light">
+							<tr>
+								<th scope="col" class="avatar">アバター</th>
+								<th scope="col" class="id">ユーザーID</th>
+								<th scope="col" class="username">表示名</th>
+								<th scope="col" class="email">Eメールアドレス</th>
+								<th scope="col" class="process">処理</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- アクセス禁止IP -->
+				<div class="content tab-ban-ip list-tab h-100 container p-0">
+					<div class="label row m-0">
+						<h2 class="m-0">
+							<span>アクセス禁止済みのIPアドレスの一覧</span>
+						</h2>
+					</div>
+					<table id="ban-ip" class="table table-fixed row m-0">
+						<thead class="thread-light">
+							<tr>
+								<th scope="col" class="ip">IPアドレス</th>
+								<th scope="col" class="memo">メモ</th>
+								<th scope="col" class="timestamp">追加時刻</th>
+								<th scope="col" class="process">処理</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- サーバーの状態 -->
+				<div class="content tab-status h-100">
+
 				</div>
 			</div>
 		</div>
 	</main>
+
+	<div class="overlay-hint overlay-window">
+		<div class="overlay-content">
+			<h2>
+				<span>フィルターの記述方法</span>
+				<button class="overlay-close p-0"><i class="bi bi-x"></i></button>
+			</h2>
+			<h3>フィルターの基本</h3>
+			<p>特定のログを抽出したい場合は何もつけずにそのまま記述します</p>
+			<p>例：<span class="ex">request</span></p>
+			<p>複数の条件を指定する場合はスペースで区切って指定します</p>
+			<p>例：<span class="ex">#情報 unexpected</span></p>
+			<p>スペースを含む文字列を検索するときにはダブルクォーテーションで囲んで指定します</p>
+			<p>例：<span class="ex">#エラー "unexpected error"</span></p>
+			<h3>カテゴリでフィルター</h3>
+			<p>特定のカテゴリで抽出したい場合は#の後にカテゴリ名を記述します</p>
+			<p>複数記述するとor検索になります</p>
+			<p>例：<span class="ex">#エラー #警告</span></p>
+			<h3>タイムスタンプでフィルター</h3>
+			<p>特定の期間だけを抽出したい場合は@の後にタイムスタンプを途中まで記述します</p>
+			<p>例：<span class="ex">@2021-04-06</span></p>
+			<p>ある時点からある時点までを抽出したい場合は~でつないで記述します</p>
+			<p>例：<span class="ex">2021-03-01~2021-03-15</span></p>
+		</div>
+	</div>
 
 	<!-- Bootstrap -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
