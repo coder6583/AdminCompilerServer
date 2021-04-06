@@ -223,7 +223,6 @@ function setNewProjectName() {
 
 // ログインイベント
 socket.on('login', (data :userData) => {
-	console.log(data);
 	account = data;
 	updateAccount();
 });
