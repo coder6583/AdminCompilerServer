@@ -358,17 +358,23 @@ div.tab-status {
 				font-weight: normal;
 				font-size: 1rem;
 
-				.network-up, .network-down {
+				.network-up, .network-down, .disk-read, .disk-write {
 					display: flex;
 					align-items: center;
 					height: 1.5rem;
-					border-left: solid rgb(167, 79, 1) 3px;
+					border-left: solid 3px;
 					padding-left: 3px;
 				}
-				.network-up {
+				.network-up, .network-down {
+					border-left-color: rgb(167, 79, 1);
+				}
+				.disk-read, .disk-write {
+					border-left-color: rgb(77, 166, 12);
+				}
+				.network-up, .disk-read {
 					margin-right: 20px;
 				}
-				.network-down {
+				.network-down, .disk-write {
 					border-left-style: dashed;
 				}
 			}

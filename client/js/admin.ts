@@ -94,7 +94,8 @@ $(() => {
 		Memory: 0,
 		NetworkUp: 0,
 		NetworkDown: 0,
-		Disk: 0,
+		DiskRead: 0,
+		DiskWrite: 0,
 	}
 	const colors = {
 		cpu: '17, 125, 187',
@@ -128,9 +129,15 @@ $(() => {
 			data: []
 		}],
 		disk: [{
-			label: 'Disk',
+			label: 'DiskRead',
 			borderColor: `rgb(${colors.disk})`,
 			backgroundColor: `rgba(${colors.disk}, .1)`,
+			data: []
+		},{
+			label: 'DiskWrite',
+			borderColor: `rgb(${colors.disk})`,
+			backgroundColor: `rgba(${colors.disk}, .1)`,
+			borderDash: [5,5],
 			data: []
 		}],
 	}
@@ -238,12 +245,13 @@ $(() => {
 				return `${(number / 1000 ** 3).toFixed(1)}G`;
 			}
 		};
-		$('#netowork-up-rate').text(SI(usage.transmitted));
-		$('#netowork-down-rate').text(SI(usage.received));
+		$('#network-up-rate').text(SI(usage.transmitted));
+		$('#network-down-rate').text(SI(usage.received));
 	});
-	socket.on('disk-usage', (usage :{percentage: number}) => {
-		chartData.Disk = usage.percentage;
-		$('#disk-rate').text(usage.percentage.toFixed(1));
+	socket.on('disk-usage', (usage :{read: number, write: number}) => {
+		chartData.DiskRead = usage.read;
+		chartData.DiskWrite = usage.write;
+		$('#disk-read-rate').text(usage.read.toFixed(1));
 	});
 });
 

@@ -121,7 +121,8 @@ $(function () {
         Memory: 0,
         NetworkUp: 0,
         NetworkDown: 0,
-        Disk: 0,
+        DiskRead: 0,
+        DiskWrite: 0,
     };
     var colors = {
         cpu: '17, 125, 187',
@@ -155,9 +156,15 @@ $(function () {
                 data: []
             }],
         disk: [{
-                label: 'Disk',
+                label: 'DiskRead',
                 borderColor: "rgb(" + colors.disk + ")",
                 backgroundColor: "rgba(" + colors.disk + ", .1)",
+                data: []
+            }, {
+                label: 'DiskWrite',
+                borderColor: "rgb(" + colors.disk + ")",
+                backgroundColor: "rgba(" + colors.disk + ", .1)",
+                borderDash: [5, 5],
                 data: []
             }],
     };
@@ -268,12 +275,13 @@ $(function () {
                 return (number / Math.pow(1000, 3)).toFixed(1) + "G";
             }
         };
-        $('#netowork-up-rate').text(SI(usage.transmitted));
-        $('#netowork-down-rate').text(SI(usage.received));
+        $('#network-up-rate').text(SI(usage.transmitted));
+        $('#network-down-rate').text(SI(usage.received));
     });
     socket.on('disk-usage', function (usage) {
-        chartData.Disk = usage.percentage;
-        $('#disk-rate').text(usage.percentage.toFixed(1));
+        chartData.DiskRead = usage.read;
+        chartData.DiskWrite = usage.write;
+        $('#disk-read-rate').text(usage.read.toFixed(1));
     });
 });
 // @ts-ignore
