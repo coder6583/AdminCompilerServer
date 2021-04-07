@@ -139,6 +139,7 @@ div.list-tab {
 			padding: 0;
 
 			&::-webkit-scrollbar {
+				background-color: #eee;
 				width: 15px;
 			}
 			&::-webkit-scrollbar-thumb {
