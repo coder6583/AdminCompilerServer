@@ -239,7 +239,7 @@ io.sockets.on('connection', function (socket) {
             });
         });
         systeminformation_1.default.fsStats().then(function (data) {
-            console.log('Read: ', data.rIO_sec, 'Wrote: ', data.wIO_sec);
+            console.log('Read: ', data.rx_sec, 'Wrote: ', data.wx_sec);
             socket.emit('disk-usage', {
                 read: data.rx_sec,
                 write: data.wx_sec
