@@ -153,11 +153,18 @@ var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //task manager
 var os_utils_1 = __importDefault(require("os-utils"));
+var free = require('free-memory');
 function taskManager() {
     os_utils_1.default.cpuUsage(function (percentage) {
         console.log('CPU: ' + percentage * 100 + '%');
     });
-    console.log('Memory: ' + os_utils_1.default.freememPercentage());
+    free(function (err, info) {
+        if (err)
+            console.log(err);
+        else {
+            console.log('Memory: ' + (info.mem.usable / info.mem.total) * 100);
+        }
+    });
 }
 var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
 //request時に実行するmiddleware function

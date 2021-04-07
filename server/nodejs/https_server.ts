@@ -132,12 +132,19 @@ import sharedSession from 'express-socket.io-session';
 
 //task manager
 import os from 'os-utils';
+var free = require('free-memory');
 function taskManager()
 {
   os.cpuUsage((percentage) => {
     console.log('CPU: ' + percentage * 100 + '%');
   });
-  console.log('Memory: ' + os.freememPercentage());
+  free((err: any, info: any) => {
+    if(err) console.log(err);
+    else
+    {
+      console.log('Memory: ' + (info.mem.usable / info.mem.total) * 100);
+    }
+  })
 }
 let taskManagerTimer = setInterval(() => {taskManager();}, 1000);
 
