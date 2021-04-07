@@ -211,7 +211,7 @@ io.use(sharedSession(sessionMiddleware, {
 }));
 io.sockets.on('connection', (socket:any) => {
     socket.on('command', async (input: any) => {
-      console.log(input.command);
+      console.log('bbbb');
       let words = input.command.split(' ');
       //update
       if(words[0] == 'update')
