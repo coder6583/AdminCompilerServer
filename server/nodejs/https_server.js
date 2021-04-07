@@ -167,6 +167,7 @@ app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
     console.log(req.originalUrl);
+    next();
     // if(req.user != "admin" && (req.originalUrl != '/login'))
     // {
     //   passport.authenticate('local', {

@@ -149,6 +149,7 @@ app.use(everyRequest);
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
   console.log(req.originalUrl);
+  next();
     // if(req.user != "admin" && (req.originalUrl != '/login'))
     // {
     //   passport.authenticate('local', {
