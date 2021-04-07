@@ -245,21 +245,22 @@ $(function () {
 var socket = io.connect('');
 function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
+        function receiveResult(result) {
+            console.log('aaaa');
+            if (result.success) {
+                terminal.echo(result.result).resume();
+            }
+            else {
+                terminal.error(result.result).resume();
+            }
+            socket.removeListener('result', receiveResult);
+        }
         return __generator(this, function (_a) {
             terminal.pause();
             socket.emit('command', {
                 command: cmd
             });
-            socket.on('result', function (result) {
-                console.log('aaaa');
-                if (result.success) {
-                    terminal.echo(result.result).resume();
-                }
-                else {
-                    terminal.error(result.result).resume();
-                }
-                socket.removeListener('result', this);
-            });
+            socket.on('result', receiveResult);
             return [2 /*return*/];
         });
     });

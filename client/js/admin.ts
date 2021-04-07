@@ -223,15 +223,16 @@ async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 	socket.emit('command', {
 		command: cmd
 	});
-	socket.on('result', function(result: {success: boolean, result: string}){
+	function receiveResult(result: {success: boolean, result: string}){
 		console.log('aaaa');
 		if (result.success) {
 			terminal.echo(result.result).resume();
 		}else {
 			terminal.error(result.result).resume();
 		}
-		socket.removeListener('result', this);
-	});	
+		socket.removeListener('result', receiveResult);
+	}
+	socket.on('result', receiveResult);	
 }
 
 function parseServerLog(logs :serverLog[]) {
