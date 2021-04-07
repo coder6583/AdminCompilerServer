@@ -180,8 +180,8 @@ $(function () {
                                 // @ts-ignore
                                 realtime: {
                                     duration: 30000,
-                                    refresh: 500,
-                                    delay: 500,
+                                    refresh: 1000,
+                                    delay: 1000,
                                     frameRate: 30,
                                     onRefresh: function (chart) {
                                         // @ts-ignore
@@ -245,7 +245,6 @@ $(function () {
 var socket = io.connect('');
 function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
-        var sleep;
         return __generator(this, function (_a) {
             terminal.pause();
             socket.emit('command', {
@@ -258,8 +257,8 @@ function evalCommand(cmd, terminal) {
                 else {
                     terminal.error(result.result).resume();
                 }
+                socket.removeListener('result', this);
             });
-            sleep = function (msec) { return new Promise(function (resolve) { return setTimeout(resolve, msec); }); };
             return [2 /*return*/];
         });
     });
@@ -288,3 +287,4 @@ function parseUsers(users) {
         $('#users > tbody').append("<tr><td><img src=\"" + user.avatar + "\"></td><td>" + user.id + "</td><td>" + user.username + "</td><td>" + user.email + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
     });
 }
+socket.on('');

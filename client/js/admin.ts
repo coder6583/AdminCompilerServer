@@ -153,8 +153,8 @@ $(() => {
 							// @ts-ignore
 							realtime: {
 								duration: 30000,
-								refresh: 500,
-								delay: 500,
+								refresh: 1000,
+								delay: 1000,
 								frameRate: 30,
 								onRefresh: (chart: Chart) => {
 									// @ts-ignore
@@ -223,14 +223,14 @@ async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 	socket.emit('command', {
 		command: cmd
 	});
-	socket.on('result', (result: {success: boolean, result: string}) => {
+	socket.on('result', function(result: {success: boolean, result: string}){
 		if (result.success) {
 			terminal.echo(result.result).resume();
 		}else {
 			terminal.error(result.result).resume();
 		}
-	});
-	const sleep = (msec :number) => new Promise(resolve => setTimeout(resolve, msec));
+		socket.removeListener('result', this);
+	});	
 }
 
 function parseServerLog(logs :serverLog[]) {
@@ -259,3 +259,5 @@ function parseUsers(users: userData[]) {
 		$('#users > tbody').append(`<tr><td><img src="${user.avatar}"></td><td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td><button class="btn btn-outline-secondary edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary remove"><i class="bi bi-x"></i></button></td></tr>`)
 	});	
 }
+
+socket.on('')
