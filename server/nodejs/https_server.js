@@ -162,7 +162,7 @@ function taskManager() {
         if (err)
             console.log(err);
         else {
-            console.log("Memory: " + (info.mem.usable / info.mem.total) * 100);
+            console.log(info);
         }
     });
 }
