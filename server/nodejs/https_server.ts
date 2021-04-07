@@ -217,17 +217,17 @@ io.sockets.on('connection', (socket:any) => {
   function taskManager()
   {
     os.cpuUsage((percentage) => {
-      console.log('CPU: ' + (100 - percentage * 100) + '%');
+      console.log('CPU: ' + percentage * 100 + '%');
       socket.emit('cpu-usage', {
-        percentage: (100 - percentage * 100)
+        percentage: percentage * 100
       })
     });
     si.mem().then((data: any) => {
-      console.log('Memory: ' + data.available / data.total * 100);
+      console.log('Memory: ' + (100 - data.available / data.total * 100));
       socket.emit('memory-usage', {
-        percentage: data.available / data.total * 100,
+        percentage: (100 - data.available / data.total * 100),
         total: data.total,
-        used: data.used
+        used: data.total - data.available,
       });
     })
     si.networkStats().then((data: any) => {

@@ -220,17 +220,17 @@ io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
     function taskManager() {
         os_utils_1.default.cpuUsage(function (percentage) {
-            console.log('CPU: ' + (100 - percentage * 100) + '%');
+            console.log('CPU: ' + percentage * 100 + '%');
             socket.emit('cpu-usage', {
-                percentage: (100 - percentage * 100)
+                percentage: percentage * 100
             });
         });
         systeminformation_1.default.mem().then(function (data) {
-            console.log('Memory: ' + data.available / data.total * 100);
+            console.log('Memory: ' + (100 - data.available / data.total * 100));
             socket.emit('memory-usage', {
-                percentage: data.available / data.total * 100,
+                percentage: (100 - data.available / data.total * 100),
                 total: data.total,
-                used: data.used
+                used: data.total - data.available,
             });
         });
         systeminformation_1.default.networkStats().then(function (data) {
