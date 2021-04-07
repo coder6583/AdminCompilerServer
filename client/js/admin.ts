@@ -221,6 +221,17 @@ $(() => {
 			});
 		}
 	}
+	const SI = (number :number) => {
+		if (number < 1000) {
+			return number.toFixed(1);
+		}else if (number < 1000 ** 2) {
+			return `${(number / 1000).toFixed(1)}K`;
+		}else if (number < 1000 ** 3) {
+			return `${(number / 1000 ** 2).toFixed(1)}M`;
+		}else {
+			return `${(number / 1000 ** 3).toFixed(1)}G`;
+		}
+	};
 	socket.on('cpu-usage', (usage :{percentage: number}) => {
 		chartData.CPU = usage.percentage;
 		$('#cpu-rate').text(usage.percentage.toFixed(1));
@@ -234,17 +245,6 @@ $(() => {
 	socket.on('network-usage', (usage :{received: number, transmitted: number}) => {
 		chartData.NetworkUp = usage.transmitted / 1000;
 		chartData.NetworkDown = usage.received / 1000;
-		const SI = (number :number) => {
-			if (number < 1000) {
-				return number.toFixed(1);
-			}else if (number < 1000 ** 2) {
-				return `${(number / 1000).toFixed(1)}K`;
-			}else if (number < 1000 ** 3) {
-				return `${(number / 1000 ** 2).toFixed(1)}M`;
-			}else {
-				return `${(number / 1000 ** 3).toFixed(1)}G`;
-			}
-		};
 		$('#network-up-rate').text(SI(usage.transmitted));
 		$('#network-down-rate').text(SI(usage.received));
 	});

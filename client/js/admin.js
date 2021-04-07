@@ -248,6 +248,20 @@ $(function () {
             });
         }
     }
+    var SI = function (number) {
+        if (number < 1000) {
+            return number.toFixed(1);
+        }
+        else if (number < Math.pow(1000, 2)) {
+            return (number / 1000).toFixed(1) + "K";
+        }
+        else if (number < Math.pow(1000, 3)) {
+            return (number / Math.pow(1000, 2)).toFixed(1) + "M";
+        }
+        else {
+            return (number / Math.pow(1000, 3)).toFixed(1) + "G";
+        }
+    };
     socket.on('cpu-usage', function (usage) {
         chartData.CPU = usage.percentage;
         $('#cpu-rate').text(usage.percentage.toFixed(1));
@@ -261,20 +275,6 @@ $(function () {
     socket.on('network-usage', function (usage) {
         chartData.NetworkUp = usage.transmitted / 1000;
         chartData.NetworkDown = usage.received / 1000;
-        var SI = function (number) {
-            if (number < 1000) {
-                return number.toFixed(1);
-            }
-            else if (number < Math.pow(1000, 2)) {
-                return (number / 1000).toFixed(1) + "K";
-            }
-            else if (number < Math.pow(1000, 3)) {
-                return (number / Math.pow(1000, 2)).toFixed(1) + "M";
-            }
-            else {
-                return (number / Math.pow(1000, 3)).toFixed(1) + "G";
-            }
-        };
         $('#network-up-rate').text(SI(usage.transmitted));
         $('#network-down-rate').text(SI(usage.received));
     });
