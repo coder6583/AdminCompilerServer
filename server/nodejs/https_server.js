@@ -232,10 +232,14 @@ io.sockets.on('connection', function (socket) {
             });
         });
         systeminformation_1.default.networkStats().then(function (data) {
-            console.log(data);
+            console.log(data.rx_sec, data.tx_sec);
+            socket.emit('network-usage', {
+                received: data.rx_sec,
+                transmitted: data.tx_sec
+            });
         });
         systeminformation_1.default.disksIO().then(function (data) {
-            console.log(data.rIO_sec);
+            console.log(data);
         });
     }
     var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
