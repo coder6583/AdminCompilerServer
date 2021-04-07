@@ -520,7 +520,7 @@ io.sockets.on('connection', (socket:any) => {
       }
     });
     socket.on('disconnect', () => {
-      socket.removeAllListners('command');
+      socket.removeAllListeners('command');
     })
 });
   
