@@ -132,17 +132,63 @@ import sharedSession from 'express-socket.io-session';
 
 //task manager
 import os from 'os-utils';
-var free = require('free-memory');
+function free(args:any, cb:any) {
+    exec('free', args, function (err:any, stdout:any) {
+		if (err) {
+			cb(err);
+			return;
+		}
+        var memInfo:any;
+		stdout.trim().split('\n').slice(1).map(function (el:any) {
+			var cl = el.split(/\s+(?=[\d\/])/).map(function(i:any, idx:any) { return idx ? parseInt(i, 10) : i; });
+			switch(cl[0]) {
+				case "Mem:":
+				    memInfo.mem = {
+						total: cl[1],
+						used: cl[2],
+						free: cl[3],
+						shared: cl[4],
+						buffers: cl[5],
+						cached: 0,
+						usable: cl[6]
+					};
+				    break;
+				case "-/+ buffers/cache:":
+				    memInfo.buffer = memInfo.cache = {
+						used: cl[1],
+						free: cl[2]
+					};
+				    break;
+				case "Swap:":
+				    memInfo.swap = {
+						total: cl[1],
+						used: cl[2],
+						free: cl[3]
+					};
+				    break;
+			}
+		});
+		
+		if (!memInfo.buffer) {
+		    memInfo.buffer = memInfo.cache = {
+		        used: memInfo.mem.total - memInfo.mem.usable,
+		        free: memInfo.mem.usable
+		    };
+		}
+		
+		return cb(null, memInfo);
+	});
+}
 function taskManager()
 {
   os.cpuUsage((percentage) => {
     console.log('CPU: ' + percentage * 100 + '%');
   });
-  free((err: any, info: any) => {
+  free('', (err: any, info: any) => {
     if(err) console.log(err);
     else
     {
-      console.log(info);
+      console.log(`Memory: ${info.mem.usable / info.mem.total * 100}`);
     }
   })
 }

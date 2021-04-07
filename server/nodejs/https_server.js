@@ -153,16 +153,60 @@ var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //task manager
 var os_utils_1 = __importDefault(require("os-utils"));
-var free = require('free-memory');
+function free(args, cb) {
+    exec('free', args, function (err, stdout) {
+        if (err) {
+            cb(err);
+            return;
+        }
+        var memInfo;
+        stdout.trim().split('\n').slice(1).map(function (el) {
+            var cl = el.split(/\s+(?=[\d\/])/).map(function (i, idx) { return idx ? parseInt(i, 10) : i; });
+            switch (cl[0]) {
+                case "Mem:":
+                    memInfo.mem = {
+                        total: cl[1],
+                        used: cl[2],
+                        free: cl[3],
+                        shared: cl[4],
+                        buffers: cl[5],
+                        cached: 0,
+                        usable: cl[6]
+                    };
+                    break;
+                case "-/+ buffers/cache:":
+                    memInfo.buffer = memInfo.cache = {
+                        used: cl[1],
+                        free: cl[2]
+                    };
+                    break;
+                case "Swap:":
+                    memInfo.swap = {
+                        total: cl[1],
+                        used: cl[2],
+                        free: cl[3]
+                    };
+                    break;
+            }
+        });
+        if (!memInfo.buffer) {
+            memInfo.buffer = memInfo.cache = {
+                used: memInfo.mem.total - memInfo.mem.usable,
+                free: memInfo.mem.usable
+            };
+        }
+        return cb(null, memInfo);
+    });
+}
 function taskManager() {
     os_utils_1.default.cpuUsage(function (percentage) {
         console.log('CPU: ' + percentage * 100 + '%');
     });
-    free(function (err, info) {
+    free('', function (err, info) {
         if (err)
             console.log(err);
         else {
-            console.log(info);
+            console.log("Memory: " + info.mem.usable / info.mem.total * 100);
         }
     });
 }
