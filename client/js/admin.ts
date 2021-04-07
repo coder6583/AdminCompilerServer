@@ -216,6 +216,7 @@ async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 		command: cmd
 	});
 	socket.on('result', (result: {success: boolean, result: string}) => {
+		console.log('aaaa');
 		if (result.success) {
 			terminal.echo(result.result).resume();
 		}else {
