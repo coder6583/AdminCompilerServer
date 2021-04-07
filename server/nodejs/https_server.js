@@ -215,7 +215,7 @@ var usersDirectory = new Map();
 var usersProjectDirectory = new Map();
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
-    console.log('connection');
+    console.log(JSON.stringify(socket.handshake.address));
     socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         var words;
         return __generator(this, function (_a) {

@@ -209,7 +209,7 @@ io.use(sharedSession(sessionMiddleware, {
 
 }));
 io.sockets.on('connection', (socket:any) => {
-  console.log('connection');
+  console.log(JSON.stringify(socket.handshake.address));
     socket.on('command', async (input: any) => {
       let words = input.command.split(' ');
       console.log(words[0]);
