@@ -149,37 +149,36 @@ app.use(everyRequest);
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
   console.log(req.originalUrl);
-  next();
-    // if(req.user != "admin" && (req.originalUrl != '/login'))
+    if(req.user != "admin" && (req.originalUrl != '/login'))
+    {
+      passport.authenticate('local', {
+        successRedirect: '/admin',
+        failureRedirect: '/login'
+      })(req,res,next);
+      console.log('not logged in');
+    }
+    // else if(req.session.passport.user != "admin")
     // {
-    //   passport.authenticate('local', {
-    //     successRedirect: '/admin',
-    //     failureRedirect: '/login'
-    //   })(req,res,next);
-    //   console.log('not logged in');
+    //   console.log('a');
+    //   res.sendFile('index.html', {root: rootdirectory});
+    //   console.log(req.session.passport.user);
+    //   next();
     // }
-    // // else if(req.session.passport.user != "admin")
-    // // {
-    // //   console.log('a');
-    // //   res.sendFile('index.html', {root: rootdirectory});
-    // //   console.log(req.session.passport.user);
-    // //   next();
-    // // }
-    // else
-    // {
-    //   if(ipList.includes(req.socket.remoteAddress!))
-    //   {
-    //     console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
-    //     res.send('banned L');
-    //     res.end();
-    //   }
-    //   else
-    //   {
-    //     console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-    //     // console.log(req.user, 'everyRequest');
-    //     next();
-    //   }
-    // }
+    else
+    {
+      if(ipList.includes(req.socket.remoteAddress!))
+      {
+        console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+        res.send('banned L');
+        res.end();
+      }
+      else
+      {
+        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+        // console.log(req.user, 'everyRequest');
+        next();
+      }
+    }
 }
 
 
@@ -210,6 +209,7 @@ io.use(sharedSession(sessionMiddleware, {
 
 }));
 io.sockets.on('connection', (socket:any) => {
+  console.log('connection');
     socket.on('command', async (input: any) => {
       let words = input.command.split(' ');
       console.log(words[0]);

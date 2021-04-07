@@ -167,37 +167,32 @@ app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
     console.log(req.originalUrl);
-    next();
-    // if(req.user != "admin" && (req.originalUrl != '/login'))
+    if (req.user != "admin" && (req.originalUrl != '/login')) {
+        passport_1.default.authenticate('local', {
+            successRedirect: '/admin',
+            failureRedirect: '/login'
+        })(req, res, next);
+        console.log('not logged in');
+    }
+    // else if(req.session.passport.user != "admin")
     // {
-    //   passport.authenticate('local', {
-    //     successRedirect: '/admin',
-    //     failureRedirect: '/login'
-    //   })(req,res,next);
-    //   console.log('not logged in');
+    //   console.log('a');
+    //   res.sendFile('index.html', {root: rootdirectory});
+    //   console.log(req.session.passport.user);
+    //   next();
     // }
-    // // else if(req.session.passport.user != "admin")
-    // // {
-    // //   console.log('a');
-    // //   res.sendFile('index.html', {root: rootdirectory});
-    // //   console.log(req.session.passport.user);
-    // //   next();
-    // // }
-    // else
-    // {
-    //   if(ipList.includes(req.socket.remoteAddress!))
-    //   {
-    //     console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
-    //     res.send('banned L');
-    //     res.end();
-    //   }
-    //   else
-    //   {
-    //     console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-    //     // console.log(req.user, 'everyRequest');
-    //     next();
-    //   }
-    // }
+    else {
+        if (ipList.includes(req.socket.remoteAddress)) {
+            console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+            res.send('banned L');
+            res.end();
+        }
+        else {
+            console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+            // console.log(req.user, 'everyRequest');
+            next();
+        }
+    }
 }
 app.get('/', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
@@ -220,6 +215,7 @@ var usersDirectory = new Map();
 var usersProjectDirectory = new Map();
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
+    console.log('connection');
     socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         var words;
         return __generator(this, function (_a) {
