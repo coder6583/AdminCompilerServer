@@ -33,9 +33,9 @@
 				<ul class="p-0">
 					<li class="nav-content" data-bind="console"><i class="bi bi-terminal"></i>コンソール</li>
 					<li class="nav-content" data-bind="server-log"><i class="bi bi-file-earmark-ruled"></i>サーバーログ</li>
-					<li class="nav-content selected" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
-					<li class="nav-content" data-bind="ban-ip"><i class="bi bi-person-x"></i>アクセス禁止IP</li>
-					<li class="nav-content" data-bind="status"><i class="bi bi-bar-chart-line"></i>サーバーの状態</li>
+					<li class="nav-content" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
+					<li class="nav-content selected" data-bind="ban-ip"><i class="bi bi-person-x"></i>アクセス禁止IP</li>
+					<li class="nav-content" data-bind="status"><i class="bi bi-hdd-stack"></i>サーバーの状態</li>
 				</ul>
 			</nav>
 			
@@ -52,7 +52,7 @@
 					<div class="label row m-0">
 						<h2 class="m-0">
 							<span>サーバーログ</span>
-							<form id="log-filter">
+							<form id="log-filter" class="disable-submit">
 								<input id="log-filter-box" type="text" placeholder="フィルターを入力">
 								<label>
 									<i class="bi bi-question-circle button-overlay" data-overlay="hint"></i>
@@ -74,7 +74,7 @@
 				</div>
 
 				<!-- ユーザーの一覧 -->
-				<div class="content tab-users list-tab h-100 container p-0 show">
+				<div class="content tab-users list-tab h-100 container p-0">
 					<div class="label row m-0">
 						<h2 class="m-0">
 							<span>登録済みユーザーの一覧</span>
@@ -96,10 +96,16 @@
 				</div>
 
 				<!-- アクセス禁止IP -->
-				<div class="content tab-ban-ip list-tab h-100 container p-0">
+				<div class="content tab-ban-ip list-tab h-100 container p-0 show">
 					<div class="label row m-0">
 						<h2 class="m-0">
 							<span>アクセス禁止済みのIPアドレスの一覧</span>
+							<form id="add-ban-ip">
+								<input id="ban-ip-box" type="text" placeholder="アクセス禁止IPアドレスを入力">
+								<button>
+									<i class="bi bi-plus"></i>
+								</button>
+							</form>
 						</h2>
 					</div>
 					<table id="ban-ip" class="table table-fixed row m-0">

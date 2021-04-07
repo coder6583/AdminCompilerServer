@@ -37,6 +37,14 @@ $(() => {
 		this.closest('.overlay-window')?.classList.remove('show');
 	});
 
+	// submit無効化
+	$('.disable-submit').on('submit', () => false);
+
+	// banIP
+	$('#add-ban-ip').on('submit', () => {
+		const banIP = $('#ban-ip-box').val();
+	});
+
 	let logs = [];
 	for (let i = 0; i < 20; i++) {
 		logs.push({

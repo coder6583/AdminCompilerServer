@@ -71,6 +71,12 @@ $(function () {
         var _a;
         (_a = this.closest('.overlay-window')) === null || _a === void 0 ? void 0 : _a.classList.remove('show');
     });
+    // submit無効化
+    $('.disable-submit').on('submit', function () { return false; });
+    // banIP
+    $('#add-ban-ip').on('submit', function () {
+        var banIP = $('#ban-ip-box').val();
+    });
     var logs = [];
     for (var i = 0; i < 20; i++) {
         logs.push({
