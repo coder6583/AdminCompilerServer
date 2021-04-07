@@ -38,16 +38,20 @@ $(() => {
 	});
 
 	// レイアウト
-	const tables = $('.list-tab > .table');
-	for (let i = 0; i < tables.length; i++) {
-		const table = tables[i];
-		const labelHeight = table.parentElement?.getElementsByClassName('label')[0].scrollHeight;
-		console.log(labelHeight);
-		
-		if (labelHeight) {
-			table.style.maxHeight = `calc(100vh - ${labelHeight})`;
+	$(window).on('resize', () => {
+		const tables = $('.list-tab > .table');
+		for (let i = 0; i < tables.length; i++) {
+			const table = tables[i];
+			const tbody = table.getElementsByTagName('tbody')[0];
+			const labelHeight = table.parentElement?.getElementsByClassName('label')[0].scrollHeight;
+			if (labelHeight) {
+				console.log(($(window).height() || 0) - labelHeight);
+				
+				table.style.maxHeight = `${($(window).height() || 0) - labelHeight}px`;
+				tbody.style.maxHeight = `${($(window).height() || 0) - labelHeight - 40}px`;
+			}
 		}
-	}
+	}).trigger('resize');
 
 	// submit無効化
 	$('.disable-submit').on('submit', () => false);

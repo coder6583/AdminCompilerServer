@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 $(function () {
-    var _a;
     // タブ切り替え
     $('.nav-content').on('click', function () {
         var bind = this.dataset.bind;
@@ -73,15 +72,20 @@ $(function () {
         (_a = this.closest('.overlay-window')) === null || _a === void 0 ? void 0 : _a.classList.remove('show');
     });
     // レイアウト
-    var tables = $('.list-tab > .table');
-    for (var i = 0; i < tables.length; i++) {
-        var table = tables[i];
-        var labelHeight = (_a = table.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('label')[0].scrollHeight;
-        console.log(labelHeight);
-        if (labelHeight) {
-            table.style.maxHeight = "calc(100vh - " + labelHeight + ")";
+    $(window).on('resize', function () {
+        var _a;
+        var tables = $('.list-tab > .table');
+        for (var i = 0; i < tables.length; i++) {
+            var table = tables[i];
+            var tbody = table.getElementsByTagName('tbody')[0];
+            var labelHeight = (_a = table.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('label')[0].scrollHeight;
+            if (labelHeight) {
+                console.log(($(window).height() || 0) - labelHeight);
+                table.style.maxHeight = ($(window).height() || 0) - labelHeight + "px";
+                tbody.style.maxHeight = ($(window).height() || 0) - labelHeight - 40 + "px";
+            }
         }
-    }
+    }).trigger('resize');
     // submit無効化
     $('.disable-submit').on('submit', function () { return false; });
     // banIP
