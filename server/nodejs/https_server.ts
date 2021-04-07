@@ -229,14 +229,18 @@ io.sockets.on('connection', (socket:any) => {
       });
     })
     si.networkStats().then((data: any) => {
-      console.log(data.rx_sec, data.tx_sec);
+      console.log(data[0].rx_sec, data[0].tx_sec);
       socket.emit('network-usage', {
         received: data[0].rx_sec,
         transmitted: data[0].tx_sec
       })
     })
     si.disksIO().then((data: any) => {
-      console.log(data);
+      console.log(data.rIO_sec, data.wIO_sec);
+      socket.emit('disk-usage', {
+        read: data.rIO_sec,
+        write: data.wIO_sec
+      })
     })
   }
   let taskManagerTimer = setInterval(() => {taskManager();}, 1000);

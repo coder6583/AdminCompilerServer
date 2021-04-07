@@ -232,14 +232,18 @@ io.sockets.on('connection', function (socket) {
             });
         });
         systeminformation_1.default.networkStats().then(function (data) {
-            console.log(data.rx_sec, data.tx_sec);
+            console.log(data[0].rx_sec, data[0].tx_sec);
             socket.emit('network-usage', {
                 received: data[0].rx_sec,
                 transmitted: data[0].tx_sec
             });
         });
         systeminformation_1.default.disksIO().then(function (data) {
-            console.log(data);
+            console.log(data.rIO_sec, data.wIO_sec);
+            socket.emit('disk-usage', {
+                read: data.rIO_sec,
+                write: data.wIO_sec
+            });
         });
     }
     var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
