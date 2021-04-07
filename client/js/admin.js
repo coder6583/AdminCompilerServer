@@ -192,8 +192,8 @@ $(function () {
                                                 dataset.data.push({
                                                     x: Date.now(),
                                                     // @ts-ignore
-                                                    // y: chartData[dataset.label],
-                                                    y: Math.floor(Math.random() * 100)
+                                                    y: chartData[dataset.label],
+                                                    // y: Math.floor(Math.random() * 100)
                                                 });
                                             });
                                         }
@@ -203,9 +203,10 @@ $(function () {
                             }],
                         yAxes: [{
                                 ticks: {
-                                    suggestedMin: 0,
-                                    suggestedMax: 100,
-                                    stepSize: 20,
+                                    suggestedMin: id === 'network' ? undefined : 0,
+                                    suggestedMax: id === 'network' ? undefined : 100,
+                                    stepSize: id === 'network' ? undefined : 20,
+                                    beginAtZero: true,
                                     padding: 10
                                 },
                                 gridLines: {
@@ -240,6 +241,40 @@ $(function () {
             });
         }
     }
+    socket.on('cpu-usage', function (usage) {
+        chartData.CPU = usage.percentage;
+        $('#cpu-rate').text(usage.percentage.toFixed(1));
+    });
+    socket.on('memory-usage', function (usage) {
+        chartData.Memory = usage.percentage;
+        $('#memory-rate').text(usage.percentage.toFixed(1));
+        $('#memory-using').text((usage.using / 1000000).toFixed(1));
+        $('#memory-total').text((usage.total / 1000000).toFixed(1));
+    });
+    socket.on('network-usage', function (usage) {
+        chartData.NetworkUp = usage.transmitted / 1000;
+        chartData.NetworkDown = usage.received / 1000;
+        var SI = function (number) {
+            if (number < 1000) {
+                return "" + number;
+            }
+            else if (number < Math.pow(1000, 2)) {
+                return (number / 1000).toFixed(1) + "K";
+            }
+            else if (number < Math.pow(1000, 3)) {
+                return (number / Math.pow(1000, 2)).toFixed(1) + "M";
+            }
+            else {
+                return (number / Math.pow(1000, 3)).toFixed(1) + "G";
+            }
+        };
+        $('#netowork-up-rate').text(SI(usage.transmitted));
+        $('#netowork-down-rate').text(SI(usage.received));
+    });
+    socket.on('disk-usage', function (usage) {
+        chartData.Disk = usage.percentage;
+        $('#disk-rate').text(usage.percentage.toFixed(1));
+    });
 });
 // @ts-ignore
 var socket = io.connect('');
@@ -289,4 +324,3 @@ function parseUsers(users) {
         $('#users > tbody').append("<tr><td><img src=\"" + user.avatar + "\"></td><td>" + user.id + "</td><td>" + user.username + "</td><td>" + user.email + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
     });
 }
-socket.on('');
