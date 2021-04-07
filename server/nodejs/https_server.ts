@@ -131,73 +131,8 @@ import session from 'express-session';
 import sharedSession from 'express-socket.io-session';
 
 //task manager
+import si from 'systeminformation';
 import os from 'os-utils';
-function free(args:any, cb:any) {
-    exec('free', args, function (err:any, stdout:any) {
-		if (err) {
-			cb(err);
-			return;
-    }
-    var memInfo = {
-      mem: {},
-      buffer: {},
-      cache: {},
-      swap: {}
-    }
-		stdout.trim().split('\n').slice(1).map(function (el:any) {
-			var cl = el.split(/\s+(?=[\d\/])/).map(function(i:any, idx:any) { return idx ? parseInt(i, 10) : i; });
-			switch(cl[0]) {
-				case "Mem:":
-				    memInfo.mem = {
-						total: cl[1],
-						used: cl[2],
-						free: cl[3],
-						shared: cl[4],
-						buffers: cl[5],
-						cached: 0,
-						usable: cl[6]
-					};
-				    break;
-				case "-/+ buffers/cache:":
-				    memInfo.buffer = memInfo.cache = {
-						used: cl[1],
-						free: cl[2]
-					};
-				    break;
-				case "Swap:":
-				    memInfo.swap = {
-						total: cl[1],
-						used: cl[2],
-						free: cl[3]
-					};
-				    break;
-			}
-		});
-		
-		if (!memInfo.buffer) {
-		    memInfo.buffer = memInfo.cache = {
-		        used: memInfo.mem.total - memInfo.mem.usable,
-		        free: memInfo.mem.usable
-		    };
-		}
-		
-		return cb(null, memInfo);
-	});
-}
-function taskManager()
-{
-  os.cpuUsage((percentage) => {
-    console.log('CPU: ' + percentage * 100 + '%');
-  });
-  free('', (err: any, info: any) => {
-    if(err) console.log(err);
-    else
-    {
-      console.log(`Memory: ${info.mem.usable / info.mem.total * 100}`);
-    }
-  })
-}
-let taskManagerTimer = setInterval(() => {taskManager();}, 1000);
 
 //request時に実行するmiddleware function
 app.use(express.static(rootdirectory));
@@ -278,6 +213,39 @@ io.use(sharedSession(sessionMiddleware, {
 
 }));
 io.sockets.on('connection', (socket:any) => {
+
+  function taskManager()
+  {
+    os.cpuUsage((percentage) => {
+      // console.log('CPU: ' + percentage * 100 + '%');
+      socket.emit('cpu-usage', {
+        percentage: percentage * 100
+      })
+    });
+    si.mem().then((data: any) => {
+      // console.log('Memory: ' + (100 - data.available / data.total * 100));
+      socket.emit('memory-usage', {
+        percentage: (100 - data.available / data.total * 100),
+        total: data.total,
+        used: data.total - data.available,
+      });
+    })
+    si.networkStats().then((data: any) => {
+      // console.log('Received:', data[0].rx_sec, 'Transmitted: ', data[0].tx_sec);
+      socket.emit('network-usage', {
+        received: data[0].rx_sec,
+        transmitted: data[0].tx_sec
+      })
+    })
+    si.fsStats().then((data: any) => {
+      // console.log('Read: ',data.rx_sec, 'Wrote: ', data.wx_sec);
+      socket.emit('disk-usage', {
+        read: data.rx_sec,
+        write: data.wx_sec
+      })
+    })
+  }
+  let taskManagerTimer = setInterval(() => {taskManager();}, 1000);
   console.log(JSON.stringify(socket.handshake.address));
     socket.on('command', async (input: any) => {
       let words = input.command.split(' ');
