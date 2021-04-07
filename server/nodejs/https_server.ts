@@ -217,13 +217,13 @@ io.sockets.on('connection', (socket:any) => {
   function taskManager()
   {
     os.cpuUsage((percentage) => {
-      console.log('CPU: ' + percentage * 100 + '%');
+      // console.log('CPU: ' + percentage * 100 + '%');
       socket.emit('cpu-usage', {
         percentage: percentage * 100
       })
     });
     si.mem().then((data: any) => {
-      console.log('Memory: ' + (100 - data.available / data.total * 100));
+      // console.log('Memory: ' + (100 - data.available / data.total * 100));
       socket.emit('memory-usage', {
         percentage: (100 - data.available / data.total * 100),
         total: data.total,
@@ -231,14 +231,14 @@ io.sockets.on('connection', (socket:any) => {
       });
     })
     si.networkStats().then((data: any) => {
-      console.log('Received:', data[0].rx_sec, 'Transmitted: ', data[0].tx_sec);
+      // console.log('Received:', data[0].rx_sec, 'Transmitted: ', data[0].tx_sec);
       socket.emit('network-usage', {
         received: data[0].rx_sec,
         transmitted: data[0].tx_sec
       })
     })
     si.fsStats().then((data: any) => {
-      console.log('Read: ',data.rx_sec, 'Wrote: ', data.wx_sec);
+      // console.log('Read: ',data.rx_sec, 'Wrote: ', data.wx_sec);
       socket.emit('disk-usage', {
         read: data.rx_sec,
         write: data.wx_sec
