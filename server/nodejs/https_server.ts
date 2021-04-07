@@ -212,7 +212,10 @@ io.sockets.on('connection', (socket:any) => {
     socket.on('command', async (input: any) => {
       let words = input.command.split(' ');
       console.log(words[0]);
-
+      socket.emit('result', {
+        success: true,
+        value: words[0]
+      })
       // //update
       // if(words[0] == 'update')
       // {

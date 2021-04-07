@@ -220,6 +220,10 @@ io.sockets.on('connection', function (socket) {
         return __generator(this, function (_a) {
             words = input.command.split(' ');
             console.log(words[0]);
+            socket.emit('result', {
+                success: true,
+                value: words[0]
+            });
             return [2 /*return*/];
         });
     }); });
