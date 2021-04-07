@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 $(function () {
-    var _a;
     // タブ切り替え
     $('.nav-content').on('click', function () {
         var bind = this.dataset.bind;
@@ -44,6 +43,8 @@ $(function () {
         this.classList.add('selected');
         $('.content.show').removeClass('show');
         $(".tab-" + bind).addClass('show');
+        // 高さ更新
+        heightRefresh();
     });
     // コンソール
     $('#console').terminal(function (command) {
@@ -73,15 +74,21 @@ $(function () {
         (_a = this.closest('.overlay-window')) === null || _a === void 0 ? void 0 : _a.classList.remove('show');
     });
     // レイアウト
-    var tables = $('.list-tab > .table');
-    for (var i = 0; i < tables.length; i++) {
-        var table = tables[i];
-        var labelHeight = (_a = table.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('label')[0].scrollHeight;
-        console.log(labelHeight);
-        if (labelHeight) {
-            table.style.maxHeight = "calc(100vh - " + labelHeight + ")";
+    var heightRefresh = function () {
+        var _a;
+        var tables = $('.list-tab > .table');
+        for (var i = 0; i < tables.length; i++) {
+            var table = tables[i];
+            var tbody = table.getElementsByTagName('tbody')[0];
+            var labelHeight = (_a = table.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('label')[0].scrollHeight;
+            if (labelHeight) {
+                console.log(($(window).height() || 0) - labelHeight);
+                table.style.maxHeight = ($(window).height() || 0) - labelHeight + "px";
+                tbody.style.maxHeight = ($(window).height() || 0) - labelHeight - 40 + "px";
+            }
         }
-    }
+    };
+    $(window).on('resize', heightRefresh).trigger('resize');
     // submit無効化
     $('.disable-submit').on('submit', function () { return false; });
     // banIP
@@ -173,8 +180,8 @@ $(function () {
                                 // @ts-ignore
                                 realtime: {
                                     duration: 30000,
-                                    refresh: 500,
-                                    delay: 500,
+                                    refresh: 1000,
+                                    delay: 1000,
                                     frameRate: 30,
                                     onRefresh: function (chart) {
                                         // @ts-ignore
@@ -238,22 +245,22 @@ $(function () {
 var socket = io.connect('');
 function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
-        var sleep;
+        function receiveResult(result) {
+            console.log('aaaa');
+            if (result.success) {
+                terminal.echo(result.result).resume();
+            }
+            else {
+                terminal.error(result.result).resume();
+            }
+            socket.removeListener('result', receiveResult);
+        }
         return __generator(this, function (_a) {
             terminal.pause();
             socket.emit('command', {
                 command: cmd
             });
-            socket.on('result', function (result) {
-                console.log('aaaa');
-                if (result.success) {
-                    terminal.echo(result.result).resume();
-                }
-                else {
-                    terminal.error(result.result).resume();
-                }
-            });
-            sleep = function (msec) { return new Promise(function (resolve) { return setTimeout(resolve, msec); }); };
+            socket.on('result', receiveResult);
             return [2 /*return*/];
         });
     });
@@ -282,3 +289,4 @@ function parseUsers(users) {
         $('#users > tbody').append("<tr><td><img src=\"" + user.avatar + "\"></td><td>" + user.id + "</td><td>" + user.username + "</td><td>" + user.email + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
     });
 }
+socket.on('');

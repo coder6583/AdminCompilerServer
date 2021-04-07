@@ -8,6 +8,9 @@ $(() => {
 
 		$('.content.show').removeClass('show');
 		$(`.tab-${bind}`).addClass('show');
+
+		// 高さ更新
+		heightRefresh();
 	});
 
 	// コンソール
@@ -38,16 +41,21 @@ $(() => {
 	});
 
 	// レイアウト
-	const tables = $('.list-tab > .table');
-	for (let i = 0; i < tables.length; i++) {
-		const table = tables[i];
-		const labelHeight = table.parentElement?.getElementsByClassName('label')[0].scrollHeight;
-		console.log(labelHeight);
-		
-		if (labelHeight) {
-			table.style.maxHeight = `calc(100vh - ${labelHeight})`;
+	const heightRefresh = () => {
+		const tables = $('.list-tab > .table');
+		for (let i = 0; i < tables.length; i++) {
+			const table = tables[i];
+			const tbody = table.getElementsByTagName('tbody')[0];
+			const labelHeight = table.parentElement?.getElementsByClassName('label')[0].scrollHeight;
+			if (labelHeight) {
+				console.log(($(window).height() || 0) - labelHeight);
+				
+				table.style.maxHeight = `${($(window).height() || 0) - labelHeight}px`;
+				tbody.style.maxHeight = `${($(window).height() || 0) - labelHeight - 40}px`;
+			}
 		}
-	}
+	};
+	$(window).on('resize', heightRefresh).trigger('resize');
 
 	// submit無効化
 	$('.disable-submit').on('submit', () => false);
@@ -145,8 +153,8 @@ $(() => {
 							// @ts-ignore
 							realtime: {
 								duration: 30000,
-								refresh: 500,
-								delay: 500,
+								refresh: 1000,
+								delay: 1000,
 								frameRate: 30,
 								onRefresh: (chart: Chart) => {
 									// @ts-ignore
@@ -215,15 +223,16 @@ async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 	socket.emit('command', {
 		command: cmd
 	});
-	socket.on('result', (result: {success: boolean, result: string}) => {
+	function receiveResult(result: {success: boolean, result: string}){
 		console.log('aaaa');
 		if (result.success) {
 			terminal.echo(result.result).resume();
 		}else {
 			terminal.error(result.result).resume();
 		}
-	});
-	const sleep = (msec :number) => new Promise(resolve => setTimeout(resolve, msec));
+		socket.removeListener('result', receiveResult);
+	}
+	socket.on('result', receiveResult);	
 }
 
 function parseServerLog(logs :serverLog[]) {
@@ -252,3 +261,5 @@ function parseUsers(users: userData[]) {
 		$('#users > tbody').append(`<tr><td><img src="${user.avatar}"></td><td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td><button class="btn btn-outline-secondary edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary remove"><i class="bi bi-x"></i></button></td></tr>`)
 	});	
 }
+
+socket.on('')
