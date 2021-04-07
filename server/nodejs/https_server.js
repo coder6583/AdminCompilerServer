@@ -151,6 +151,14 @@ var rootdirectory = path.resolve(rootDir, 'client');
 //express session
 var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
+//task manager
+var os_utils_1 = __importDefault(require("os-utils"));
+function taskManager() {
+    os_utils_1.default.cpuUsage(function (percentage) {
+        console.log(percentage);
+    });
+}
+var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
 //request時に実行するmiddleware function
 app.use(express_1.default.static(rootdirectory));
 var bodyParser = require('body-parser');
@@ -503,7 +511,6 @@ io.sockets.on('connection', function (socket) {
         socket.removeAllListeners('command');
     });
 });
-var taskManagerTimer = setInterval(function () { console.log('a'); }, 5000);
 // 404
 app.use(function (req, res, next) {
     res.status(404);

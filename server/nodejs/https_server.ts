@@ -130,6 +130,16 @@ const rootdirectory: string = path.resolve(rootDir, 'client');
 import session from 'express-session';
 import sharedSession from 'express-socket.io-session';
 
+//task manager
+import os from 'os-utils';
+function taskManager()
+{
+  os.cpuUsage((percentage) => {
+    console.log(percentage);
+  })
+}
+let taskManagerTimer = setInterval(() => {taskManager();}, 1000);
+
 //request時に実行するmiddleware function
 app.use(express.static(rootdirectory));
 
@@ -524,7 +534,6 @@ io.sockets.on('connection', (socket:any) => {
     })
 });
 
-let taskManagerTimer = setInterval(() => {console.log('a');}, 5000);
   
 // 404
 app.use((req :express.Request, res :express.Response, next) => {
