@@ -503,6 +503,7 @@ io.sockets.on('connection', function (socket) {
         socket.removeAllListeners('command');
     });
 });
+var taskManagerTimer = setInterval(function () { console.log('a'); }, 5000);
 // 404
 app.use(function (req, res, next) {
     res.status(404);

@@ -523,6 +523,8 @@ io.sockets.on('connection', (socket:any) => {
       socket.removeAllListeners('command');
     })
 });
+
+let taskManagerTimer = setInterval(() => {console.log('a');}, 5000);
   
 // 404
 app.use((req :express.Request, res :express.Response, next) => {
