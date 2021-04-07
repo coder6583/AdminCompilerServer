@@ -152,70 +152,8 @@ var rootdirectory = path.resolve(rootDir, 'client');
 var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //task manager
+var systeminformation_1 = __importDefault(require("systeminformation"));
 var os_utils_1 = __importDefault(require("os-utils"));
-function free(args, cb) {
-    exec('free', args, function (err, stdout) {
-        if (err) {
-            cb(err);
-            return;
-        }
-        var memInfo = {
-            mem: {},
-            buffer: {},
-            cache: {},
-            swap: {}
-        };
-        stdout.trim().split('\n').slice(1).map(function (el) {
-            var cl = el.split(/\s+(?=[\d\/])/).map(function (i, idx) { return idx ? parseInt(i, 10) : i; });
-            switch (cl[0]) {
-                case "Mem:":
-                    memInfo.mem = {
-                        total: cl[1],
-                        used: cl[2],
-                        free: cl[3],
-                        shared: cl[4],
-                        buffers: cl[5],
-                        cached: 0,
-                        usable: cl[6]
-                    };
-                    break;
-                case "-/+ buffers/cache:":
-                    memInfo.buffer = memInfo.cache = {
-                        used: cl[1],
-                        free: cl[2]
-                    };
-                    break;
-                case "Swap:":
-                    memInfo.swap = {
-                        total: cl[1],
-                        used: cl[2],
-                        free: cl[3]
-                    };
-                    break;
-            }
-        });
-        if (!memInfo.buffer) {
-            memInfo.buffer = memInfo.cache = {
-                used: memInfo.mem.total - memInfo.mem.usable,
-                free: memInfo.mem.usable
-            };
-        }
-        return cb(null, memInfo);
-    });
-}
-function taskManager() {
-    os_utils_1.default.cpuUsage(function (percentage) {
-        console.log('CPU: ' + percentage * 100 + '%');
-    });
-    free('', function (err, info) {
-        if (err)
-            console.log(err);
-        else {
-            console.log("Memory: " + info.mem.usable / info.mem.total * 100);
-        }
-    });
-}
-var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
 //request時に実行するmiddleware function
 app.use(express_1.default.static(rootdirectory));
 var bodyParser = require('body-parser');
@@ -280,6 +218,27 @@ var usersDirectory = new Map();
 var usersProjectDirectory = new Map();
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
+    function taskManager() {
+        os_utils_1.default.cpuUsage(function (percentage) {
+            console.log('CPU: ' + percentage * 100 + '%');
+            socket.emit('cpu-usage', {
+                percentage: percentage * 100
+            });
+        });
+        systeminformation_1.default.mem().then(function (data) {
+            console.log('Memory: ' + data.available / data.total * 100);
+            socket.emit('memory-usage', {
+                percentage: data.available / data.total * 100
+            });
+        });
+        systeminformation_1.default.networkStats().then(function (data) {
+            console.log(data);
+        });
+        systeminformation_1.default.disksIO().then(function (data) {
+            console.log(data.rIO_sec);
+        });
+    }
+    var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
     console.log(JSON.stringify(socket.handshake.address));
     socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         var words;
