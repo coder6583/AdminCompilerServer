@@ -232,14 +232,14 @@ io.sockets.on('connection', function (socket) {
             });
         });
         systeminformation_1.default.networkStats().then(function (data) {
-            console.log(data[0].rx_sec, data[0].tx_sec);
+            console.log('Received:', data[0].rx_sec, 'Transmitted: ', data[0].tx_sec);
             socket.emit('network-usage', {
                 received: data[0].rx_sec,
                 transmitted: data[0].tx_sec
             });
         });
         systeminformation_1.default.disksIO().then(function (data) {
-            console.log(data.rIO_sec, data.wIO_sec);
+            console.log('Read: ', data.rIO_sec, 'Wrote: ', data.wIO_sec);
             socket.emit('disk-usage', {
                 read: data.rIO_sec,
                 write: data.wIO_sec
