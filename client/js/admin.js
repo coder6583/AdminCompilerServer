@@ -251,6 +251,7 @@ function evalCommand(cmd, terminal) {
                 command: cmd
             });
             socket.on('result', function (result) {
+                console.log('aaaa');
                 if (result.success) {
                     terminal.echo(result.result).resume();
                 }

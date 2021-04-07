@@ -129,7 +129,75 @@ const rootdirectory: string = path.resolve(rootDir, 'client');
 //express session
 import session from 'express-session';
 import sharedSession from 'express-socket.io-session';
-import e from "express";
+
+//task manager
+import os from 'os-utils';
+function free(args:any, cb:any) {
+    exec('free', args, function (err:any, stdout:any) {
+		if (err) {
+			cb(err);
+			return;
+    }
+    var memInfo = {
+      mem: {},
+      buffer: {},
+      cache: {},
+      swap: {}
+    }
+		stdout.trim().split('\n').slice(1).map(function (el:any) {
+			var cl = el.split(/\s+(?=[\d\/])/).map(function(i:any, idx:any) { return idx ? parseInt(i, 10) : i; });
+			switch(cl[0]) {
+				case "Mem:":
+				    memInfo.mem = {
+						total: cl[1],
+						used: cl[2],
+						free: cl[3],
+						shared: cl[4],
+						buffers: cl[5],
+						cached: 0,
+						usable: cl[6]
+					};
+				    break;
+				case "-/+ buffers/cache:":
+				    memInfo.buffer = memInfo.cache = {
+						used: cl[1],
+						free: cl[2]
+					};
+				    break;
+				case "Swap:":
+				    memInfo.swap = {
+						total: cl[1],
+						used: cl[2],
+						free: cl[3]
+					};
+				    break;
+			}
+		});
+		
+		if (!memInfo.buffer) {
+		    memInfo.buffer = memInfo.cache = {
+		        used: memInfo.mem.total - memInfo.mem.usable,
+		        free: memInfo.mem.usable
+		    };
+		}
+		
+		return cb(null, memInfo);
+	});
+}
+function taskManager()
+{
+  os.cpuUsage((percentage) => {
+    console.log('CPU: ' + percentage * 100 + '%');
+  });
+  free('', (err: any, info: any) => {
+    if(err) console.log(err);
+    else
+    {
+      console.log(`Memory: ${info.mem.usable / info.mem.total * 100}`);
+    }
+  })
+}
+let taskManagerTimer = setInterval(() => {taskManager();}, 1000);
 
 //request時に実行するmiddleware function
 app.use(express.static(rootdirectory));
@@ -210,6 +278,7 @@ io.use(sharedSession(sessionMiddleware, {
 
 }));
 io.sockets.on('connection', (socket:any) => {
+  console.log(JSON.stringify(socket.handshake.address));
     socket.on('command', async (input: any) => {
       let words = input.command.split(' ');
       console.log(words[0]);
@@ -519,7 +588,11 @@ io.sockets.on('connection', (socket:any) => {
         });
       }
     });
+    socket.on('disconnect', () => {
+      socket.removeAllListeners('command');
+    })
 });
+
   
 // 404
 app.use((req :express.Request, res :express.Response, next) => {
