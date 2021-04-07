@@ -279,8 +279,8 @@ $(function () {
         $('#network-down-rate').text(SI(usage.received));
     });
     socket.on('disk-usage', function (usage) {
-        chartData.DiskRead = usage.read;
-        chartData.DiskWrite = usage.write;
+        chartData.DiskRead = usage.read / 1000000;
+        chartData.DiskWrite = usage.write / 1000000;
         $('#disk-read-rate').text(usage.read.toFixed(1));
     });
 });
