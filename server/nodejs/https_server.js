@@ -157,6 +157,7 @@ function taskManager() {
     os_utils_1.default.cpuUsage(function (percentage) {
         console.log(percentage * 100 + '%');
     });
+    console.log(os_utils_1.default.freememPercentage());
 }
 var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
 //request時に実行するmiddleware function

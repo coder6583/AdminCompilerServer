@@ -136,7 +136,8 @@ function taskManager()
 {
   os.cpuUsage((percentage) => {
     console.log(percentage * 100 + '%');
-  })
+  });
+  console.log(os.freememPercentage());
 }
 let taskManagerTimer = setInterval(() => {taskManager();}, 1000);
 
