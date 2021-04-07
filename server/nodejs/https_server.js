@@ -489,6 +489,7 @@ io.sockets.on('connection', function (socket) {
                 }
             }
             else if (words[0] == 'list') {
+                console.log('aaaa');
                 socket.emit('result', {
                     success: true,
                     result: 'list'
