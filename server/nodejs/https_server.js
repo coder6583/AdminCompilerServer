@@ -218,6 +218,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         var words;
         return __generator(this, function (_a) {
+            console.log(input.command);
             words = input.command.split(' ');
             //update
             if (words[0] == 'update') {
