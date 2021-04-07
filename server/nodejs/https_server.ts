@@ -135,9 +135,9 @@ import os from 'os-utils';
 function taskManager()
 {
   os.cpuUsage((percentage) => {
-    console.log(percentage * 100 + '%');
+    console.log('CPU: ' + percentage * 100 + '%');
   });
-  console.log(os.freememPercentage());
+  console.log('Memory: ' + os.freememPercentage());
 }
 let taskManagerTimer = setInterval(() => {taskManager();}, 1000);
 

@@ -155,9 +155,9 @@ var express_socket_io_session_1 = __importDefault(require("express-socket.io-ses
 var os_utils_1 = __importDefault(require("os-utils"));
 function taskManager() {
     os_utils_1.default.cpuUsage(function (percentage) {
-        console.log(percentage * 100 + '%');
+        console.log('CPU: ' + percentage * 100 + '%');
     });
-    console.log(os_utils_1.default.freememPercentage());
+    console.log('Memory: ' + os_utils_1.default.freememPercentage());
 }
 var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
 //request時に実行するmiddleware function
