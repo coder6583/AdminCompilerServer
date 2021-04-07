@@ -155,7 +155,7 @@ var express_socket_io_session_1 = __importDefault(require("express-socket.io-ses
 var os_utils_1 = __importDefault(require("os-utils"));
 function taskManager() {
     os_utils_1.default.cpuUsage(function (percentage) {
-        console.log(percentage);
+        console.log(percentage * 100 + '%');
     });
 }
 var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
