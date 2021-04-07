@@ -186,6 +186,7 @@ $(() => {
 								suggestedMin: ['network', 'disk'].includes(id) ? undefined : 0,
 								suggestedMax: ['network', 'disk'].includes(id) ? undefined : 100,
 								stepSize: ['network', 'disk'].includes(id) ? undefined : 20,
+								maxTicksLimit: 5,
 								beginAtZero: true,
 								padding: 10
 							},
