@@ -235,7 +235,7 @@ io.sockets.on('connection', (socket:any) => {
         transmitted: data[0].tx_sec
       })
     })
-    si.disksIO().then((data: any) => {
+    si.fsStats().then((data: any) => {
       console.log('Read: ',data.rIO_sec, 'Wrote: ', data.wIO_sec);
       socket.emit('disk-usage', {
         read: data.rIO_sec,
