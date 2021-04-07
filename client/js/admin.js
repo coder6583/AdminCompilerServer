@@ -210,9 +210,9 @@ $(function () {
                             }],
                         yAxes: [{
                                 ticks: {
-                                    suggestedMin: id === 'network' ? undefined : 0,
-                                    suggestedMax: id === 'network' ? undefined : 100,
-                                    stepSize: id === 'network' ? undefined : 20,
+                                    suggestedMin: ['network', 'disk'].includes(id) ? undefined : 0,
+                                    suggestedMax: ['network', 'disk'].includes(id) ? undefined : 100,
+                                    stepSize: ['network', 'disk'].includes(id) ? undefined : 20,
                                     beginAtZero: true,
                                     padding: 10
                                 },
@@ -263,7 +263,7 @@ $(function () {
         chartData.NetworkDown = usage.received / 1000;
         var SI = function (number) {
             if (number < 1000) {
-                return "" + number;
+                return number.toFixed(1);
             }
             else if (number < Math.pow(1000, 2)) {
                 return (number / 1000).toFixed(1) + "K";
@@ -279,8 +279,8 @@ $(function () {
         $('#network-down-rate').text(SI(usage.received));
     });
     socket.on('disk-usage', function (usage) {
-        chartData.DiskRead = usage.read / 1000000;
-        chartData.DiskWrite = usage.write / 1000000;
+        chartData.DiskRead = usage.read / 1000;
+        chartData.DiskWrite = usage.write / 1000;
         $('#disk-read-rate').text(usage.read.toFixed(1));
     });
 });
