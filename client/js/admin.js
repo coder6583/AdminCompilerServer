@@ -43,6 +43,8 @@ $(function () {
         this.classList.add('selected');
         $('.content.show').removeClass('show');
         $(".tab-" + bind).addClass('show');
+        // 高さ更新
+        heightRefresh();
     });
     // コンソール
     $('#console').terminal(function (command) {
@@ -72,7 +74,7 @@ $(function () {
         (_a = this.closest('.overlay-window')) === null || _a === void 0 ? void 0 : _a.classList.remove('show');
     });
     // レイアウト
-    $(window).on('resize', function () {
+    var heightRefresh = function () {
         var _a;
         var tables = $('.list-tab > .table');
         for (var i = 0; i < tables.length; i++) {
@@ -85,7 +87,8 @@ $(function () {
                 tbody.style.maxHeight = ($(window).height() || 0) - labelHeight - 40 + "px";
             }
         }
-    }).trigger('resize');
+    };
+    $(window).on('resize', heightRefresh).trigger('resize');
     // submit無効化
     $('.disable-submit').on('submit', function () { return false; });
     // banIP

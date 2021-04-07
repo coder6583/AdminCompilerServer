@@ -8,6 +8,9 @@ $(() => {
 
 		$('.content.show').removeClass('show');
 		$(`.tab-${bind}`).addClass('show');
+
+		// 高さ更新
+		heightRefresh();
 	});
 
 	// コンソール
@@ -38,7 +41,7 @@ $(() => {
 	});
 
 	// レイアウト
-	$(window).on('resize', () => {
+	const heightRefresh = () => {
 		const tables = $('.list-tab > .table');
 		for (let i = 0; i < tables.length; i++) {
 			const table = tables[i];
@@ -51,7 +54,8 @@ $(() => {
 				tbody.style.maxHeight = `${($(window).height() || 0) - labelHeight - 40}px`;
 			}
 		}
-	}).trigger('resize');
+	};
+	$(window).on('resize', heightRefresh).trigger('resize');
 
 	// submit無効化
 	$('.disable-submit').on('submit', () => false);
