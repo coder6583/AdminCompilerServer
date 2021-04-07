@@ -97,6 +97,131 @@ $(function () {
             username: 'cp20',
             email: 'expample@gmail.com',
         }]);
+    // モニター
+    var chartData = {
+        CPU: 0,
+        Memory: 0,
+        NetworkUp: 0,
+        NetworkDown: 0,
+        Disk: 0,
+    };
+    var colors = {
+        cpu: '17, 125, 187',
+        memory: '139, 18, 174',
+        network: '167, 79, 1',
+        disk: '77, 166, 12'
+    };
+    var monitorDatasets = {
+        cpu: [{
+                label: 'CPU',
+                borderColor: "rgb(" + colors.cpu + ")",
+                backgroundColor: "rgba(" + colors.cpu + ", .1)",
+                data: []
+            }],
+        memory: [{
+                label: 'Memory',
+                borderColor: "rgb(" + colors.memory + ")",
+                backgroundColor: "rgba(" + colors.memory + ", .1)",
+                data: []
+            }],
+        network: [{
+                label: 'NetworkUp',
+                borderColor: "rgb(" + colors.network + ")",
+                backgroundColor: "rgba(" + colors.network + ", .1)",
+                data: []
+            }, {
+                label: 'NetworkDown',
+                borderColor: "rgb(" + colors.network + ")",
+                backgroundColor: "rgba(" + colors.network + ", .1)",
+                borderDash: [5, 5],
+                data: []
+            }],
+        disk: [{
+                label: 'Disk',
+                borderColor: "rgb(" + colors.disk + ")",
+                backgroundColor: "rgba(" + colors.disk + ", .1)",
+                data: []
+            }],
+    };
+    var monitors = document.querySelectorAll('.chart-div > canvas');
+    for (var i = 0; i < monitors.length; i++) {
+        var monitor = monitors[i];
+        var ctx = monitor.getContext('2d');
+        var id = (monitor.id.match(/monitor\-(\w+)/) || [,])[1];
+        if (ctx && id) {
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    // @ts-ignore
+                    datasets: monitorDatasets[id]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                                type: 'realtime',
+                                // @ts-ignore
+                                realtime: {
+                                    duration: 30000,
+                                    refresh: 500,
+                                    delay: 500,
+                                    frameRate: 30,
+                                    onRefresh: function (chart) {
+                                        // @ts-ignore
+                                        var datasets = chart.data.datasets;
+                                        if (datasets) {
+                                            datasets.forEach(function (dataset) {
+                                                // @ts-ignore
+                                                dataset.data.push({
+                                                    x: Date.now(),
+                                                    // @ts-ignore
+                                                    // y: chartData[dataset.label],
+                                                    y: Math.floor(Math.random() * 100)
+                                                });
+                                            });
+                                        }
+                                    }
+                                },
+                                display: false
+                            }],
+                        yAxes: [{
+                                ticks: {
+                                    suggestedMin: 0,
+                                    suggestedMax: 100,
+                                    stepSize: 20,
+                                    padding: 10
+                                },
+                                gridLines: {
+                                    display: true,
+                                    color: 'rgb(230, 230, 230)',
+                                    drawBorder: false,
+                                    lineWidth: 1,
+                                }
+                            }]
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        enabled: false
+                    },
+                    hover: {
+                        mode: undefined
+                    },
+                    elements: {
+                        point: {
+                            radius: 0
+                        },
+                        line: {
+                            tension: 0,
+                            borderWidth: 1
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+        }
+    }
 });
 // @ts-ignore
 var socket = io.connect('');
