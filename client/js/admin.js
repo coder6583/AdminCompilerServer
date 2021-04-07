@@ -240,27 +240,20 @@ function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
         var sleep;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    terminal.pause();
-                    socket.emit('command', {
-                        command: cmd
-                    });
-                    socket.on('result', function (result) {
-                        if (result.success) {
-                            terminal.echo(result.result).resume();
-                        }
-                        else {
-                            terminal.error(result.result).resume();
-                        }
-                    });
-                    sleep = function (msec) { return new Promise(function (resolve) { return setTimeout(resolve, msec); }); };
-                    return [4 /*yield*/, sleep(1000)];
-                case 1:
-                    _a.sent();
-                    terminal.echo('うぇい').resume();
-                    return [2 /*return*/];
-            }
+            terminal.pause();
+            socket.emit('command', {
+                command: cmd
+            });
+            socket.on('result', function (result) {
+                if (result.success) {
+                    terminal.echo(result.result).resume();
+                }
+                else {
+                    terminal.error(result.result).resume();
+                }
+            });
+            sleep = function (msec) { return new Promise(function (resolve) { return setTimeout(resolve, msec); }); };
+            return [2 /*return*/];
         });
     });
 }

@@ -223,8 +223,6 @@ async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 		}
 	});
 	const sleep = (msec :number) => new Promise(resolve => setTimeout(resolve, msec));
-	await sleep(1000);
-	terminal.echo('うぇい').resume();
 }
 
 function parseServerLog(logs :serverLog[]) {
