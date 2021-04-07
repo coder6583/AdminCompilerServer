@@ -251,8 +251,8 @@ $(() => {
 	socket.on('disk-usage', (usage :{read: number, write: number}) => {
 		chartData.DiskRead = usage.read / 1000;
 		chartData.DiskWrite = usage.write / 1000;
-		$('#disk-read-rate').text(usage.read.toFixed(1));
-		$('#disk-write-rate').text(usage.write.toFixed(1));
+		$('#disk-read-rate').text(SI(usage.read.toFixed(1)));
+		$('#disk-write-rate').text(SI(usage.write.toFixed(1)));
 	});
 });
 
