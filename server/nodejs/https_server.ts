@@ -137,8 +137,13 @@ function free(args:any, cb:any) {
 		if (err) {
 			cb(err);
 			return;
-		}
-        var memInfo:any;
+    }
+    var memInfo = {
+      mem: {},
+      buffer: {},
+      cache: {},
+      swap: {}
+    }
 		stdout.trim().split('\n').slice(1).map(function (el:any) {
 			var cl = el.split(/\s+(?=[\d\/])/).map(function(i:any, idx:any) { return idx ? parseInt(i, 10) : i; });
 			switch(cl[0]) {

@@ -159,7 +159,12 @@ function free(args, cb) {
             cb(err);
             return;
         }
-        var memInfo;
+        var memInfo = {
+            mem: {},
+            buffer: {},
+            cache: {},
+            swap: {}
+        };
         stdout.trim().split('\n').slice(1).map(function (el) {
             var cl = el.split(/\s+(?=[\d\/])/).map(function (i, idx) { return idx ? parseInt(i, 10) : i; });
             switch (cl[0]) {
