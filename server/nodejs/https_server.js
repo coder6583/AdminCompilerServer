@@ -167,32 +167,36 @@ app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
     console.log(req.originalUrl);
-    if (req.user != "admin" && (req.originalUrl != '/login')) {
-        passport_1.default.authenticate('local', {
-            successRedirect: '/admin',
-            failureRedirect: '/login'
-        })(req, res, next);
-        console.log('not logged in');
-    }
-    // else if(req.session.passport.user != "admin")
+    // if(req.user != "admin" && (req.originalUrl != '/login'))
     // {
-    //   console.log('a');
-    //   res.sendFile('index.html', {root: rootdirectory});
-    //   console.log(req.session.passport.user);
-    //   next();
+    //   passport.authenticate('local', {
+    //     successRedirect: '/admin',
+    //     failureRedirect: '/login'
+    //   })(req,res,next);
+    //   console.log('not logged in');
     // }
-    else {
-        if (ipList.includes(req.socket.remoteAddress)) {
-            console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
-            res.send('banned L');
-            res.end();
-        }
-        else {
-            console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-            // console.log(req.user, 'everyRequest');
-            next();
-        }
-    }
+    // // else if(req.session.passport.user != "admin")
+    // // {
+    // //   console.log('a');
+    // //   res.sendFile('index.html', {root: rootdirectory});
+    // //   console.log(req.session.passport.user);
+    // //   next();
+    // // }
+    // else
+    // {
+    //   if(ipList.includes(req.socket.remoteAddress!))
+    //   {
+    //     console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+    //     res.send('banned L');
+    //     res.end();
+    //   }
+    //   else
+    //   {
+    //     console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+    //     // console.log(req.user, 'everyRequest');
+    //     next();
+    //   }
+    // }
 }
 app.get('/', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
