@@ -498,6 +498,9 @@ io.sockets.on('connection', function (socket) {
             return [2 /*return*/];
         });
     }); });
+    socket.on('disconnect', function () {
+        socket.removeAllListners('command');
+    });
 });
 // 404
 app.use(function (req, res, next) {
