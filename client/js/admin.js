@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 $(function () {
+    var _a;
     // タブ切り替え
     $('.nav-content').on('click', function () {
         var bind = this.dataset.bind;
@@ -71,6 +72,22 @@ $(function () {
         var _a;
         (_a = this.closest('.overlay-window')) === null || _a === void 0 ? void 0 : _a.classList.remove('show');
     });
+    // レイアウト
+    var tables = $('.list-tab > .table');
+    for (var i = 0; i < tables.length; i++) {
+        var table = tables[i];
+        var labelHeight = (_a = table.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('label')[0].scrollHeight;
+        console.log(labelHeight);
+        if (labelHeight) {
+            table.style.maxHeight = "calc(100vh - " + labelHeight + ")";
+        }
+    }
+    // submit無効化
+    $('.disable-submit').on('submit', function () { return false; });
+    // banIP
+    $('#add-ban-ip').on('submit', function () {
+        var banIP = $('#ban-ip-box').val();
+    });
     var logs = [];
     for (var i = 0; i < 20; i++) {
         logs.push({
@@ -91,6 +108,131 @@ $(function () {
             username: 'cp20',
             email: 'expample@gmail.com',
         }]);
+    // モニター
+    var chartData = {
+        CPU: 0,
+        Memory: 0,
+        NetworkUp: 0,
+        NetworkDown: 0,
+        Disk: 0,
+    };
+    var colors = {
+        cpu: '17, 125, 187',
+        memory: '139, 18, 174',
+        network: '167, 79, 1',
+        disk: '77, 166, 12'
+    };
+    var monitorDatasets = {
+        cpu: [{
+                label: 'CPU',
+                borderColor: "rgb(" + colors.cpu + ")",
+                backgroundColor: "rgba(" + colors.cpu + ", .1)",
+                data: []
+            }],
+        memory: [{
+                label: 'Memory',
+                borderColor: "rgb(" + colors.memory + ")",
+                backgroundColor: "rgba(" + colors.memory + ", .1)",
+                data: []
+            }],
+        network: [{
+                label: 'NetworkUp',
+                borderColor: "rgb(" + colors.network + ")",
+                backgroundColor: "rgba(" + colors.network + ", .1)",
+                data: []
+            }, {
+                label: 'NetworkDown',
+                borderColor: "rgb(" + colors.network + ")",
+                backgroundColor: "rgba(" + colors.network + ", .1)",
+                borderDash: [5, 5],
+                data: []
+            }],
+        disk: [{
+                label: 'Disk',
+                borderColor: "rgb(" + colors.disk + ")",
+                backgroundColor: "rgba(" + colors.disk + ", .1)",
+                data: []
+            }],
+    };
+    var monitors = document.querySelectorAll('.chart-div > canvas');
+    for (var i = 0; i < monitors.length; i++) {
+        var monitor = monitors[i];
+        var ctx = monitor.getContext('2d');
+        var id = (monitor.id.match(/monitor\-(\w+)/) || [,])[1];
+        if (ctx && id) {
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    // @ts-ignore
+                    datasets: monitorDatasets[id]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                                type: 'realtime',
+                                // @ts-ignore
+                                realtime: {
+                                    duration: 30000,
+                                    refresh: 500,
+                                    delay: 500,
+                                    frameRate: 30,
+                                    onRefresh: function (chart) {
+                                        // @ts-ignore
+                                        var datasets = chart.data.datasets;
+                                        if (datasets) {
+                                            datasets.forEach(function (dataset) {
+                                                // @ts-ignore
+                                                dataset.data.push({
+                                                    x: Date.now(),
+                                                    // @ts-ignore
+                                                    // y: chartData[dataset.label],
+                                                    y: Math.floor(Math.random() * 100)
+                                                });
+                                            });
+                                        }
+                                    }
+                                },
+                                display: false
+                            }],
+                        yAxes: [{
+                                ticks: {
+                                    suggestedMin: 0,
+                                    suggestedMax: 100,
+                                    stepSize: 20,
+                                    padding: 10
+                                },
+                                gridLines: {
+                                    display: true,
+                                    color: 'rgb(230, 230, 230)',
+                                    drawBorder: false,
+                                    lineWidth: 1,
+                                }
+                            }]
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        enabled: false
+                    },
+                    hover: {
+                        mode: undefined
+                    },
+                    elements: {
+                        point: {
+                            radius: 0
+                        },
+                        line: {
+                            tension: 0,
+                            borderWidth: 1
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+        }
+    }
 });
 // @ts-ignore
 var socket = io.connect('');
@@ -98,27 +240,20 @@ function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
         var sleep;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    terminal.pause();
-                    socket.emit('command', {
-                        command: cmd
-                    });
-                    socket.on('result', function (result) {
-                        if (result.success) {
-                            terminal.echo(result.result).resume();
-                        }
-                        else {
-                            terminal.error(result.result).resume();
-                        }
-                    });
-                    sleep = function (msec) { return new Promise(function (resolve) { return setTimeout(resolve, msec); }); };
-                    return [4 /*yield*/, sleep(1000)];
-                case 1:
-                    _a.sent();
-                    terminal.echo('うぇい').resume();
-                    return [2 /*return*/];
-            }
+            terminal.pause();
+            socket.emit('command', {
+                command: cmd
+            });
+            socket.on('result', function (result) {
+                if (result.success) {
+                    terminal.echo(result.result).resume();
+                }
+                else {
+                    terminal.error(result.result).resume();
+                }
+            });
+            sleep = function (msec) { return new Promise(function (resolve) { return setTimeout(resolve, msec); }); };
+            return [2 /*return*/];
         });
     });
 }

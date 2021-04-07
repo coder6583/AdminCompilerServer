@@ -22,37 +22,42 @@
 	<!-- Moment.js -->
 	<script src="./js/moment.js"></script>
 
+	<!-- Chart.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha512-60KwWtZOhzgr840mc57MV8JqDZHAws3w61mhK45KsYHmhyNFJKmfg4M7/s2Jsn4PgtQ4Uhr9xItS+HCbGTIRYQ==" crossorigin="anonymous"></script>
+	<!-- chartjs-plugin-streaming.js -->
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@1.8.0/dist/chartjs-plugin-streaming.min.js"></script>
+
 	<!-- My Code -->
 	<link rel="stylesheet" href="./css/admin.css">
 	<script src="./js/admin.js"></script>
 </head>
 <body>
-	<main class="container-fluid h-100">
-		<div class="row h-100">
+	<main class="container-fluid h-100 p-0">
+		<div class="row w-100 h-100 flex-nowrap m-0">
 			<nav class="navigation col-auto h-100 p-0">
 				<ul class="p-0">
 					<li class="nav-content" data-bind="console"><i class="bi bi-terminal"></i>コンソール</li>
 					<li class="nav-content" data-bind="server-log"><i class="bi bi-file-earmark-ruled"></i>サーバーログ</li>
-					<li class="nav-content selected" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
+					<li class="nav-content" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
 					<li class="nav-content" data-bind="ban-ip"><i class="bi bi-person-x"></i>アクセス禁止IP</li>
-					<li class="nav-content" data-bind="status"><i class="bi bi-bar-chart-line"></i>サーバーの状態</li>
+					<li class="nav-content selected" data-bind="status"><i class="bi bi-hdd-stack"></i>サーバーの状態</li>
 				</ul>
 			</nav>
 			
 			<div class="contents col p-0 h-100">
 				<!-- コンソール -->
-				<div class="content tab-console h-100">
+				<div class="content tab-console">
 					<div id="console" class="w-100 h-100">
 
 					</div>
 				</div>
 
 				<!-- サーバーログ -->
-				<div class="content tab-server-log list-tab h-100 container p-0">
+				<div class="content tab-server-log list-tab container-fluid p-0">
 					<div class="label row m-0">
 						<h2 class="m-0">
 							<span>サーバーログ</span>
-							<form id="log-filter">
+							<form id="log-filter" class="disable-submit">
 								<input id="log-filter-box" type="text" placeholder="フィルターを入力">
 								<label>
 									<i class="bi bi-question-circle button-overlay" data-overlay="hint"></i>
@@ -74,7 +79,7 @@
 				</div>
 
 				<!-- ユーザーの一覧 -->
-				<div class="content tab-users list-tab h-100 container p-0 show">
+				<div class="content tab-users list-tab container-fluid p-0">
 					<div class="label row m-0">
 						<h2 class="m-0">
 							<span>登録済みユーザーの一覧</span>
@@ -96,10 +101,16 @@
 				</div>
 
 				<!-- アクセス禁止IP -->
-				<div class="content tab-ban-ip list-tab h-100 container p-0">
+				<div class="content tab-ban-ip list-tab container-fluid p-0">
 					<div class="label row m-0">
 						<h2 class="m-0">
 							<span>アクセス禁止済みのIPアドレスの一覧</span>
+							<form id="add-ban-ip">
+								<input id="ban-ip-box" type="text" placeholder="アクセス禁止IPアドレスを入力">
+								<button>
+									<i class="bi bi-plus"></i>
+								</button>
+							</form>
 						</h2>
 					</div>
 					<table id="ban-ip" class="table table-fixed row m-0">
@@ -117,8 +128,46 @@
 				</div>
 
 				<!-- サーバーの状態 -->
-				<div class="content tab-status h-100">
-
+				<div class="content tab-status show">
+					<div class="monitor monitor-cpu">
+						<h3>
+							<span class="label">CPU</span>
+							<span class="info">使用率：<span id="cpu-rate"></span>%</span>
+						</h3>
+						<div class="chart-div">
+							<canvas id="monitor-cpu"></canvas>
+						</div>
+					</div>
+					<div class="monitor monitor-ram">
+						<h3>
+							<span class="label">メモリ</span>
+							<span class="info">使用率：<span id="memory-rate"></span>% （<span id="memory-used"></span>GB／<span id="memory-all"></span>GB）</span>
+						</h3>
+						<div class="chart-div">
+							<canvas id="monitor-memory"></canvas>
+						</div>
+					</div>
+					<div class="monitor monitor-network">
+						<h3>
+							<span class="label">ネットワーク</span>
+							<span class="info">
+								<span class="network-up">上り：<span id="network-up-rate"></span>Mbps</span>
+								<span class="network-down">下り：<span id="network-down-rate"></span>Mbps</span>
+							</span>
+						</h3>
+						<div class="chart-div">
+							<canvas id="monitor-network"></canvas>
+						</div>
+					</div>
+					<div class="monitor monitor-disk">
+						<h3>
+							<span class="label">ディスク</span>
+							<span class="info">使用率：<span id="disk-rate"></span>%</span>
+						</h3>
+						<div class="chart-div">
+							<canvas id="monitor-disk"></canvas>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

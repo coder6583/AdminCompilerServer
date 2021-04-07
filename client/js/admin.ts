@@ -37,6 +37,26 @@ $(() => {
 		this.closest('.overlay-window')?.classList.remove('show');
 	});
 
+	// レイアウト
+	const tables = $('.list-tab > .table');
+	for (let i = 0; i < tables.length; i++) {
+		const table = tables[i];
+		const labelHeight = table.parentElement?.getElementsByClassName('label')[0].scrollHeight;
+		console.log(labelHeight);
+		
+		if (labelHeight) {
+			table.style.maxHeight = `calc(100vh - ${labelHeight})`;
+		}
+	}
+
+	// submit無効化
+	$('.disable-submit').on('submit', () => false);
+
+	// banIP
+	$('#add-ban-ip').on('submit', () => {
+		const banIP = $('#ban-ip-box').val();
+	});
+
 	let logs = [];
 	for (let i = 0; i < 20; i++) {
 		logs.push({
@@ -59,6 +79,132 @@ $(() => {
 		username: 'cp20',
 		email: 'expample@gmail.com',
 	}]);
+
+	// モニター
+	let chartData = {
+		CPU: 0,
+		Memory: 0,
+		NetworkUp: 0,
+		NetworkDown: 0,
+		Disk: 0,
+	}
+	const colors = {
+		cpu: '17, 125, 187',
+		memory: '139, 18, 174',
+		network: '167, 79, 1',
+		disk: '77, 166, 12'
+	}
+	const monitorDatasets = {
+		cpu: [{
+			label: 'CPU',
+			borderColor: `rgb(${colors.cpu})`,
+			backgroundColor: `rgba(${colors.cpu}, .1)`,
+			data: []
+		}],
+		memory: [{
+			label: 'Memory',
+			borderColor: `rgb(${colors.memory})`,
+			backgroundColor: `rgba(${colors.memory}, .1)`,
+			data: []
+		}],
+		network: [{
+			label: 'NetworkUp',
+			borderColor: `rgb(${colors.network})`,
+			backgroundColor: `rgba(${colors.network}, .1)`,
+			data: []
+		},{
+			label: 'NetworkDown',
+			borderColor: `rgb(${colors.network})`,
+			backgroundColor: `rgba(${colors.network}, .1)`,
+			borderDash: [5,5],
+			data: []
+		}],
+		disk: [{
+			label: 'Disk',
+			borderColor: `rgb(${colors.disk})`,
+			backgroundColor: `rgba(${colors.disk}, .1)`,
+			data: []
+		}],
+	}
+	const monitors = document.querySelectorAll('.chart-div > canvas');
+	for (let i = 0; i < monitors.length; i++) {
+		const monitor = <HTMLCanvasElement> monitors[i];
+		const ctx = monitor.getContext('2d');
+		const id = (monitor.id.match(/monitor\-(\w+)/) || [,])[1];
+		if (ctx && id) {
+			const chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					// @ts-ignore
+					datasets: monitorDatasets[id]
+				},
+				options: {
+					scales: {
+						xAxes: [{
+							type: 'realtime',
+							// @ts-ignore
+							realtime: {
+								duration: 30000,
+								refresh: 500,
+								delay: 500,
+								frameRate: 30,
+								onRefresh: (chart: Chart) => {
+									// @ts-ignore
+									const datasets = chart.data.datasets;
+									if (datasets) {
+										datasets.forEach(dataset => {
+											// @ts-ignore
+											dataset.data.push({
+												x: Date.now(),
+												// @ts-ignore
+												// y: chartData[dataset.label],
+												y: Math.floor(Math.random() * 100)
+											});
+										});
+									}
+								}
+							},
+							display: false
+						}],
+						yAxes: [{
+							ticks: {
+								suggestedMin: 0,
+								suggestedMax: 100,
+								stepSize: 20,
+								padding: 10
+							},
+							gridLines: {
+								display: true,
+								color: 'rgb(230, 230, 230)',
+								drawBorder: false,
+								lineWidth: 1,
+							}
+						}]
+					},
+					legend: {
+						display: false
+					},
+					tooltips: {
+						enabled: false
+					},
+					hover: {
+						mode: undefined
+					},
+					elements: {
+						point: {
+							radius: 0
+						},
+						line: {
+							tension: 0,
+							borderWidth: 1
+						}
+					},
+					responsive: true,
+					maintainAspectRatio: false,
+				}
+			});
+		}
+	}
 });
 
 // @ts-ignore
@@ -77,8 +223,6 @@ async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 		}
 	});
 	const sleep = (msec :number) => new Promise(resolve => setTimeout(resolve, msec));
-	await sleep(1000);
-	terminal.echo('うぇい').resume();
 }
 
 function parseServerLog(logs :serverLog[]) {
