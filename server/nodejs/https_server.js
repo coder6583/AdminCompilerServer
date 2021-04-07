@@ -220,9 +220,9 @@ io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
     function taskManager() {
         os_utils_1.default.cpuUsage(function (percentage) {
-            console.log('CPU: ' + percentage * 100 + '%');
+            console.log('CPU: ' + (100 - percentage * 100) + '%');
             socket.emit('cpu-usage', {
-                percentage: percentage * 100
+                percentage: (100 - percentage * 100)
             });
         });
         systeminformation_1.default.mem().then(function (data) {

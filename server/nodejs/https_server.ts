@@ -217,9 +217,9 @@ io.sockets.on('connection', (socket:any) => {
   function taskManager()
   {
     os.cpuUsage((percentage) => {
-      console.log('CPU: ' + percentage * 100 + '%');
+      console.log('CPU: ' + (100 - percentage * 100) + '%');
       socket.emit('cpu-usage', {
-        percentage: percentage * 100
+        percentage: (100 - percentage * 100)
       })
     });
     si.mem().then((data: any) => {
