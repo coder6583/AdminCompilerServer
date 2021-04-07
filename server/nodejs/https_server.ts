@@ -225,7 +225,9 @@ io.sockets.on('connection', (socket:any) => {
     si.mem().then((data: any) => {
       console.log('Memory: ' + data.available / data.total * 100);
       socket.emit('memory-usage', {
-        percentage: data.available / data.total * 100
+        percentage: data.available / data.total * 100,
+        total: data.total,
+        used: data.used
       });
     })
     si.networkStats().then((data: any) => {

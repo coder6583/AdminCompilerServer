@@ -228,7 +228,9 @@ io.sockets.on('connection', function (socket) {
         systeminformation_1.default.mem().then(function (data) {
             console.log('Memory: ' + data.available / data.total * 100);
             socket.emit('memory-usage', {
-                percentage: data.available / data.total * 100
+                percentage: data.available / data.total * 100,
+                total: data.total,
+                used: data.used
             });
         });
         systeminformation_1.default.networkStats().then(function (data) {
