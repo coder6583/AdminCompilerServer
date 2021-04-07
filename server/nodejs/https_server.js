@@ -230,7 +230,7 @@ io.sockets.on('connection', function (socket) {
             socket.emit('memory-usage', {
                 percentage: (100 - data.available / data.total * 100),
                 total: data.total,
-                used: data.total - data.available,
+                using: data.total - data.available,
             });
         });
         systeminformation_1.default.networkStats().then(function (data) {
