@@ -549,6 +549,7 @@ io.sockets.on('connection', function (socket) {
                 });
             }
             filteredLog = [];
+            console.log(filterMainBool, filterAdminBool);
             if (filterMainBool == true) {
                 fs_1.default.readFile('/home/pi/log.json', function (err, data) {
                     if (err)
@@ -557,11 +558,13 @@ io.sockets.on('connection', function (socket) {
                         var logArray = JSON.parse(data);
                         logArray.forEach(function (element) {
                             if (input.filter.before && input.filter.after) {
+                                console.log('time');
                                 if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
                                     return;
                                 }
                             }
                             if (input.filter.category.length > 0) {
+                                console.log('category');
                                 var inCategory_1 = false;
                                 input.filter.category.forEach(function (cat) {
                                     if (element.category == cat) {
@@ -573,6 +576,7 @@ io.sockets.on('connection', function (socket) {
                                 }
                             }
                             if (input.filter.keyword.length > 0) {
+                                console.log('keyword');
                                 var hasKeyword_1 = false;
                                 input.filter.keyword.forEach(function (keyword) {
                                     if (element.value.includes(keyword)) {
@@ -596,11 +600,13 @@ io.sockets.on('connection', function (socket) {
                         var logArray = JSON.parse(data);
                         logArray.forEach(function (element) {
                             if (input.filter.before && input.filter.after) {
+                                console.log('time');
                                 if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
                                     return;
                                 }
                             }
                             if (input.filter.category.length > 0) {
+                                console.log('category');
                                 var inCategory_2 = false;
                                 input.filter.category.forEach(function (cat) {
                                     if (element.category == cat) {
@@ -612,6 +618,7 @@ io.sockets.on('connection', function (socket) {
                                 }
                             }
                             if (input.filter.keyword.length > 0) {
+                                console.log('keyword');
                                 var hasKeyword_2 = false;
                                 input.filter.keyword.forEach(function (keyword) {
                                     if (element.value.includes(keyword)) {

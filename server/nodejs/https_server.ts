@@ -572,6 +572,7 @@ io.sockets.on('connection', (socket:any) => {
         });
       }
       let filteredLog: serverLog[] = [];
+      console.log(filterMainBool, filterAdminBool);
       if(filterMainBool == true)
       {
         fs.readFile('/home/pi/log.json', (err: any, data: any) => {
@@ -582,6 +583,7 @@ io.sockets.on('connection', (socket:any) => {
             logArray.forEach((element: any) => {
               if(input.filter.before && input.filter.after)
               {
+                console.log('time');
                 if(!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after))
                 {
                   return;
@@ -589,6 +591,7 @@ io.sockets.on('connection', (socket:any) => {
               }
               if(input.filter.category.length > 0)
               {
+                console.log('category');
                 let inCategory = false;
                 input.filter.category.forEach((cat: any) => {
                   if(element.category == cat)
@@ -603,6 +606,7 @@ io.sockets.on('connection', (socket:any) => {
               }
               if(input.filter.keyword.length > 0)
               {
+                console.log('keyword');
                 let hasKeyword = false;
                 input.filter.keyword.forEach((keyword: any) => {
                   if(element.value.includes(keyword))
@@ -630,6 +634,7 @@ io.sockets.on('connection', (socket:any) => {
             logArray.forEach((element: any) => {
               if(input.filter.before && input.filter.after)
               {
+                console.log('time');
                 if(!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after))
                 {
                   return;
@@ -637,6 +642,7 @@ io.sockets.on('connection', (socket:any) => {
               }
               if(input.filter.category.length > 0)
               {
+                console.log('category');
                 let inCategory = false;
                 input.filter.category.forEach((cat: any) => {
                   if(element.category == cat)
@@ -651,6 +657,7 @@ io.sockets.on('connection', (socket:any) => {
               }
               if(input.filter.keyword.length > 0)
               {
+                console.log('keyword');
                 let hasKeyword = false;
                 input.filter.keyword.forEach((keyword: any) => {
                   if(element.value.includes(keyword))
