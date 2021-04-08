@@ -180,22 +180,23 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       }
       else
       {
+        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
         next();
-        // if(req.originalUrl != '/admin')
-        // {
-        //   // console.log(req.user);
-        //   console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-        //   // console.log(req.user, 'everyRequest');
-        //   res.redirect('/admin');
-        //   res.end();
-        //   // next();
-        // }
-        // else if(req.originalUrl == '/admin')
-        // {
-        //   console.log('logged in!');
-        //   next();
-        // }
-      }
+      //   if(req.originalUrl != '/admin')
+      //   {
+      //     // console.log(req.user);
+          
+      //     // console.log(req.user, 'everyRequest');
+      //     res.redirect('/admin');
+      //     res.end();
+      //     // next();
+      //   }
+      //   else if(req.originalUrl == '/admin')
+      //   {
+      //     console.log('logged in!');
+      //     next();
+      //   }
+      // }
     }
 }
 
