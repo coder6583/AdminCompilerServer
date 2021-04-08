@@ -620,6 +620,7 @@ io.sockets.on('connection', (socket:any) => {
                   return;
                 }
               }
+              console.log('i made it');
               filteredLog.push(element);
             });
           }

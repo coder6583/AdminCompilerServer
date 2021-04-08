@@ -588,6 +588,7 @@ io.sockets.on('connection', function (socket) {
                                     return;
                                 }
                             }
+                            console.log('i made it');
                             filteredLog.push(element);
                         });
                     }
