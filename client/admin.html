@@ -37,10 +37,10 @@
 			<nav class="navigation col-auto h-100 p-0">
 				<ul class="p-0">
 					<li class="nav-content" data-bind="console"><i class="bi bi-terminal"></i>コンソール</li>
-					<li class="nav-content" data-bind="server-log"><i class="bi bi-file-earmark-ruled"></i>サーバーログ</li>
+					<li class="nav-content selected" data-bind="server-log"><i class="bi bi-file-earmark-ruled"></i>サーバーログ</li>
 					<li class="nav-content" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
 					<li class="nav-content" data-bind="ban-ip"><i class="bi bi-person-x"></i>アクセス禁止IP</li>
-					<li class="nav-content selected" data-bind="status"><i class="bi bi-hdd-stack"></i>サーバーの状態</li>
+					<li class="nav-content" data-bind="status"><i class="bi bi-hdd-stack"></i>サーバーの状態</li>
 				</ul>
 			</nav>
 			
@@ -53,7 +53,7 @@
 				</div>
 
 				<!-- サーバーログ -->
-				<div class="content tab-server-log list-tab container-fluid p-0">
+				<div class="content tab-server-log list-tab container-fluid p-0 show">
 					<div class="label row m-0">
 						<h2 class="m-0">
 							<span>サーバーログ</span>
@@ -76,7 +76,12 @@
 						<tbody>
 						</tbody>
 					</table>
-				</div>
+					<div class="loading-div">
+						<div class="loading">
+							
+						</div>
+					</div>
+			</div>
 
 				<!-- ユーザーの一覧 -->
 				<div class="content tab-users list-tab container-fluid p-0">
@@ -128,7 +133,7 @@
 				</div>
 
 				<!-- サーバーの状態 -->
-				<div class="content tab-status show">
+				<div class="content tab-status">
 					<div class="monitor monitor-cpu">
 						<h3>
 							<span class="label">CPU</span>
@@ -183,11 +188,13 @@
 				<button class="overlay-close p-0"><i class="bi bi-x"></i></button>
 			</h2>
 			<h3>フィルターの基本</h3>
+			<p>半角スペースで区切ってそれぞれのフィルターを記述します</p>
+			<p>#@~を検索文字列に指定したい場合はそれぞれ\#\@\~と記述します（\自体を指定したい場合は\\）</p>
 			<p>特定のログを抽出したい場合は何もつけずにそのまま記述します</p>
 			<p>例：<span class="ex">request</span></p>
-			<p>複数の条件を指定する場合はスペースで区切って指定します</p>
+			<p>複数の条件を指定する場合は半角スペースで区切って指定します</p>
 			<p>例：<span class="ex">#情報 unexpected</span></p>
-			<p>スペースを含む文字列を検索するときにはダブルクォーテーションで囲んで指定します</p>
+			<p>半角スペースを含む文字列を検索するときにはダブルクォーテーションで囲んで指定します</p>
 			<p>例：<span class="ex">#エラー "unexpected error"</span></p>
 			<h3>カテゴリでフィルター</h3>
 			<p>特定のカテゴリで抽出したい場合は#の後にカテゴリ名を記述します</p>
@@ -198,6 +205,7 @@
 			<p>例：<span class="ex">@2021-04-06</span></p>
 			<p>ある時点からある時点までを抽出したい場合は~でつないで記述します</p>
 			<p>例：<span class="ex">2021-03-01~2021-03-15</span></p>
+			<p>※タイムスタンプの書き方はISO 8601基準（例：2021-04-01T10:53:15）</p>
 		</div>
 	</div>
 

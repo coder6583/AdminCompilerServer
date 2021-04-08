@@ -73,6 +73,106 @@ $(function () {
         var _a;
         (_a = this.closest('.overlay-window')) === null || _a === void 0 ? void 0 : _a.classList.remove('show');
     });
+    // フィルター
+    var filterTimer;
+    $('#log-filter-box').on('keyup', function () {
+        if (filterTimer)
+            clearTimeout(filterTimer);
+        filterTimer = setTimeout(function () {
+            var _a;
+            var filterString = ((_a = $('#log-filter-box').val()) === null || _a === void 0 ? void 0 : _a.toString()) || '';
+            var filterObject = (function () {
+                var result = {
+                    keyword: [],
+                    category: [],
+                    before: undefined,
+                    after: undefined
+                };
+                var selectors = filterString.split(' ');
+                selectors.forEach(function (selector) {
+                    var _a;
+                    var unEscape = function (str) { return str.replace('\#', '#').replace('\@', '@').replace('\~', '~').replace('\\\\', '\\'); };
+                    var getKey = function (obj, keyword) {
+                        return Object.keys(obj).reduce(function (r, key) {
+                            return obj[key] === keyword ? key : r;
+                        }, null);
+                    };
+                    var getLastDate = function (date) {
+                        if (date.match(/^\d\d\d\d$/)) {
+                            // 年
+                            return moment(date).add(1, 'year');
+                        }
+                        else if (date.match(/^\d\d\d\d\-\d\d$/)) {
+                            // 月
+                            return moment(date).add(1, 'month');
+                        }
+                        else if (date.match(/^\d\d\d\d\-\d\d\-\d\d$/)) {
+                            // 日
+                            return moment(date).add(1, 'day');
+                        }
+                        else if (date.match(/^\d\d\d\d\-\d\d\-\d\dT\d\d$/)) {
+                            // 時
+                            return moment(date).add(1, 'hour');
+                        }
+                        else if (date.match(/^\d\d\d\d\-\d\d\-\d\dT\d\d:\d\d$/)) {
+                            // 分
+                            return moment(date).add(1, 'minute');
+                        }
+                        else if (date.match(/^\d\d\d\d\-\d\d\-\d\dT\d\d:\d\d:\d\d$/)) {
+                            // 秒
+                            return moment(date).add(1, 'second');
+                        }
+                    };
+                    if (selector.startsWith('#')) {
+                        var category = (function () {
+                            var category = unEscape(selector.substr(1));
+                            return getKey(categorys, category) || category;
+                        })();
+                        result.category.push(category);
+                    }
+                    else if (selector.startsWith('@')) {
+                        var _b = (function () {
+                            var _a;
+                            var during = unescape(selector.substr(1));
+                            var before = moment(during).unix() * 1000;
+                            var after = (((_a = getLastDate(during)) === null || _a === void 0 ? void 0 : _a.unix()) || 0) * 1000;
+                            return { before: before, after: after };
+                        })(), before = _b.before, after = _b.after;
+                        result.before = before;
+                        result.after = after;
+                    }
+                    else if (selector.match(/(.+[^\\])~(.+)/)) {
+                        var before = (selector.match(/(.+[^\\])~(.+)/) || [,])[1] || '';
+                        var after = (selector.match(/(.+[^\\])~(.+)/) || [, ,])[2] || '';
+                        result.before = moment(before).unix() * 1000;
+                        result.after = (((_a = getLastDate(after)) === null || _a === void 0 ? void 0 : _a.unix()) || 0) * 1000;
+                    }
+                    else {
+                        result.keyword.push(unEscape(selector));
+                    }
+                });
+                return result;
+            })();
+            socket.emit('logGet', {
+                from: 1,
+                until: 50,
+                filter: filterObject,
+            });
+            // 読み込み中
+            var labelHeight = $('#server-log').parent().find('.label').height() || 0;
+            var loading = $('#server-log ~ .loading-div');
+            loading.css({
+                'top': labelHeight + 40 + "px",
+                'height': ($(window).height() || 0) - labelHeight - 40 + "px"
+            });
+            loading.addClass('show');
+        }, 200);
+    });
+    socket.on('logReturn', function (log) {
+        $('#server-log > tbody').html();
+        parseServerLog(log.value);
+        $('#server-log ~ .loading-div').removeClass('show');
+    });
     // レイアウト
     var heightRefresh = function () {
         var _a;
@@ -94,26 +194,6 @@ $(function () {
     $('#add-ban-ip').on('submit', function () {
         var banIP = $('#ban-ip-box').val();
     });
-    var logs = [];
-    for (var i = 0; i < 20; i++) {
-        logs.push({
-            category: 'info',
-            value: 'ログ',
-            timestmap: 1617702127000 + i * 200000
-        });
-    }
-    parseServerLog(logs);
-    parseBanIP([{
-            ip: '192.168.10.9',
-            memo: '',
-            timestamp: 1617708382000
-        }]);
-    parseUsers([{
-            avatar: 'https://yt3.ggpht.com/yti/ANoDKi5CBrHWvjnpuTFnhDQFsZni4l7RXVKgu8QsA6OF=s88-c-k-c0x00ffffff-no-rj-mo',
-            id: 'cp20',
-            username: 'cp20',
-            email: 'expample@gmail.com',
-        }]);
     // モニター
     var chartData = {
         CPU: 0,
@@ -309,13 +389,13 @@ function evalCommand(cmd, terminal) {
         });
     });
 }
+var categorys = {
+    info: '情報',
+    warn: '警告',
+    error: 'エラー'
+};
 function parseServerLog(logs) {
     var resolveCategory = function (category) {
-        var categorys = {
-            info: '情報',
-            warn: '警告',
-            error: 'エラー'
-        };
         // @ts-ignore
         return categorys[category] || '';
     };
