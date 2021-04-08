@@ -560,6 +560,7 @@ io.sockets.on('connection', function (socket) {
                             if (input.filter.before && input.filter.after) {
                                 console.log('time');
                                 if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
+                                    console.log('not in between');
                                     return;
                                 }
                             }
