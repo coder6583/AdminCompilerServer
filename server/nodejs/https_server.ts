@@ -153,7 +153,7 @@ app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-  console.log(req.originalUrl);
+  console.log(req.user);
     if(req.user != "admin" && (req.originalUrl != '/login'))
     {
       passport.authenticate('local', {
@@ -182,7 +182,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       {
         if(req.originalUrl != '/admin')
         {
-          console.log(req.user);
+          // console.log(req.user);
           console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
           // console.log(req.user, 'everyRequest');
           res.redirect('/admin');

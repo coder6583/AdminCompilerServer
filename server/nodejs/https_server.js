@@ -169,7 +169,7 @@ app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
-    console.log(req.originalUrl);
+    console.log(req.user);
     if (req.user != "admin" && (req.originalUrl != '/login')) {
         passport_1.default.authenticate('local', {
             successRedirect: '/admin',
@@ -193,7 +193,7 @@ function everyRequest(req, res, next) {
         }
         else {
             if (req.originalUrl != '/admin') {
-                console.log(req.user);
+                // console.log(req.user);
                 console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
                 // console.log(req.user, 'everyRequest');
                 res.redirect('/admin');
