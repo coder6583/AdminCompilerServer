@@ -182,20 +182,6 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       {
         console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
         next();
-      //   if(req.originalUrl != '/admin')
-      //   {
-      //     // console.log(req.user);
-          
-      //     // console.log(req.user, 'everyRequest');
-      //     res.redirect('/admin');
-      //     res.end();
-      //     // next();
-      //   }
-      //   else if(req.originalUrl == '/admin')
-      //   {
-      //     console.log('logged in!');
-      //     next();
-      //   }
       }
     }
 }
@@ -567,11 +553,121 @@ io.sockets.on('connection', (socket:any) => {
         });
       }
     });
-    // socket.on('logGet', async (input: any) => {
-    //   let filterMainBool = true;
-    //   let filterAdminBool = true;
-    //   if(input.server.length > 0)
-    // })
+    socket.on('logGet', async (input: any) => {
+      let filterMainBool = false;
+      let filterAdminBool = false;
+      if(!input.server)
+      {
+        filterMainBool = true;
+        filterAdminBool = true;
+      }
+      input.server.forEach((element: any) => {
+        if(element == "main")
+          filterMainBool = true;
+        else if(element == "admin")
+          filterAdminBool = true;
+      });
+      let filteredLog: serverLog[] = [];
+      if(filterMainBool == true)
+      {
+        fs.readFile('/home/pi/log.json', (err: any, data: any) => {
+          if(err) console.error(err);
+          else
+          {
+            let logArray = JSON.parse(data);
+            logArray.forEach((element: any) => {
+              if(input.before && input.after)
+              {
+                if(!(input.before <= element.timestamp && element.timestamp <= input.after))
+                {
+                  return;
+                }
+              }
+              if(input.category)
+              {
+                let inCategory = false;
+                input.category.forEach((cat: any) => {
+                  if(element.category == cat)
+                  {
+                    inCategory = true;
+                  }
+                });
+                if(inCategory == false)
+                {
+                  return;
+                }
+              }
+              if(input.keyword)
+              {
+                let hasKeyword = false;
+                input.keyword.forEach((keyword: any) => {
+                  if(element.value.includes(keyword))
+                  {
+                    hasKeyword = true;
+                  }
+                });
+                if(hasKeyword == false)
+                {
+                  return;
+                }
+              }
+              filteredLog.push(element);
+            });
+          }
+        })
+      }
+      if(filterAdminBool == true)
+      {
+        fs.readFile('/home/pi/log.json', (err: any, data: any) => {
+          if(err) console.error(err);
+          else
+          {
+            let logArray = JSON.parse(data);
+            logArray.forEach((element: any) => {
+              if(input.before && input.after)
+              {
+                if(!(input.before <= element.timestamp && element.timestamp <= input.after))
+                {
+                  return;
+                }
+              }
+              if(input.category)
+              {
+                let inCategory = false;
+                input.category.forEach((cat: any) => {
+                  if(element.category == cat)
+                  {
+                    inCategory = true;
+                  }
+                });
+                if(inCategory == false)
+                {
+                  return;
+                }
+              }
+              if(input.keyword)
+              {
+                let hasKeyword = false;
+                input.keyword.forEach((keyword: any) => {
+                  if(element.value.includes(keyword))
+                  {
+                    hasKeyword = true;
+                  }
+                });
+                if(hasKeyword == false)
+                {
+                  return;
+                }
+              }
+              filteredLog.push(element);
+            });
+          }
+        })
+      }
+      socket.emit('logReturn', {
+        value: filteredLog
+      })
+    })
     socket.on('disconnect', () => {
       socket.removeAllListeners('command');
     })

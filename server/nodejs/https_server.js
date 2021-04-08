@@ -194,19 +194,6 @@ function everyRequest(req, res, next) {
         else {
             console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
             next();
-            //   if(req.originalUrl != '/admin')
-            //   {
-            //     // console.log(req.user);
-            //     // console.log(req.user, 'everyRequest');
-            //     res.redirect('/admin');
-            //     res.end();
-            //     // next();
-            //   }
-            //   else if(req.originalUrl == '/admin')
-            //   {
-            //     console.log('logged in!');
-            //     next();
-            //   }
         }
     }
 }
@@ -543,11 +530,106 @@ io.sockets.on('connection', function (socket) {
             return [2 /*return*/];
         });
     }); });
-    // socket.on('logGet', async (input: any) => {
-    //   let filterMainBool = true;
-    //   let filterAdminBool = true;
-    //   if(input.server.length > 0)
-    // })
+    socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        var filterMainBool, filterAdminBool, filteredLog;
+        return __generator(this, function (_a) {
+            filterMainBool = false;
+            filterAdminBool = false;
+            if (!input.server) {
+                filterMainBool = true;
+                filterAdminBool = true;
+            }
+            input.server.forEach(function (element) {
+                if (element == "main")
+                    filterMainBool = true;
+                else if (element == "admin")
+                    filterAdminBool = true;
+            });
+            filteredLog = [];
+            if (filterMainBool == true) {
+                fs_1.default.readFile('/home/pi/log.json', function (err, data) {
+                    if (err)
+                        console.error(err);
+                    else {
+                        var logArray = JSON.parse(data);
+                        logArray.forEach(function (element) {
+                            if (input.before && input.after) {
+                                if (!(input.before <= element.timestamp && element.timestamp <= input.after)) {
+                                    return;
+                                }
+                            }
+                            if (input.category) {
+                                var inCategory_1 = false;
+                                input.category.forEach(function (cat) {
+                                    if (element.category == cat) {
+                                        inCategory_1 = true;
+                                    }
+                                });
+                                if (inCategory_1 == false) {
+                                    return;
+                                }
+                            }
+                            if (input.keyword) {
+                                var hasKeyword_1 = false;
+                                input.keyword.forEach(function (keyword) {
+                                    if (element.value.includes(keyword)) {
+                                        hasKeyword_1 = true;
+                                    }
+                                });
+                                if (hasKeyword_1 == false) {
+                                    return;
+                                }
+                            }
+                            filteredLog.push(element);
+                        });
+                    }
+                });
+            }
+            if (filterAdminBool == true) {
+                fs_1.default.readFile('/home/pi/log.json', function (err, data) {
+                    if (err)
+                        console.error(err);
+                    else {
+                        var logArray = JSON.parse(data);
+                        logArray.forEach(function (element) {
+                            if (input.before && input.after) {
+                                if (!(input.before <= element.timestamp && element.timestamp <= input.after)) {
+                                    return;
+                                }
+                            }
+                            if (input.category) {
+                                var inCategory_2 = false;
+                                input.category.forEach(function (cat) {
+                                    if (element.category == cat) {
+                                        inCategory_2 = true;
+                                    }
+                                });
+                                if (inCategory_2 == false) {
+                                    return;
+                                }
+                            }
+                            if (input.keyword) {
+                                var hasKeyword_2 = false;
+                                input.keyword.forEach(function (keyword) {
+                                    if (element.value.includes(keyword)) {
+                                        hasKeyword_2 = true;
+                                    }
+                                });
+                                if (hasKeyword_2 == false) {
+                                    return;
+                                }
+                            }
+                            filteredLog.push(element);
+                        });
+                    }
+                });
+            }
+            socket.emit('logReturn', {
+                value: filteredLog
+            });
+            return [2 /*return*/];
+        });
+    }); });
     socket.on('disconnect', function () {
         socket.removeAllListeners('command');
     });
