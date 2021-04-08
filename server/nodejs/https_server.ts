@@ -179,9 +179,17 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       }
       else
       {
-        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-        // console.log(req.user, 'everyRequest');
-        res.redirect('/admin');
+        if(req.originalUrl != '/admin')
+        {
+          console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+          // console.log(req.user, 'everyRequest');
+          res.redirect('/admin');
+        }
+        else if(req.originalUrl == '/admin')
+        {
+          console.log('logged in!');
+          next();
+        }
       }
     }
 }

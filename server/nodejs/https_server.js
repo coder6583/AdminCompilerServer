@@ -191,9 +191,15 @@ function everyRequest(req, res, next) {
             res.end();
         }
         else {
-            console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-            // console.log(req.user, 'everyRequest');
-            res.redirect('/admin');
+            if (req.originalUrl != '/admin') {
+                console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+                // console.log(req.user, 'everyRequest');
+                res.redirect('/admin');
+            }
+            else if (req.originalUrl == '/admin') {
+                console.log('logged in!');
+                next();
+            }
         }
     }
 }
