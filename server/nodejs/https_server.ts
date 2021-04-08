@@ -163,13 +163,19 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       // console.log(req.user);
       console.log('not logged in');
     }
-    // else if(req.session.passport.user != "admin")
-    // {
-    //   console.log('a');
-    //   res.sendFile('index.html', {root: rootdirectory});
-    //   console.log(req.session.passport.user);
-    //   next();
-    // }
+    else if(req.user != "admin" && req.originalUrl == "/login")
+    {
+      if(ipList.includes(req.socket.remoteAddress!))
+      {
+        console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+        res.send('banned L');
+        res.end();
+      }
+      else
+      {
+        res.redirect('/login');
+      }
+    }
     else if(req.user == "admin" && req.originalUrl != '/admin')
     {
       if(ipList.includes(req.socket.remoteAddress!))
@@ -181,26 +187,20 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       else
       {
         res.redirect('/admin');
-        // next();
-        // if(req.originalUrl != '/admin')
-        // {
-        //   // console.log(req.user);
-        //   console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-        //   // console.log(req.user, 'everyRequest');
-        //   res.redirect('/admin');
-        //   res.end();
-        //   // next();
-        // }
-        // else if(req.originalUrl == '/admin')
-        // {
-        //   console.log('logged in!');
-        //   next();
-        // }
       }
     }
     else if(req.user == "admin" && req.originalUrl == "/admin")
     {
-      next();
+      if(ipList.includes(req.socket.remoteAddress!))
+      {
+        console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+        res.send('banned L');
+        res.end();
+      }
+      else
+      {
+        res.redirect('/admin');
+      }
     }
 }
 
