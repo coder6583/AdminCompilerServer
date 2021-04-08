@@ -310,10 +310,12 @@ $(() => {
 		$('#memory-total').text((usage.total / 1000000).toFixed(1));
 	});
 	socket.on('network-usage', (usage :{received: number, transmitted: number}) => {
-		chartData.NetworkUp = usage.transmitted / 1000;
-		chartData.NetworkDown = usage.received / 1000;
-		$('#network-up-rate').text(SI(usage.transmitted));
-		$('#network-down-rate').text(SI(usage.received));
+		const transmitted = usage.transmitted || 0;
+		const received = usage.received || 0;
+		chartData.NetworkUp = transmitted / 1000;
+		chartData.NetworkDown = received / 1000;
+		$('#network-up-rate').text(SI(transmitted));
+		$('#network-down-rate').text(SI(received));
 	});
 	socket.on('disk-usage', (usage :{read: number, write: number}) => {
 		chartData.DiskRead = usage.read / 1000;
