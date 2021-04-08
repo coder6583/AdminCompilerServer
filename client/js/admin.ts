@@ -125,7 +125,7 @@ $(() => {
 			loading.addClass('show');
 		}, 200);
 	});
-	socket.on('logReturn', (log :{value: serverLog[]) => {
+	socket.on('logReturn', (log :{value: serverLog[]}) => {
 		$('#server-log > tbody').html();
 		parseServerLog(log.value);
 		$('#server-log ~ .loading-div').removeClass('show');
