@@ -184,6 +184,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
           console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
           // console.log(req.user, 'everyRequest');
           res.redirect('/admin');
+          next();
         }
         else if(req.originalUrl == '/admin')
         {
