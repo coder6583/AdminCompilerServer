@@ -587,7 +587,7 @@ io.sockets.on('connection', (socket:any) => {
                   return;
                 }
               }
-              if(input.category)
+              if(input.category.length > 0)
               {
                 let inCategory = false;
                 input.category.forEach((cat: any) => {
@@ -601,7 +601,7 @@ io.sockets.on('connection', (socket:any) => {
                   return;
                 }
               }
-              if(input.keyword)
+              if(input.keyword.length > 0)
               {
                 let hasKeyword = false;
                 input.keyword.forEach((keyword: any) => {
@@ -622,7 +622,7 @@ io.sockets.on('connection', (socket:any) => {
       }
       if(filterAdminBool == true)
       {
-        fs.readFile('/home/pi/log.json', (err: any, data: any) => {
+        fs.readFile('/home/pi/adminlog.json', (err: any, data: any) => {
           if(err) console.error(err);
           else
           {

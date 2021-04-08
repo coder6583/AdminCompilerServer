@@ -561,7 +561,7 @@ io.sockets.on('connection', function (socket) {
                                     return;
                                 }
                             }
-                            if (input.category) {
+                            if (input.category.length > 0) {
                                 var inCategory_1 = false;
                                 input.category.forEach(function (cat) {
                                     if (element.category == cat) {
@@ -572,7 +572,7 @@ io.sockets.on('connection', function (socket) {
                                     return;
                                 }
                             }
-                            if (input.keyword) {
+                            if (input.keyword.length > 0) {
                                 var hasKeyword_1 = false;
                                 input.keyword.forEach(function (keyword) {
                                     if (element.value.includes(keyword)) {
@@ -589,7 +589,7 @@ io.sockets.on('connection', function (socket) {
                 });
             }
             if (filterAdminBool == true) {
-                fs_1.default.readFile('/home/pi/log.json', function (err, data) {
+                fs_1.default.readFile('/home/pi/adminlog.json', function (err, data) {
                     if (err)
                         console.error(err);
                     else {
