@@ -185,7 +185,7 @@ function everyRequest(req, res, next) {
     //   console.log(req.session.passport.user);
     //   next();
     // }
-    else {
+    else if (req.user == "admin" && req.originalUrl != '/admin') {
         if (ipList.includes(req.socket.remoteAddress)) {
             console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
             res.send('banned L');

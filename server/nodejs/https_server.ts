@@ -170,7 +170,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     //   console.log(req.session.passport.user);
     //   next();
     // }
-    else
+    else if(req.user == "admin" && req.originalUrl != '/admin')
     {
       if(ipList.includes(req.socket.remoteAddress!))
       {
