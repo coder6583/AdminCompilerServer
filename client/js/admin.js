@@ -279,7 +279,6 @@ $(function () {
                                                     x: Date.now(),
                                                     // @ts-ignore
                                                     y: chartData[dataset.label],
-                                                    // y: Math.floor(Math.random() * 100)
                                                 });
                                             });
                                         }
@@ -323,7 +322,7 @@ $(function () {
                         }
                     },
                     responsive: true,
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: false
                 }
             });
         }

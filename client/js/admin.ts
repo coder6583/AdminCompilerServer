@@ -169,7 +169,7 @@ $(() => {
 		network: '167, 79, 1',
 		disk: '77, 166, 12'
 	}
-	const monitorDatasets = {
+	const monitorDatasets: {[key :string]: any} = {
 		cpu: [{
 			label: 'CPU',
 			borderColor: `rgb(${colors.cpu})`,
@@ -239,7 +239,6 @@ $(() => {
 												x: Date.now(),
 												// @ts-ignore
 												y: chartData[dataset.label],
-												// y: Math.floor(Math.random() * 100)
 											});
 										});
 									}
@@ -283,7 +282,7 @@ $(() => {
 						}
 					},
 					responsive: true,
-					maintainAspectRatio: false,
+					maintainAspectRatio: false
 				}
 			});
 		}
