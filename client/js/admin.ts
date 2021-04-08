@@ -15,7 +15,6 @@ $(() => {
 
 	// コンソール
 	$('#console').terminal(function(command) {
-		console.log(command);
 		if (command) {
 			try {
 				evalCommand(command, this);
@@ -335,7 +334,6 @@ async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 		command: cmd
 	});
 	function receiveResult(result: {success: boolean, result: string}){
-		console.log('aaaa');
 		if (result.success) {
 			terminal.echo(result.result).resume();
 		}else {

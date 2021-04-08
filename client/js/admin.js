@@ -48,7 +48,6 @@ $(function () {
     });
     // コンソール
     $('#console').terminal(function (command) {
-        console.log(command);
         if (command) {
             try {
                 evalCommand(command, this);
@@ -373,7 +372,6 @@ var socket = io.connect('');
 function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
         function receiveResult(result) {
-            console.log('aaaa');
             if (result.success) {
                 terminal.echo(result.result).resume();
             }
