@@ -595,6 +595,7 @@ io.sockets.on('connection', function (socket) {
                 });
             }
             if (filterMainBool == true) {
+                console.log('admin');
                 fs_1.default.readFile('/home/pi/adminlog.json', function (err, data) {
                     if (err)
                         console.error(err);

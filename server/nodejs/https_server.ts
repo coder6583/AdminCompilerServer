@@ -628,6 +628,7 @@ io.sockets.on('connection', (socket:any) => {
       }
       if(filterMainBool == true)
       {
+        console.log('admin');
         fs.readFile('/home/pi/adminlog.json', (err: any, data: any) => {
           if(err) console.error(err);
           else
