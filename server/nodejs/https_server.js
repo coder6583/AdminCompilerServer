@@ -193,7 +193,7 @@ function everyRequest(req, res, next) {
             res.end();
         }
         else {
-            console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+            // console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
             next();
             //   if(req.originalUrl != '/admin')
             //   {
