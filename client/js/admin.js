@@ -48,7 +48,6 @@ $(function () {
     });
     // コンソール
     $('#console').terminal(function (command) {
-        console.log(command);
         if (command) {
             try {
                 evalCommand(command, this);
@@ -360,10 +359,12 @@ $(function () {
         $('#network-down-rate').text(SI(received));
     });
     socket.on('disk-usage', function (usage) {
-        chartData.DiskRead = usage.read / 1000;
-        chartData.DiskWrite = usage.write / 1000;
-        $('#disk-read-rate').text(SI(usage.read));
-        $('#disk-write-rate').text(SI(usage.write));
+        var read = usage.read || 0;
+        var write = usage.write || 0;
+        chartData.DiskRead = read / 1000;
+        chartData.DiskWrite = write / 1000;
+        $('#disk-read-rate').text(SI(read));
+        $('#disk-write-rate').text(SI(write));
     });
 });
 // @ts-ignore
@@ -371,7 +372,6 @@ var socket = io.connect('');
 function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
         function receiveResult(result) {
-            console.log('aaaa');
             if (result.success) {
                 terminal.echo(result.result).resume();
             }

@@ -15,7 +15,6 @@ $(() => {
 
 	// コンソール
 	$('#console').terminal(function(command) {
-		console.log(command);
 		if (command) {
 			try {
 				evalCommand(command, this);
@@ -317,10 +316,12 @@ $(() => {
 		$('#network-down-rate').text(SI(received));
 	});
 	socket.on('disk-usage', (usage :{read: number, write: number}) => {
-		chartData.DiskRead = usage.read / 1000;
-		chartData.DiskWrite = usage.write / 1000;
-		$('#disk-read-rate').text(SI(usage.read));
-		$('#disk-write-rate').text(SI(usage.write));
+		const read = usage.read || 0;
+		const write = usage.write || 0;
+		chartData.DiskRead = read / 1000;
+		chartData.DiskWrite = write / 1000;
+		$('#disk-read-rate').text(SI(read));
+		$('#disk-write-rate').text(SI(write));
 	});
 });
 
@@ -333,7 +334,6 @@ async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 		command: cmd
 	});
 	function receiveResult(result: {success: boolean, result: string}){
-		console.log('aaaa');
 		if (result.success) {
 			terminal.echo(result.result).resume();
 		}else {
