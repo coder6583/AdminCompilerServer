@@ -82,7 +82,6 @@ $(function () {
             var tbody = table.getElementsByTagName('tbody')[0];
             var labelHeight = (_a = table.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('label')[0].scrollHeight;
             if (labelHeight) {
-                console.log(($(window).height() || 0) - labelHeight);
                 table.style.maxHeight = ($(window).height() || 0) - labelHeight + "px";
                 tbody.style.maxHeight = ($(window).height() || 0) - labelHeight - 40 + "px";
             }

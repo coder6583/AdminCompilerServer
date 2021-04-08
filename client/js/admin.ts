@@ -48,8 +48,6 @@ $(() => {
 			const tbody = table.getElementsByTagName('tbody')[0];
 			const labelHeight = table.parentElement?.getElementsByClassName('label')[0].scrollHeight;
 			if (labelHeight) {
-				console.log(($(window).height() || 0) - labelHeight);
-				
 				table.style.maxHeight = `${($(window).height() || 0) - labelHeight}px`;
 				tbody.style.maxHeight = `${($(window).height() || 0) - labelHeight - 40}px`;
 			}
