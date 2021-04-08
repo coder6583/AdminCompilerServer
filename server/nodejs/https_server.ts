@@ -561,12 +561,15 @@ io.sockets.on('connection', (socket:any) => {
         filterMainBool = true;
         filterAdminBool = true;
       }
-      input.server.forEach((element: any) => {
-        if(element == "main")
+      else if(input.server)
+      {
+        input.server.forEach((element: any) => {
+          if(element == "main")
           filterMainBool = true;
-        else if(element == "admin")
+          else if(element == "admin")
           filterAdminBool = true;
-      });
+        });
+      }
       let filteredLog: serverLog[] = [];
       if(filterMainBool == true)
       {

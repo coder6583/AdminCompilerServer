@@ -539,12 +539,14 @@ io.sockets.on('connection', function (socket) {
                 filterMainBool = true;
                 filterAdminBool = true;
             }
-            input.server.forEach(function (element) {
-                if (element == "main")
-                    filterMainBool = true;
-                else if (element == "admin")
-                    filterAdminBool = true;
-            });
+            else if (input.server) {
+                input.server.forEach(function (element) {
+                    if (element == "main")
+                        filterMainBool = true;
+                    else if (element == "admin")
+                        filterAdminBool = true;
+                });
+            }
             filteredLog = [];
             if (filterMainBool == true) {
                 fs_1.default.readFile('/home/pi/log.json', function (err, data) {
