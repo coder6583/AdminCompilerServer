@@ -175,6 +175,7 @@ function everyRequest(req, res, next) {
             successRedirect: '/admin',
             failureRedirect: '/login'
         })(req, res, next);
+        console.log(req.user);
         console.log('not logged in');
     }
     // else if(req.session.passport.user != "admin")
