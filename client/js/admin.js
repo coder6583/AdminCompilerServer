@@ -360,10 +360,12 @@ $(function () {
         $('#network-down-rate').text(SI(received));
     });
     socket.on('disk-usage', function (usage) {
-        chartData.DiskRead = usage.read / 1000;
-        chartData.DiskWrite = usage.write / 1000;
-        $('#disk-read-rate').text(SI(usage.read));
-        $('#disk-write-rate').text(SI(usage.write));
+        var read = usage.read || 0;
+        var write = usage.write || 0;
+        chartData.DiskRead = read / 1000;
+        chartData.DiskWrite = write / 1000;
+        $('#disk-read-rate').text(SI(read));
+        $('#disk-write-rate').text(SI(write));
     });
 });
 // @ts-ignore
