@@ -533,6 +533,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         var filterMainBool, filterAdminBool, filteredLog;
         return __generator(this, function (_a) {
+            console.log(input);
             filterMainBool = false;
             filterAdminBool = false;
             if (!input.server) {

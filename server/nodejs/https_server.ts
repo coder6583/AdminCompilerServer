@@ -554,6 +554,7 @@ io.sockets.on('connection', (socket:any) => {
       }
     });
     socket.on('logGet', async (input: any) => {
+      console.log(input);
       let filterMainBool = false;
       let filterAdminBool = false;
       if(!input.server)
