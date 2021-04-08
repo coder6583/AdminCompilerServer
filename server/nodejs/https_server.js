@@ -169,7 +169,6 @@ app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
-    var _this = this;
     console.log(req.user);
     if (req.user != "admin" && (req.originalUrl != '/login')) {
         passport_1.default.authenticate('local', {
@@ -193,7 +192,7 @@ function everyRequest(req, res, next) {
             res.end();
         }
         else {
-            // console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+            console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
             next();
             //   if(req.originalUrl != '/admin')
             //   {
@@ -208,357 +207,356 @@ function everyRequest(req, res, next) {
             //     console.log('logged in!');
             //     next();
             //   }
-            // }
         }
     }
-    app.get('/', function (req, res) {
-        res.sendFile('index.html', { root: rootdirectory });
-    });
-    app.get('/login', function (req, res) {
-        res.sendFile('index.html', { root: rootdirectory });
-    });
-    app.post('/login', function (req, res, next) {
-        console.log(req.body);
-        passport_1.default.authenticate('local', {
-            successRedirect: '/admin',
-            failureRedirect: '/login'
-        })(req, res, next);
-    });
-    app.get('/admin', function (req, res) {
-        res.sendFile('admin.html', { root: rootdirectory });
-    });
-    io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
-    io.sockets.on('connection', function (socket) {
-        function taskManager() {
-            os_utils_1.default.cpuUsage(function (percentage) {
-                // console.log('CPU: ' + percentage * 100 + '%');
-                socket.emit('cpu-usage', {
-                    percentage: percentage * 100
-                });
+}
+app.get('/', function (req, res) {
+    res.sendFile('index.html', { root: rootdirectory });
+});
+app.get('/login', function (req, res) {
+    res.sendFile('index.html', { root: rootdirectory });
+});
+app.post('/login', function (req, res, next) {
+    console.log(req.body);
+    passport_1.default.authenticate('local', {
+        successRedirect: '/admin',
+        failureRedirect: '/login'
+    })(req, res, next);
+});
+app.get('/admin', function (req, res) {
+    res.sendFile('admin.html', { root: rootdirectory });
+});
+io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
+io.sockets.on('connection', function (socket) {
+    function taskManager() {
+        os_utils_1.default.cpuUsage(function (percentage) {
+            // console.log('CPU: ' + percentage * 100 + '%');
+            socket.emit('cpu-usage', {
+                percentage: percentage * 100
             });
-            systeminformation_1.default.mem().then(function (data) {
-                // console.log('Memory: ' + (100 - data.available / data.total * 100));
-                socket.emit('memory-usage', {
-                    percentage: (100 - data.available / data.total * 100),
-                    total: data.total,
-                    using: data.total - data.available,
-                });
+        });
+        systeminformation_1.default.mem().then(function (data) {
+            // console.log('Memory: ' + (100 - data.available / data.total * 100));
+            socket.emit('memory-usage', {
+                percentage: (100 - data.available / data.total * 100),
+                total: data.total,
+                using: data.total - data.available,
             });
-            systeminformation_1.default.networkStats().then(function (data) {
-                // console.log('Received:', data[0].rx_sec, 'Transmitted: ', data[0].tx_sec);
-                socket.emit('network-usage', {
-                    received: data[0].rx_sec,
-                    transmitted: data[0].tx_sec
-                });
+        });
+        systeminformation_1.default.networkStats().then(function (data) {
+            // console.log('Received:', data[0].rx_sec, 'Transmitted: ', data[0].tx_sec);
+            socket.emit('network-usage', {
+                received: data[0].rx_sec,
+                transmitted: data[0].tx_sec
             });
-            systeminformation_1.default.fsStats().then(function (data) {
-                // console.log('Read: ',data.rx_sec, 'Wrote: ', data.wx_sec);
-                socket.emit('disk-usage', {
-                    read: data.rx_sec,
-                    write: data.wx_sec
-                });
+        });
+        systeminformation_1.default.fsStats().then(function (data) {
+            // console.log('Read: ',data.rx_sec, 'Wrote: ', data.wx_sec);
+            socket.emit('disk-usage', {
+                read: data.rx_sec,
+                write: data.wx_sec
             });
-        }
-        var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
-        console.log(JSON.stringify(socket.handshake.address));
-        socket.on('command', function (input) { return __awaiter(_this, void 0, void 0, function () {
-            var words;
-            return __generator(this, function (_a) {
-                words = input.command.split(' ');
-                console.log(words[0]);
-                //update
-                if (words[0] == 'update') {
-                    if (words.length == 1) {
-                        socket.emit('result', {
-                            success: false,
-                            result: 'アップデートするサーバーを選んでください。(main, admin)'
-                        });
-                    }
-                    else if (words.length > 2) {
-                        socket.emit('result', {
-                            success: false,
-                            result: 'パラメターが多すぎます。'
-                        });
-                    }
-                    else if (words[1] == 'main') {
-                        exec('git -C /home/pi/Compiler stash', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    result: 'スタッシュ失敗'
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    result: 'スタッシュ失敗'
-                                });
-                            exec('git -C /home/pi/Compiler pull', function (err, stdout, stderr) {
-                                if (err)
-                                    socket.emit('result', {
-                                        success: false,
-                                        result: stdout + ' ' + stderr
-                                    });
-                                else
-                                    socket.emit('result', {
-                                        success: true,
-                                        result: stdout + ' ' + stderr
-                                    });
-                                exec('chmod +x /home/pi/Compiler/server/nodejs/https_server.js', function (err, stdout, stderr) {
-                                    if (err)
-                                        socket.emit('result', {
-                                            success: false,
-                                            result: stdout + ' ' + stderr
-                                        });
-                                    else
-                                        socket.emit('result', {
-                                            success: true,
-                                            result: stdout + ' ' + stderr
-                                        });
-                                });
-                            });
-                        });
-                    }
-                    else if (words[1] == 'admin') {
-                        exec('git -C /home/pi/AdminCompilerServer stash', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    result: 'スタッシュ失敗'
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    result: 'スタッシュ失敗'
-                                });
-                            exec('git -C /home/pi/AdminCompilerServer pull', function (err, stdout, stderr) {
-                                if (err)
-                                    socket.emit('result', {
-                                        success: false,
-                                        result: stdout + '\n' + stderr
-                                    });
-                                else
-                                    socket.emit('result', {
-                                        success: true,
-                                        result: stdout + '\n' + stderr
-                                    });
-                                exec('chmod +x /home/pi/AdminCompilerServer/server/nodejs/https_server.js', function (err, stdout, stderr) {
-                                    if (err)
-                                        socket.emit('result', {
-                                            success: false,
-                                            result: stdout + '\n' + stderr
-                                        });
-                                    else
-                                        socket.emit('result', {
-                                            success: true,
-                                            result: stdout + '\n' + stderr
-                                        });
-                                });
-                            });
-                        });
-                    }
-                    else if (words[1] != 'main' && words[1] != 'admin') {
-                        socket.emit('result', {
-                            success: false,
-                            result: 'アップデートするサーバーを選んでください。(main, admin)'
-                        });
-                    }
-                    else {
-                        socket.emit('result', {
-                            success: false,
-                            result: '変なことしないでください'
-                        });
-                    }
-                }
-                //restart
-                else if (words[0] == 'restart') {
-                    if (words.length == 1) {
-                        socket.emit('result', {
-                            success: false,
-                            result: '再起動するサーバーを選んでください。(main, admin)'
-                        });
-                    }
-                    else if (words.length > 2) {
-                        socket.emit('result', {
-                            success: false,
-                            result: 'パラメターが多すぎます。'
-                        });
-                    }
-                    else if (words[1] == 'main') {
-                        exec('sudo systemctl restart compilerserver', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    value: stdout + '\n' + stderr
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    value: '再起動成功'
-                                });
-                        });
-                    }
-                    else if (words[1] == 'admin') {
-                        exec('sudo systemctl restart admincompilerserver', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    value: stdout + '\n' + stderr
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    value: '再起動成功'
-                                });
-                        });
-                    }
-                    else if (words[1] != 'main' && words[1] != 'admin') {
-                        socket.emit('result', {
-                            success: false,
-                            result: '再起動するサーバーを選んでください。(main, admin)'
-                        });
-                    }
-                    else {
-                        socket.emit('result', {
-                            success: false,
-                            result: '変なことしないでください'
-                        });
-                    }
-                }
-                //start
-                else if (words[0] == 'start') {
-                    if (words.length == 1) {
-                        socket.emit('result', {
-                            success: false,
-                            result: '起動するサーバーを選んでください。(main, admin)'
-                        });
-                    }
-                    else if (words.length > 2) {
-                        socket.emit('result', {
-                            success: false,
-                            result: 'パラメターが多すぎます。'
-                        });
-                    }
-                    else if (words[1] == 'main') {
-                        exec('sudo systemctl start compilerserver', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    value: stdout + '\n' + stderr
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    value: '起動成功'
-                                });
-                        });
-                    }
-                    else if (words[1] == 'admin') {
-                        exec('sudo systemctl start admincompilerserver', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    value: stdout + '\n' + stderr
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    value: '起動成功'
-                                });
-                        });
-                    }
-                    else if (words[1] != 'main' && words[1] != 'admin') {
-                        socket.emit('result', {
-                            success: false,
-                            result: '起動するサーバーを選んでください。(main, admin)'
-                        });
-                    }
-                    else {
-                        socket.emit('result', {
-                            success: false,
-                            result: '変なことしないでください'
-                        });
-                    }
-                }
-                //stop
-                else if (words[0] == 'stop') {
-                    if (words.length == 1) {
-                        socket.emit('result', {
-                            success: false,
-                            result: '停止するサーバーを選んでください。(main, admin)'
-                        });
-                    }
-                    else if (words.length > 2) {
-                        socket.emit('result', {
-                            success: false,
-                            result: 'パラメターが多すぎます。'
-                        });
-                    }
-                    else if (words[1] == 'main') {
-                        exec('sudo systemctl stop compilerserver', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    value: stdout + '\n' + stderr
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    value: '停止成功'
-                                });
-                        });
-                    }
-                    else if (words[1] == 'admin') {
-                        exec('sudo systemctl stop admincompilerserver', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    value: stdout + '\n' + stderr
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    value: '停止成功'
-                                });
-                        });
-                    }
-                    else if (words[1] != 'main' && words[1] != 'admin') {
-                        socket.emit('result', {
-                            success: false,
-                            result: '停止するサーバーを選んでください。(main, admin)'
-                        });
-                    }
-                    else {
-                        socket.emit('result', {
-                            success: false,
-                            result: '変なことしないでください'
-                        });
-                    }
-                }
-                else if (words[0] == 'list') {
-                    console.log('aaaa');
+        });
+    }
+    var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
+    console.log(JSON.stringify(socket.handshake.address));
+    socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        var words;
+        return __generator(this, function (_a) {
+            words = input.command.split(' ');
+            console.log(words[0]);
+            //update
+            if (words[0] == 'update') {
+                if (words.length == 1) {
                     socket.emit('result', {
-                        success: true,
-                        result: 'list'
+                        success: false,
+                        result: 'アップデートするサーバーを選んでください。(main, admin)'
                     });
                 }
-                return [2 /*return*/];
-            });
-        }); });
-        // socket.on('logGet', async (input: any) => {
-        //   let filterMainBool = true;
-        //   let filterAdminBool = true;
-        //   if(input.server.length > 0)
-        // })
-        socket.on('disconnect', function () {
-            socket.removeAllListeners('command');
+                else if (words.length > 2) {
+                    socket.emit('result', {
+                        success: false,
+                        result: 'パラメターが多すぎます。'
+                    });
+                }
+                else if (words[1] == 'main') {
+                    exec('git -C /home/pi/Compiler stash', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                result: 'スタッシュ失敗'
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                result: 'スタッシュ失敗'
+                            });
+                        exec('git -C /home/pi/Compiler pull', function (err, stdout, stderr) {
+                            if (err)
+                                socket.emit('result', {
+                                    success: false,
+                                    result: stdout + ' ' + stderr
+                                });
+                            else
+                                socket.emit('result', {
+                                    success: true,
+                                    result: stdout + ' ' + stderr
+                                });
+                            exec('chmod +x /home/pi/Compiler/server/nodejs/https_server.js', function (err, stdout, stderr) {
+                                if (err)
+                                    socket.emit('result', {
+                                        success: false,
+                                        result: stdout + ' ' + stderr
+                                    });
+                                else
+                                    socket.emit('result', {
+                                        success: true,
+                                        result: stdout + ' ' + stderr
+                                    });
+                            });
+                        });
+                    });
+                }
+                else if (words[1] == 'admin') {
+                    exec('git -C /home/pi/AdminCompilerServer stash', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                result: 'スタッシュ失敗'
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                result: 'スタッシュ失敗'
+                            });
+                        exec('git -C /home/pi/AdminCompilerServer pull', function (err, stdout, stderr) {
+                            if (err)
+                                socket.emit('result', {
+                                    success: false,
+                                    result: stdout + '\n' + stderr
+                                });
+                            else
+                                socket.emit('result', {
+                                    success: true,
+                                    result: stdout + '\n' + stderr
+                                });
+                            exec('chmod +x /home/pi/AdminCompilerServer/server/nodejs/https_server.js', function (err, stdout, stderr) {
+                                if (err)
+                                    socket.emit('result', {
+                                        success: false,
+                                        result: stdout + '\n' + stderr
+                                    });
+                                else
+                                    socket.emit('result', {
+                                        success: true,
+                                        result: stdout + '\n' + stderr
+                                    });
+                            });
+                        });
+                    });
+                }
+                else if (words[1] != 'main' && words[1] != 'admin') {
+                    socket.emit('result', {
+                        success: false,
+                        result: 'アップデートするサーバーを選んでください。(main, admin)'
+                    });
+                }
+                else {
+                    socket.emit('result', {
+                        success: false,
+                        result: '変なことしないでください'
+                    });
+                }
+            }
+            //restart
+            else if (words[0] == 'restart') {
+                if (words.length == 1) {
+                    socket.emit('result', {
+                        success: false,
+                        result: '再起動するサーバーを選んでください。(main, admin)'
+                    });
+                }
+                else if (words.length > 2) {
+                    socket.emit('result', {
+                        success: false,
+                        result: 'パラメターが多すぎます。'
+                    });
+                }
+                else if (words[1] == 'main') {
+                    exec('sudo systemctl restart compilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '再起動成功'
+                            });
+                    });
+                }
+                else if (words[1] == 'admin') {
+                    exec('sudo systemctl restart admincompilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '再起動成功'
+                            });
+                    });
+                }
+                else if (words[1] != 'main' && words[1] != 'admin') {
+                    socket.emit('result', {
+                        success: false,
+                        result: '再起動するサーバーを選んでください。(main, admin)'
+                    });
+                }
+                else {
+                    socket.emit('result', {
+                        success: false,
+                        result: '変なことしないでください'
+                    });
+                }
+            }
+            //start
+            else if (words[0] == 'start') {
+                if (words.length == 1) {
+                    socket.emit('result', {
+                        success: false,
+                        result: '起動するサーバーを選んでください。(main, admin)'
+                    });
+                }
+                else if (words.length > 2) {
+                    socket.emit('result', {
+                        success: false,
+                        result: 'パラメターが多すぎます。'
+                    });
+                }
+                else if (words[1] == 'main') {
+                    exec('sudo systemctl start compilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '起動成功'
+                            });
+                    });
+                }
+                else if (words[1] == 'admin') {
+                    exec('sudo systemctl start admincompilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '起動成功'
+                            });
+                    });
+                }
+                else if (words[1] != 'main' && words[1] != 'admin') {
+                    socket.emit('result', {
+                        success: false,
+                        result: '起動するサーバーを選んでください。(main, admin)'
+                    });
+                }
+                else {
+                    socket.emit('result', {
+                        success: false,
+                        result: '変なことしないでください'
+                    });
+                }
+            }
+            //stop
+            else if (words[0] == 'stop') {
+                if (words.length == 1) {
+                    socket.emit('result', {
+                        success: false,
+                        result: '停止するサーバーを選んでください。(main, admin)'
+                    });
+                }
+                else if (words.length > 2) {
+                    socket.emit('result', {
+                        success: false,
+                        result: 'パラメターが多すぎます。'
+                    });
+                }
+                else if (words[1] == 'main') {
+                    exec('sudo systemctl stop compilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '停止成功'
+                            });
+                    });
+                }
+                else if (words[1] == 'admin') {
+                    exec('sudo systemctl stop admincompilerserver', function (err, stdout, stderr) {
+                        if (err)
+                            socket.emit('result', {
+                                success: false,
+                                value: stdout + '\n' + stderr
+                            });
+                        else
+                            socket.emit('result', {
+                                success: true,
+                                value: '停止成功'
+                            });
+                    });
+                }
+                else if (words[1] != 'main' && words[1] != 'admin') {
+                    socket.emit('result', {
+                        success: false,
+                        result: '停止するサーバーを選んでください。(main, admin)'
+                    });
+                }
+                else {
+                    socket.emit('result', {
+                        success: false,
+                        result: '変なことしないでください'
+                    });
+                }
+            }
+            else if (words[0] == 'list') {
+                console.log('aaaa');
+                socket.emit('result', {
+                    success: true,
+                    result: 'list'
+                });
+            }
+            return [2 /*return*/];
         });
+    }); });
+    // socket.on('logGet', async (input: any) => {
+    //   let filterMainBool = true;
+    //   let filterAdminBool = true;
+    //   if(input.server.length > 0)
+    // })
+    socket.on('disconnect', function () {
+        socket.removeAllListeners('command');
     });
-    // 404
-    app.use(function (req, res, next) {
-        res.status(404);
-        res.sendFile('err404.html', { root: rootdirectory });
-    });
-    httpServer.listen(port, function () {
-        console.log('Server at https://rootlang.ddns.net');
-    });
-}
+});
+// 404
+app.use(function (req, res, next) {
+    res.status(404);
+    res.sendFile('err404.html', { root: rootdirectory });
+});
+httpServer.listen(port, function () {
+    console.log('Server at https://rootlang.ddns.net');
+});

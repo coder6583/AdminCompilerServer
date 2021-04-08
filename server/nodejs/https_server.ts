@@ -180,7 +180,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       }
       else
       {
-        // console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
         next();
       //   if(req.originalUrl != '/admin')
       //   {
@@ -196,7 +196,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       //     console.log('logged in!');
       //     next();
       //   }
-      // }
+      }
     }
 }
 
