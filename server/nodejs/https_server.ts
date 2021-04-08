@@ -557,14 +557,14 @@ io.sockets.on('connection', (socket:any) => {
       console.log(input);
       let filterMainBool = false;
       let filterAdminBool = false;
-      if(!input.server)
+      if(!input.filter.server)
       {
         filterMainBool = true;
         filterAdminBool = true;
       }
-      else if(input.server)
+      else if(input.filter.server)
       {
-        input.server.forEach((element: any) => {
+        input.filter.server.forEach((element: any) => {
           if(element == "main")
           filterMainBool = true;
           else if(element == "admin")
@@ -580,17 +580,17 @@ io.sockets.on('connection', (socket:any) => {
           {
             let logArray = JSON.parse(data);
             logArray.forEach((element: any) => {
-              if(input.before && input.after)
+              if(input.filter.before && input.filter.after)
               {
-                if(!(input.before <= element.timestamp && element.timestamp <= input.after))
+                if(!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after))
                 {
                   return;
                 }
               }
-              if(input.category.length > 0)
+              if(input.filter.category.length > 0)
               {
                 let inCategory = false;
-                input.category.forEach((cat: any) => {
+                input.filter.category.forEach((cat: any) => {
                   if(element.category == cat)
                   {
                     inCategory = true;
@@ -601,10 +601,10 @@ io.sockets.on('connection', (socket:any) => {
                   return;
                 }
               }
-              if(input.keyword.length > 0)
+              if(input.filter.keyword.length > 0)
               {
                 let hasKeyword = false;
-                input.keyword.forEach((keyword: any) => {
+                input.filter.keyword.forEach((keyword: any) => {
                   if(element.value.includes(keyword))
                   {
                     hasKeyword = true;
@@ -620,7 +620,7 @@ io.sockets.on('connection', (socket:any) => {
           }
         })
       }
-      if(filterAdminBool == true)
+      if(filterMainBool == true)
       {
         fs.readFile('/home/pi/adminlog.json', (err: any, data: any) => {
           if(err) console.error(err);
@@ -628,17 +628,17 @@ io.sockets.on('connection', (socket:any) => {
           {
             let logArray = JSON.parse(data);
             logArray.forEach((element: any) => {
-              if(input.before && input.after)
+              if(input.filter.before && input.filter.after)
               {
-                if(!(input.before <= element.timestamp && element.timestamp <= input.after))
+                if(!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after))
                 {
                   return;
                 }
               }
-              if(input.category)
+              if(input.filter.category.length > 0)
               {
                 let inCategory = false;
-                input.category.forEach((cat: any) => {
+                input.filter.category.forEach((cat: any) => {
                   if(element.category == cat)
                   {
                     inCategory = true;
@@ -649,10 +649,10 @@ io.sockets.on('connection', (socket:any) => {
                   return;
                 }
               }
-              if(input.keyword)
+              if(input.filter.keyword.length > 0)
               {
                 let hasKeyword = false;
-                input.keyword.forEach((keyword: any) => {
+                input.filter.keyword.forEach((keyword: any) => {
                   if(element.value.includes(keyword))
                   {
                     hasKeyword = true;
@@ -668,6 +668,7 @@ io.sockets.on('connection', (socket:any) => {
           }
         })
       }
+      console.log(filteredLog);
       socket.emit('logReturn', {
         value: filteredLog
       })

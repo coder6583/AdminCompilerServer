@@ -536,12 +536,12 @@ io.sockets.on('connection', function (socket) {
             console.log(input);
             filterMainBool = false;
             filterAdminBool = false;
-            if (!input.server) {
+            if (!input.filter.server) {
                 filterMainBool = true;
                 filterAdminBool = true;
             }
-            else if (input.server) {
-                input.server.forEach(function (element) {
+            else if (input.filter.server) {
+                input.filter.server.forEach(function (element) {
                     if (element == "main")
                         filterMainBool = true;
                     else if (element == "admin")
@@ -556,14 +556,14 @@ io.sockets.on('connection', function (socket) {
                     else {
                         var logArray = JSON.parse(data);
                         logArray.forEach(function (element) {
-                            if (input.before && input.after) {
-                                if (!(input.before <= element.timestamp && element.timestamp <= input.after)) {
+                            if (input.filter.before && input.filter.after) {
+                                if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
                                     return;
                                 }
                             }
-                            if (input.category.length > 0) {
+                            if (input.filter.category.length > 0) {
                                 var inCategory_1 = false;
-                                input.category.forEach(function (cat) {
+                                input.filter.category.forEach(function (cat) {
                                     if (element.category == cat) {
                                         inCategory_1 = true;
                                     }
@@ -572,9 +572,9 @@ io.sockets.on('connection', function (socket) {
                                     return;
                                 }
                             }
-                            if (input.keyword.length > 0) {
+                            if (input.filter.keyword.length > 0) {
                                 var hasKeyword_1 = false;
-                                input.keyword.forEach(function (keyword) {
+                                input.filter.keyword.forEach(function (keyword) {
                                     if (element.value.includes(keyword)) {
                                         hasKeyword_1 = true;
                                     }
@@ -588,21 +588,21 @@ io.sockets.on('connection', function (socket) {
                     }
                 });
             }
-            if (filterAdminBool == true) {
+            if (filterMainBool == true) {
                 fs_1.default.readFile('/home/pi/adminlog.json', function (err, data) {
                     if (err)
                         console.error(err);
                     else {
                         var logArray = JSON.parse(data);
                         logArray.forEach(function (element) {
-                            if (input.before && input.after) {
-                                if (!(input.before <= element.timestamp && element.timestamp <= input.after)) {
+                            if (input.filter.before && input.filter.after) {
+                                if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
                                     return;
                                 }
                             }
-                            if (input.category) {
+                            if (input.filter.category.length > 0) {
                                 var inCategory_2 = false;
-                                input.category.forEach(function (cat) {
+                                input.filter.category.forEach(function (cat) {
                                     if (element.category == cat) {
                                         inCategory_2 = true;
                                     }
@@ -611,9 +611,9 @@ io.sockets.on('connection', function (socket) {
                                     return;
                                 }
                             }
-                            if (input.keyword) {
+                            if (input.filter.keyword.length > 0) {
                                 var hasKeyword_2 = false;
-                                input.keyword.forEach(function (keyword) {
+                                input.filter.keyword.forEach(function (keyword) {
                                     if (element.value.includes(keyword)) {
                                         hasKeyword_2 = true;
                                     }
@@ -627,6 +627,7 @@ io.sockets.on('connection', function (socket) {
                     }
                 });
             }
+            console.log(filteredLog);
             socket.emit('logReturn', {
                 value: filteredLog
             });
