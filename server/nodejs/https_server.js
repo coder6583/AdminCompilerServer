@@ -193,7 +193,7 @@ function everyRequest(req, res, next) {
         else {
             console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
             // console.log(req.user, 'everyRequest');
-            next();
+            res.redirect('/admin');
         }
     }
 }
@@ -213,9 +213,6 @@ app.post('/login', function (req, res, next) {
 app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
 });
-var users = new Map();
-var usersDirectory = new Map();
-var usersProjectDirectory = new Map();
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
     function taskManager() {
@@ -533,6 +530,11 @@ io.sockets.on('connection', function (socket) {
             return [2 /*return*/];
         });
     }); });
+    // socket.on('logGet', async (input: any) => {
+    //   let filterMainBool = true;
+    //   let filterAdminBool = true;
+    //   if(input.server.length > 0)
+    // })
     socket.on('disconnect', function () {
         socket.removeAllListeners('command');
     });

@@ -72,6 +72,7 @@ fs.watchFile('/home/pi/ipBlacklist', (curr: any, prev: any) => {
     }
   });
 });
+
 //database (mongoose)
 import mongoose from 'mongoose';
 const User: mongoose.Model<any, any> = require('./database');
@@ -180,7 +181,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       {
         console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
         // console.log(req.user, 'everyRequest');
-        next();
+        res.redirect('/admin');
       }
     }
 }
@@ -204,10 +205,6 @@ app.post('/login', (req: express.Request, res: express.Response, next: express.N
 app.get('/admin', (req: express.Request, res: express.Response) => {
     res.sendFile('admin.html', {root: rootdirectory});
 })
-
-let users: Map<string, string> = new Map();
-let usersDirectory: Map<string, string> = new Map();
-let usersProjectDirectory: Map<string, string> = new Map();
 
 io.use(sharedSession(sessionMiddleware, {
 
@@ -556,12 +553,17 @@ io.sockets.on('connection', (socket:any) => {
         });
       }
     });
+    // socket.on('logGet', async (input: any) => {
+    //   let filterMainBool = true;
+    //   let filterAdminBool = true;
+    //   if(input.server.length > 0)
+    // })
     socket.on('disconnect', () => {
       socket.removeAllListeners('command');
     })
 });
 
-  
+
 // 404
 app.use((req :express.Request, res :express.Response, next) => {
   res.status(404);
