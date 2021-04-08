@@ -205,7 +205,7 @@ function everyRequest(req, res, next) {
             res.end();
         }
         else {
-            res.redirect('/admin');
+            next();
         }
     }
 }

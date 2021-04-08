@@ -199,7 +199,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       }
       else
       {
-        res.redirect('/admin');
+        next();
       }
     }
 }
