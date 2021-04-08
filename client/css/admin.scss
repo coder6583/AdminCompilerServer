@@ -246,13 +246,6 @@ div.tab-server-log {
 				width: 150px;
 			}
 		}
-
-		tbody {
-			.loading {
-				position: absolute;
-				left: 200px;
-			}
-		}
 	}
 
 	.loading-div {
@@ -410,7 +403,10 @@ div.tab-status {
 			}
 		}
 
-		canvas {
+		.chart-div {
+			position: relative;
+			width: 100%;
+			height: 150px;
 		}
 	}
 }
