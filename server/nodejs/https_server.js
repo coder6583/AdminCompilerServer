@@ -198,7 +198,7 @@ function everyRequest(req, res, next) {
             }
             else if (req.originalUrl == '/admin') {
                 console.log('logged in!');
-                next();
+                // next();
             }
         }
     }
