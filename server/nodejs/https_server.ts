@@ -180,7 +180,8 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       }
       else
       {
-        next();
+        res.redirect('/admin');
+        // next();
         // if(req.originalUrl != '/admin')
         // {
         //   // console.log(req.user);
@@ -196,6 +197,10 @@ function everyRequest(req: express.Request, res: express.Response, next: express
         //   next();
         // }
       }
+    }
+    else if(req.user == "admin" && req.originalUrl == "/admin")
+    {
+      next();
     }
 }
 

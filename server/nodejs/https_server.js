@@ -192,7 +192,8 @@ function everyRequest(req, res, next) {
             res.end();
         }
         else {
-            next();
+            res.redirect('/admin');
+            // next();
             // if(req.originalUrl != '/admin')
             // {
             //   // console.log(req.user);
@@ -208,6 +209,9 @@ function everyRequest(req, res, next) {
             //   next();
             // }
         }
+    }
+    else if (req.user == "admin" && req.originalUrl == "/admin") {
+        next();
     }
 }
 app.get('/', function (req, res) {
