@@ -154,9 +154,9 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
             });
         }); });
         socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-            var serverFilter, filteredLog, _a, _b, _c, _d;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var serverFilter, filteredLog, _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         console.log(input);
                         serverFilter = functions.parseServerFilter(input.filter.server);
@@ -165,16 +165,12 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         _b = (_a = filteredLog).concat;
                         return [4 /*yield*/, functions.parseFilter('/home/pi/log.json', input.filter)];
                     case 1:
-                        _b.apply(_a, [_e.sent()]);
-                        _e.label = 2;
+                        _b.apply(_a, [_c.sent()]);
+                        _c.label = 2;
                     case 2:
-                        if (!(serverFilter.admin == true)) return [3 /*break*/, 4];
-                        _d = (_c = filteredLog).concat;
-                        return [4 /*yield*/, functions.parseFilter('/home/pi/adminlog.json', input.filter)];
-                    case 3:
-                        _d.apply(_c, [_e.sent()]);
-                        _e.label = 4;
-                    case 4:
+                        if (serverFilter.admin == true) {
+                            // filteredLog.concat(await functions.parseFilter('/home/pi/adminlog.json', input.filter));
+                        }
                         console.log(filteredLog);
                         socket.emit('logReturn', {
                             value: filteredLog
