@@ -163,6 +163,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 // console.log(filterMainBool, filterAdminBool);
                 if (serverFilter.main == true) {
                     functions.parseFilter('/home/pi/log.json', input.filter).then(function (value) {
+                        console.log(value);
                         filteredLog.concat(value);
                         if (serverFilter.admin == true) {
                             functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
