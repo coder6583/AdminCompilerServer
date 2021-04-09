@@ -483,6 +483,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
         });
       }
     })
+    console.log(filteredLog);
     resolve(filteredLog);
   })
 }

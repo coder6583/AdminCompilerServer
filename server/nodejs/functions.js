@@ -475,6 +475,7 @@ function parseFilter(jsonPath, filter) {
                             });
                         }
                     });
+                    console.log(filteredLog);
                     resolve(filteredLog);
                 })];
         });
