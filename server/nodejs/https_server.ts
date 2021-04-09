@@ -150,6 +150,7 @@ io.sockets.on('connection', async (socket:any) => {
               filteredLog.concat(value);
             });
           }
+          console.log(filteredLog);
           socket.emit('logReturn', {
             value: filteredLog
           })
@@ -159,12 +160,12 @@ io.sockets.on('connection', async (socket:any) => {
       {
         functions.parseFilter('/home/pi/adminlog.json', input.filter).then((value: any) => {
           filteredLog.concat(value);
+
           socket.emit('logReturn', {
             value: filteredLog
           })
         });
       }
-      console.log(filteredLog);
 
     })
     socket.on('disconnect', () => {

@@ -168,6 +168,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                                 filteredLog.concat(value);
                             });
                         }
+                        console.log(filteredLog);
                         socket.emit('logReturn', {
                             value: filteredLog
                         });
@@ -181,7 +182,6 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         });
                     });
                 }
-                console.log(filteredLog);
                 return [2 /*return*/];
             });
         }); });
