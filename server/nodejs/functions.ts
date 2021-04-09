@@ -483,9 +483,9 @@ async function parseFilter(jsonPath: string, filter: logFilter)
           filteredLog.push(element);
         });
       }
+      resolve(filteredLog);
     })
     // console.log(filteredLog);
-    resolve(filteredLog);
   })
 }
 module.exports = {mountUsb, updateIpBlacklist, loginCheck, taskManager, parseCommand, parseServerFilter, parseFilter};

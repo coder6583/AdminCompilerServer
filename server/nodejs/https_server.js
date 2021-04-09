@@ -162,14 +162,14 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         serverFilter = functions.parseServerFilter(input.filter.server);
                         filteredLog = [];
                         if (!(serverFilter.main == true)) return [3 /*break*/, 2];
-                        _b = (_a = filteredLog).push;
+                        _b = (_a = filteredLog).concat;
                         return [4 /*yield*/, functions.parseFilter('/home/pi/log.json', input.filter)];
                     case 1:
                         _b.apply(_a, [_e.sent()]);
                         _e.label = 2;
                     case 2:
                         if (!(serverFilter.admin == true)) return [3 /*break*/, 4];
-                        _d = (_c = filteredLog).push;
+                        _d = (_c = filteredLog).concat;
                         return [4 /*yield*/, functions.parseFilter('/home/pi/adminlog.json', input.filter)];
                     case 3:
                         _d.apply(_c, [_e.sent()]);

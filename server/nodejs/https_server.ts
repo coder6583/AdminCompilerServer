@@ -142,11 +142,11 @@ io.sockets.on('connection', async (socket:any) => {
       // console.log(filterMainBool, filterAdminBool);
       if(serverFilter.main == true)
       {
-        filteredLog.push(await functions.parseFilter('/home/pi/log.json', input.filter));
+        filteredLog.concat(await functions.parseFilter('/home/pi/log.json', input.filter));
       }
       if(serverFilter.admin == true)
       {
-        filteredLog.push(await functions.parseFilter('/home/pi/adminlog.json', input.filter));
+        filteredLog.concat(await functions.parseFilter('/home/pi/adminlog.json', input.filter));
       }
       console.log(filteredLog);
       socket.emit('logReturn', {
