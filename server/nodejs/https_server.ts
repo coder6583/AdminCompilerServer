@@ -148,7 +148,7 @@ io.sockets.on('connection', async (socket:any) => {
       {
         filteredLog.concat(await functions.parseFilter('/home/pi/adminlog.json', input.filter));
       }
-      // console.log(filteredLog);
+      console.log(filteredLog);
       socket.emit('logReturn', {
         value: filteredLog
       })

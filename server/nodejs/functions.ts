@@ -479,14 +479,13 @@ async function parseFilter(jsonPath: string, filter: logFilter)
             }
           }
           // console.log('i made it');
-          console.log(element);
+          // console.log(element);
           filteredLog.push(element);
         });
       }
-      console.log(filteredLog);
+      // console.log(filteredLog);
       resolve(filteredLog);
     })
-    // console.log(filteredLog);
   })
 }
 module.exports = {mountUsb, updateIpBlacklist, loginCheck, taskManager, parseCommand, parseServerFilter, parseFilter};

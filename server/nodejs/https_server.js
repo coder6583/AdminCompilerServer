@@ -175,7 +175,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         _d.apply(_c, [_e.sent()]);
                         _e.label = 4;
                     case 4:
-                        // console.log(filteredLog);
+                        console.log(filteredLog);
                         socket.emit('logReturn', {
                             value: filteredLog
                         });
