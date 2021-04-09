@@ -81,16 +81,20 @@ $(function () {
             var _a;
             var filterString = ((_a = $('#log-filter-box').val()) === null || _a === void 0 ? void 0 : _a.toString()) || '';
             var filterObject = (function () {
+                var _a;
                 var result = {
                     keyword: [],
                     category: [],
+                    server: [],
                     before: undefined,
                     after: undefined
                 };
-                var selectors = filterString.split(' ');
+                var selectors = (_a = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)) === null || _a === void 0 ? void 0 : _a.map(function (selector) { return selector.replace(/^"?(.*)"?$/, '$1'); });
+                if (!selectors)
+                    return;
                 selectors.forEach(function (selector) {
                     var _a;
-                    var unEscape = function (str) { return str.replace('\#', '#').replace('\@', '@').replace('\~', '~').replace('\\\\', '\\'); };
+                    var unEscape = function (str) { return str.replace('\\#', '#').replace('\\@', '@').replace('\\~', '~').replace('\\*', '*').replace('\\\\', '\\'); };
                     var getKey = function (obj, keyword) {
                         return Object.keys(obj).reduce(function (r, key) {
                             return obj[key] === keyword ? key : r;
@@ -122,7 +126,14 @@ $(function () {
                             return moment(date).add(1, 'second');
                         }
                     };
-                    if (selector.startsWith('#')) {
+                    if (selector.startsWith('*')) {
+                        var server = (function () {
+                            var server = unEscape(selector.substr(1));
+                            return getKey(servers, server) || server;
+                        })();
+                        result.server.push(server);
+                    }
+                    else if (selector.startsWith('#')) {
                         var category = (function () {
                             var category = unEscape(selector.substr(1));
                             return getKey(categorys, category) || category;

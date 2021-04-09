@@ -46,15 +46,17 @@ $(() => {
 		filterTimer = setTimeout(() => {
 			const filterString = $('#log-filter-box').val()?.toString() || '';
 			const filterObject = (() => {
-				let result :{keyword: string[], category: string[], before: number | undefined, after: number | undefined} = {
+				let result :{keyword: string[], category: string[], server: string[], before: number | undefined, after: number | undefined} = {
 					keyword: [],
 					category: [],
+					server: [],
 					before: undefined,
 					after: undefined
 				}
-				const selectors = filterString.split(' ');
+				const selectors = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)?.map(selector => selector.replace(/^"?(.*)"?$/, '$1'));
+				if (!selectors) return;
 				selectors.forEach(selector => {
-					const unEscape = (str :string) => str.replace('\#', '#').replace('\@', '@').replace('\~', '~').replace('\\\\', '\\');
+					const unEscape = (str :string) => str.replace('\\#', '#').replace('\\@', '@').replace('\\~', '~').replace('\\*', '*').replace('\\\\', '\\');
 					const getKey = (obj :{[key: string]: string}, keyword :string) => {
 						return Object.keys(obj).reduce( (r :any, key) => {
 							return obj[key] === keyword ? key : r 
@@ -82,7 +84,13 @@ $(() => {
 						}
 					};
 
-					if (selector.startsWith('#')) {
+					if (selector.startsWith('*')) {
+						const server = (() => {
+							const server = unEscape(selector.substr(1));
+							return getKey(servers, server) || server;
+						})();
+						result.server.push(server);
+					}else if (selector.startsWith('#')) {
 						const category = (() => {
 							const category = unEscape(selector.substr(1));
 							return getKey(categorys, category) || category;
