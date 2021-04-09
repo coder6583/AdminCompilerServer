@@ -159,6 +159,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 console.log(input);
                 serverFilter = functions.parseServerFilter(input.filter.server);
                 filteredLog = [];
+                ;
                 // console.log(filterMainBool, filterAdminBool);
                 if (serverFilter.main == true) {
                     functions.parseFilter('/home/pi/log.json', input.filter).then(function (value) {

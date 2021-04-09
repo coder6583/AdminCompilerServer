@@ -139,6 +139,7 @@ io.sockets.on('connection', async (socket:any) => {
       console.log(input);
       let serverFilter = functions.parseServerFilter(input.filter.server);
       let filteredLog: serverLog[] = [];
+  ;
       // console.log(filterMainBool, filterAdminBool);
       if(serverFilter.main == true)
       {

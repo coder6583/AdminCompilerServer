@@ -57,7 +57,7 @@ interface serverLog {
 	server: string,
 	category: string;
 	value: string;
-	timestmap: number;
+	timestamp: number;
 }
 
 interface banIP {
