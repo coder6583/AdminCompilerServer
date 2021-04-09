@@ -161,16 +161,27 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 filteredLog = [];
                 // console.log(filterMainBool, filterAdminBool);
                 if (serverFilter.main == true) {
-                    functions.parseFilter('/home/pi/log.json', input.filter).then(function (value) { return console.log(value); });
-                    // console.log(a);
+                    functions.parseFilter('/home/pi/log.json', input.filter).then(function (value) {
+                        filteredLog.concat(value);
+                        if (serverFilter.admin == true) {
+                            functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
+                                filteredLog.concat(value);
+                            });
+                        }
+                        socket.emit('logReturn', {
+                            value: filteredLog
+                        });
+                    });
                 }
                 if (serverFilter.admin == true) {
-                    // filteredLog.concat(await functions.parseFilter('/home/pi/adminlog.json', input.filter));
+                    functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
+                        filteredLog.concat(value);
+                        socket.emit('logReturn', {
+                            value: filteredLog
+                        });
+                    });
                 }
                 console.log(filteredLog);
-                socket.emit('logReturn', {
-                    value: filteredLog
-                });
                 return [2 /*return*/];
             });
         }); });

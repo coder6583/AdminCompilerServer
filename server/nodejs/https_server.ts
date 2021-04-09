@@ -142,17 +142,30 @@ io.sockets.on('connection', async (socket:any) => {
       // console.log(filterMainBool, filterAdminBool);
       if(serverFilter.main == true)
       {
-        functions.parseFilter('/home/pi/log.json', input.filter).then((value: any) => console.log(value));
-        // console.log(a);
+        functions.parseFilter('/home/pi/log.json', input.filter).then((value: any) => {
+          filteredLog.concat(value);
+          if(serverFilter.admin == true)
+          {
+            functions.parseFilter('/home/pi/adminlog.json', input.filter).then((value: any) => {
+              filteredLog.concat(value);
+            });
+          }
+          socket.emit('logReturn', {
+            value: filteredLog
+          })
+        });
       }
       if(serverFilter.admin == true)
       {
-        // filteredLog.concat(await functions.parseFilter('/home/pi/adminlog.json', input.filter));
+        functions.parseFilter('/home/pi/adminlog.json', input.filter).then((value: any) => {
+          filteredLog.concat(value);
+          socket.emit('logReturn', {
+            value: filteredLog
+          })
+        });
       }
       console.log(filteredLog);
-      socket.emit('logReturn', {
-        value: filteredLog
-      })
+
     })
     socket.on('disconnect', () => {
       socket.removeAllListeners('command');
