@@ -479,11 +479,12 @@ async function parseFilter(jsonPath: string, filter: logFilter)
             }
           }
           // console.log('i made it');
+          console.log(element);
           filteredLog.push(element);
         });
       }
     })
-    console.log(filteredLog);
+    // console.log(filteredLog);
     resolve(filteredLog);
   })
 }

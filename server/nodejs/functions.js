@@ -471,11 +471,12 @@ function parseFilter(jsonPath, filter) {
                                     }
                                 }
                                 // console.log('i made it');
+                                console.log(element);
                                 filteredLog.push(element);
                             });
                         }
                     });
-                    console.log(filteredLog);
+                    // console.log(filteredLog);
                     resolve(filteredLog);
                 })];
         });
