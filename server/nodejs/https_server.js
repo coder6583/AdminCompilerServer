@@ -166,15 +166,15 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         if (serverFilter.admin == true) {
                             functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
                                 filteredLog.concat(value);
+                                console.log(filteredLog);
+                                socket.emit('logReturn', {
+                                    value: filteredLog
+                                });
                             });
                         }
-                        console.log(filteredLog);
-                        socket.emit('logReturn', {
-                            value: filteredLog
-                        });
                     });
                 }
-                if (serverFilter.admin == true) {
+                else if (serverFilter.admin == true) {
                     functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
                         filteredLog.concat(value);
                         socket.emit('logReturn', {
