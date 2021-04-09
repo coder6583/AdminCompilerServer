@@ -440,7 +440,7 @@ function parseFilter(jsonPath, filter) {
                             var logArray = JSON.parse(data);
                             logArray.forEach(function (element) {
                                 if (filter.before && filter.after) {
-                                    console.log('time');
+                                    // console.log('time');
                                     if (!(filter.before <= element.timestamp && element.timestamp <= filter.after)) {
                                         console.log('not in between');
                                         return;
@@ -470,7 +470,7 @@ function parseFilter(jsonPath, filter) {
                                         return;
                                     }
                                 }
-                                console.log('i made it');
+                                // console.log('i made it');
                                 filteredLog.push(element);
                             });
                         }

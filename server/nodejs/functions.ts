@@ -441,7 +441,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
         logArray.forEach((element: any) => {
           if(filter.before && filter.after)
           {
-            console.log('time');
+            // console.log('time');
             if(!(filter.before <= element.timestamp && element.timestamp <= filter.after))
             {
               console.log('not in between');
@@ -478,7 +478,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
               return;
             }
           }
-          console.log('i made it');
+          // console.log('i made it');
           filteredLog.push(element);
         });
       }
