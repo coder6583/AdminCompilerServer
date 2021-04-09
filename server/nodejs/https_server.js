@@ -154,29 +154,24 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
             });
         }); });
         socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-            var serverFilter, filteredLog, a;
+            var serverFilter, filteredLog;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        console.log(input);
-                        serverFilter = functions.parseServerFilter(input.filter.server);
-                        filteredLog = [];
-                        if (!(serverFilter.main == true)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, functions.parseFilter('/home/pi/log.json', input.filter)];
-                    case 1:
-                        a = _a.sent();
-                        console.log(a);
-                        _a.label = 2;
-                    case 2:
-                        if (serverFilter.admin == true) {
-                            // filteredLog.concat(await functions.parseFilter('/home/pi/adminlog.json', input.filter));
-                        }
-                        console.log(filteredLog);
-                        socket.emit('logReturn', {
-                            value: filteredLog
-                        });
-                        return [2 /*return*/];
+                console.log(input);
+                serverFilter = functions.parseServerFilter(input.filter.server);
+                filteredLog = [];
+                // console.log(filterMainBool, filterAdminBool);
+                if (serverFilter.main == true) {
+                    functions.parseFilter('/home/pi/log.json', input.filter).then(function (value) { return console.log(value); });
+                    // console.log(a);
                 }
+                if (serverFilter.admin == true) {
+                    // filteredLog.concat(await functions.parseFilter('/home/pi/adminlog.json', input.filter));
+                }
+                console.log(filteredLog);
+                socket.emit('logReturn', {
+                    value: filteredLog
+                });
+                return [2 /*return*/];
             });
         }); });
         socket.on('disconnect', function () {
