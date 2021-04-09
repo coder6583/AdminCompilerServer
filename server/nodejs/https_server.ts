@@ -153,13 +153,14 @@ app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-  console.log(req.originalUrl);
+  console.log(req.user);
     if(req.user != "admin" && (req.originalUrl != '/login'))
     {
       passport.authenticate('local', {
         successRedirect: '/admin',
         failureRedirect: '/login'
       })(req,res,next);
+      // console.log(req.user);
       console.log('not logged in');
     }
     // else if(req.session.passport.user != "admin")
@@ -179,17 +180,8 @@ function everyRequest(req: express.Request, res: express.Response, next: express
       }
       else
       {
-        if(req.originalUrl != '/admin')
-        {
-          console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-          // console.log(req.user, 'everyRequest');
-          res.redirect('/admin');
-        }
-        else if(req.originalUrl == '/admin')
-        {
-          console.log('logged in!');
-          // next();
-        }
+        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+        next();
       }
     }
 }
@@ -561,11 +553,136 @@ io.sockets.on('connection', (socket:any) => {
         });
       }
     });
-    // socket.on('logGet', async (input: any) => {
-    //   let filterMainBool = true;
-    //   let filterAdminBool = true;
-    //   if(input.server.length > 0)
-    // })
+    socket.on('logGet', async (input: any) => {
+      console.log(input);
+      let filterMainBool = false;
+      let filterAdminBool = false;
+      if(!input.filter.server)
+      {
+        filterMainBool = true;
+        filterAdminBool = true;
+      }
+      else if(input.filter.server)
+      {
+        input.filter.server.forEach((element: any) => {
+          if(element == "main")
+          filterMainBool = true;
+          else if(element == "admin")
+          filterAdminBool = true;
+        });
+      }
+      let filteredLog: serverLog[] = [];
+      console.log(filterMainBool, filterAdminBool);
+      if(filterMainBool == true)
+      {
+        fs.readFile('/home/pi/log.json', (err: any, data: any) => {
+          if(err) console.error(err);
+          else
+          {
+            let logArray = JSON.parse(data);
+            logArray.forEach((element: any) => {
+              if(input.filter.before && input.filter.after)
+              {
+                console.log('time');
+                if(!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after))
+                {
+                  console.log('not in between');
+                  return;
+                }
+              }
+              if(input.filter.category.length > 0)
+              {
+                console.log('category');
+                let inCategory = false;
+                input.filter.category.forEach((cat: any) => {
+                  if(element.category == cat)
+                  {
+                    inCategory = true;
+                  }
+                });
+                if(inCategory == false)
+                {
+                  return;
+                }
+              }
+              if(input.filter.keyword.length > 0)
+              {
+                console.log('keyword');
+                let hasKeyword = false;
+                input.filter.keyword.forEach((keyword: any) => {
+                  if(element.value.includes(keyword))
+                  {
+                    hasKeyword = true;
+                  }
+                });
+                if(hasKeyword == false)
+                {
+                  return;
+                }
+              }
+              console.log('i made it');
+              filteredLog.push(element);
+            });
+          }
+        })
+      }
+      if(filterMainBool == true)
+      {
+        console.log('admin');
+        fs.readFile('/home/pi/adminlog.json', (err: any, data: any) => {
+          if(err) console.error(err);
+          else
+          {
+            let logArray = JSON.parse(data);
+            logArray.forEach((element: any) => {
+              if(input.filter.before && input.filter.after)
+              {
+                console.log('time');
+                if(!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after))
+                {
+                  return;
+                }
+              }
+              if(input.filter.category.length > 0)
+              {
+                console.log('category');
+                let inCategory = false;
+                input.filter.category.forEach((cat: any) => {
+                  if(element.category == cat)
+                  {
+                    inCategory = true;
+                  }
+                });
+                if(inCategory == false)
+                {
+                  return;
+                }
+              }
+              if(input.filter.keyword.length > 0)
+              {
+                console.log('keyword');
+                let hasKeyword = false;
+                input.filter.keyword.forEach((keyword: any) => {
+                  if(element.value.includes(keyword))
+                  {
+                    hasKeyword = true;
+                  }
+                });
+                if(hasKeyword == false)
+                {
+                  return;
+                }
+              }
+              filteredLog.push(element);
+            });
+          }
+        })
+      }
+      console.log(filteredLog);
+      socket.emit('logReturn', {
+        value: filteredLog
+      })
+    })
     socket.on('disconnect', () => {
       socket.removeAllListeners('command');
     })

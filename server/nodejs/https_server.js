@@ -169,12 +169,13 @@ app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
-    console.log(req.originalUrl);
+    console.log(req.user);
     if (req.user != "admin" && (req.originalUrl != '/login')) {
         passport_1.default.authenticate('local', {
             successRedirect: '/admin',
             failureRedirect: '/login'
         })(req, res, next);
+        // console.log(req.user);
         console.log('not logged in');
     }
     // else if(req.session.passport.user != "admin")
@@ -191,15 +192,8 @@ function everyRequest(req, res, next) {
             res.end();
         }
         else {
-            if (req.originalUrl != '/admin') {
-                console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-                // console.log(req.user, 'everyRequest');
-                res.redirect('/admin');
-            }
-            else if (req.originalUrl == '/admin') {
-                console.log('logged in!');
-                // next();
-            }
+            console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+            next();
         }
     }
 }
@@ -536,11 +530,120 @@ io.sockets.on('connection', function (socket) {
             return [2 /*return*/];
         });
     }); });
-    // socket.on('logGet', async (input: any) => {
-    //   let filterMainBool = true;
-    //   let filterAdminBool = true;
-    //   if(input.server.length > 0)
-    // })
+    socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        var filterMainBool, filterAdminBool, filteredLog;
+        return __generator(this, function (_a) {
+            console.log(input);
+            filterMainBool = false;
+            filterAdminBool = false;
+            if (!input.filter.server) {
+                filterMainBool = true;
+                filterAdminBool = true;
+            }
+            else if (input.filter.server) {
+                input.filter.server.forEach(function (element) {
+                    if (element == "main")
+                        filterMainBool = true;
+                    else if (element == "admin")
+                        filterAdminBool = true;
+                });
+            }
+            filteredLog = [];
+            console.log(filterMainBool, filterAdminBool);
+            if (filterMainBool == true) {
+                fs_1.default.readFile('/home/pi/log.json', function (err, data) {
+                    if (err)
+                        console.error(err);
+                    else {
+                        var logArray = JSON.parse(data);
+                        logArray.forEach(function (element) {
+                            if (input.filter.before && input.filter.after) {
+                                console.log('time');
+                                if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
+                                    console.log('not in between');
+                                    return;
+                                }
+                            }
+                            if (input.filter.category.length > 0) {
+                                console.log('category');
+                                var inCategory_1 = false;
+                                input.filter.category.forEach(function (cat) {
+                                    if (element.category == cat) {
+                                        inCategory_1 = true;
+                                    }
+                                });
+                                if (inCategory_1 == false) {
+                                    return;
+                                }
+                            }
+                            if (input.filter.keyword.length > 0) {
+                                console.log('keyword');
+                                var hasKeyword_1 = false;
+                                input.filter.keyword.forEach(function (keyword) {
+                                    if (element.value.includes(keyword)) {
+                                        hasKeyword_1 = true;
+                                    }
+                                });
+                                if (hasKeyword_1 == false) {
+                                    return;
+                                }
+                            }
+                            console.log('i made it');
+                            filteredLog.push(element);
+                        });
+                    }
+                });
+            }
+            if (filterMainBool == true) {
+                console.log('admin');
+                fs_1.default.readFile('/home/pi/adminlog.json', function (err, data) {
+                    if (err)
+                        console.error(err);
+                    else {
+                        var logArray = JSON.parse(data);
+                        logArray.forEach(function (element) {
+                            if (input.filter.before && input.filter.after) {
+                                console.log('time');
+                                if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
+                                    return;
+                                }
+                            }
+                            if (input.filter.category.length > 0) {
+                                console.log('category');
+                                var inCategory_2 = false;
+                                input.filter.category.forEach(function (cat) {
+                                    if (element.category == cat) {
+                                        inCategory_2 = true;
+                                    }
+                                });
+                                if (inCategory_2 == false) {
+                                    return;
+                                }
+                            }
+                            if (input.filter.keyword.length > 0) {
+                                console.log('keyword');
+                                var hasKeyword_2 = false;
+                                input.filter.keyword.forEach(function (keyword) {
+                                    if (element.value.includes(keyword)) {
+                                        hasKeyword_2 = true;
+                                    }
+                                });
+                                if (hasKeyword_2 == false) {
+                                    return;
+                                }
+                            }
+                            filteredLog.push(element);
+                        });
+                    }
+                });
+            }
+            console.log(filteredLog);
+            socket.emit('logReturn', {
+                value: filteredLog
+            });
+            return [2 /*return*/];
+        });
+    }); });
     socket.on('disconnect', function () {
         socket.removeAllListeners('command');
     });
