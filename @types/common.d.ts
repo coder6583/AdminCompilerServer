@@ -54,6 +54,7 @@ interface createProjectData
 }
 
 interface serverLog {
+	server: string,
 	category: string;
 	value: string;
 	timestmap: number;

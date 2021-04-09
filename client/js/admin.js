@@ -393,15 +393,21 @@ function evalCommand(cmd, terminal) {
 var categorys = {
     info: '情報',
     warn: '警告',
-    error: 'エラー'
+    error: 'エラー',
+};
+var servers = {
+    main: 'メイン',
+    admin: '管理者',
 };
 function parseServerLog(logs) {
     var resolveCategory = function (category) {
-        // @ts-ignore
         return categorys[category] || '';
     };
+    var resolveServer = function (server) {
+        return servers[server] || '';
+    };
     logs.forEach(function (log) {
-        $('#server-log > tbody').append("<tr><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + log.value + "</td><td>" + moment(new Date(log.timestmap)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
+        $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + log.value + "</td><td>" + moment(new Date(log.timestmap)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
     });
 }
 function parseBanIP(banIPs) {
