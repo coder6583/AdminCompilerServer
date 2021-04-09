@@ -437,7 +437,7 @@ function parseFilter(jsonPath, filter) {
                         if (err)
                             console.error(err);
                         else {
-                            var logArray = JSON.parse(data);
+                            var logArray = JSON.parse(data || "null");
                             logArray.forEach(function (element) {
                                 if (filter.before && filter.after) {
                                     // console.log('time');

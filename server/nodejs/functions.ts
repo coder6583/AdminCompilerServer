@@ -437,7 +437,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
       if(err) console.error(err);
       else
       {
-        let logArray = JSON.parse(data);
+        let logArray = JSON.parse(data||"null");
         logArray.forEach((element: any) => {
           if(filter.before && filter.after)
           {
