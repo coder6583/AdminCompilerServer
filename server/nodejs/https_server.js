@@ -154,19 +154,19 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
             });
         }); });
         socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-            var serverFilter, filteredLog, _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var serverFilter, filteredLog, a;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         console.log(input);
                         serverFilter = functions.parseServerFilter(input.filter.server);
                         filteredLog = [];
                         if (!(serverFilter.main == true)) return [3 /*break*/, 2];
-                        _b = (_a = filteredLog).concat;
                         return [4 /*yield*/, functions.parseFilter('/home/pi/log.json', input.filter)];
                     case 1:
-                        _b.apply(_a, [_c.sent()]);
-                        _c.label = 2;
+                        a = _a.sent();
+                        console.log(a);
+                        _a.label = 2;
                     case 2:
                         if (serverFilter.admin == true) {
                             // filteredLog.concat(await functions.parseFilter('/home/pi/adminlog.json', input.filter));

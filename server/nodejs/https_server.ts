@@ -142,7 +142,8 @@ io.sockets.on('connection', async (socket:any) => {
       // console.log(filterMainBool, filterAdminBool);
       if(serverFilter.main == true)
       {
-        filteredLog.concat(await functions.parseFilter('/home/pi/log.json', input.filter));
+        let a = await functions.parseFilter('/home/pi/log.json', input.filter);
+        console.log(a);
       }
       if(serverFilter.admin == true)
       {
