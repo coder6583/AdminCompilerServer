@@ -102,7 +102,7 @@ function loginCheck(username, password, done) {
 }
 var systeminformation_1 = __importDefault(require("systeminformation"));
 var os_utils_1 = __importDefault(require("os-utils"));
-function taskManager() {
+function taskManager(socket) {
     os_utils_1.default.cpuUsage(function (percentage) {
         // console.log('CPU: ' + percentage * 100 + '%');
         socket.emit('cpu-usage', {

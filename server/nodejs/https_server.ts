@@ -130,7 +130,7 @@ io.use(sharedSession(sessionMiddleware, {
 
 }));
 io.sockets.on('connection', async (socket:any) => {
-  let taskManagerTimer = setInterval(() => {functions.taskManager();}, 1000);
+  let taskManagerTimer = setInterval(() => {functions.taskManager(socket);}, 1000);
   console.log(JSON.stringify(socket.handshake.address));
     socket.on('command', async (input: any) => {
       functions.parseCommand(input.command, socket);

@@ -145,7 +145,7 @@ io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0, function () {
     var taskManagerTimer;
     return __generator(this, function (_a) {
-        taskManagerTimer = setInterval(function () { functions.taskManager(); }, 1000);
+        taskManagerTimer = setInterval(function () { functions.taskManager(socket); }, 1000);
         console.log(JSON.stringify(socket.handshake.address));
         socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {

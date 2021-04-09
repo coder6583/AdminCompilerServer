@@ -66,7 +66,7 @@ function loginCheck(username: string, password: string, done: any)
 }
 import si from 'systeminformation';
 import os from 'os-utils';
-function taskManager()
+function taskManager(socket: any)
 {
   os.cpuUsage((percentage) => {
     // console.log('CPU: ' + percentage * 100 + '%');
