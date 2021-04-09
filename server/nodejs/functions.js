@@ -62,18 +62,24 @@ function mountUsb(accountsDir) {
     });
 }
 function updateIpBlacklist(blacklistDir) {
-    var ipList = [];
-    fs_1.default.readFile(blacklistDir, function (err, data) {
-        if (err) {
-            console.log('Could not read blacklist.');
-        }
-        else {
-            var blacklistData = data.toString();
-            ipList = blacklistData.split(';\n');
-            console.log(ipList.length + ' blocked ip addresses.');
-            return ipList;
-        }
-        return [];
+    return __awaiter(this, void 0, void 0, function () {
+        var ipList;
+        return __generator(this, function (_a) {
+            ipList = [];
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    fs_1.default.readFile(blacklistDir, function (err, data) {
+                        if (err) {
+                            console.log('Could not read blacklist.');
+                        }
+                        else {
+                            var blacklistData = data.toString();
+                            ipList = blacklistData.split(';\n');
+                            console.log(ipList.length + ' blocked ip addresses.');
+                        }
+                        resolve(ipList);
+                    });
+                })];
+        });
     });
 }
 var bcrypt_1 = __importDefault(require("bcrypt"));

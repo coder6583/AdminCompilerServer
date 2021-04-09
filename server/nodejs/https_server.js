@@ -57,10 +57,10 @@ functions.mountUsb(accountsDir);
 //ip filter
 var blacklistPath = '/home/pi/ipBlacklist';
 var ipList;
-ipList = functions.updateIpBlacklist(blacklistPath);
+functions.updateIpBlacklist(blacklistPath).then(function (value) { return ipList = value; });
 // const ipfilter = require('express-ipfilter').IpFilter;
 fs_1.default.watchFile(blacklistPath, function (curr, prev) {
-    ipList = functions.updateIpBlacklist(blacklistPath);
+    functions.updateIpBlacklist(blacklistPath).then(function (value) { return ipList = value; });
 });
 //database (mongoose)
 var mongoose_1 = __importDefault(require("mongoose"));

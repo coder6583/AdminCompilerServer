@@ -24,23 +24,24 @@ function mountUsb(accountsDir: string)
         }
     })
 }
-function updateIpBlacklist(blacklistDir: string)
+async function updateIpBlacklist(blacklistDir: string)
 {
     let ipList: string[] = [];
-    fs.readFile(blacklistDir, (err, data) => {
-        if(err)
-        {
-          console.log('Could not read blacklist.');
-        }
-        else
-        {
-          let blacklistData: string = data.toString();
-          ipList = blacklistData.split(';\n');
-          console.log(ipList.length + ' blocked ip addresses.');
-          return ipList;
-        }
-        return [];
-    });
+    return new Promise((resolve, reject) => {
+      fs.readFile(blacklistDir, (err, data) => {
+          if(err)
+          {
+            console.log('Could not read blacklist.');
+          }
+          else
+          {
+            let blacklistData: string = data.toString();
+            ipList = blacklistData.split(';\n');
+            console.log(ipList.length + ' blocked ip addresses.');
+          }
+          resolve(ipList);
+      });
+    })
 }
 import bcrypt from 'bcrypt';
 function loginCheck(username: string, password: string, done: any)

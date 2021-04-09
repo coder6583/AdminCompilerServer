@@ -21,10 +21,10 @@ functions.mountUsb(accountsDir);
 //ip filter
 const blacklistPath: string = '/home/pi/ipBlacklist';
 var ipList: Array<string>;
-ipList = functions.updateIpBlacklist(blacklistPath);
+functions.updateIpBlacklist(blacklistPath).then((value: any) => ipList = value);
 // const ipfilter = require('express-ipfilter').IpFilter;
 fs.watchFile(blacklistPath, (curr: any, prev: any) => {
-  ipList = functions.updateIpBlacklist(blacklistPath);
+  functions.updateIpBlacklist(blacklistPath).then((value: any) => ipList = value);
 });
 
 //database (mongoose)
