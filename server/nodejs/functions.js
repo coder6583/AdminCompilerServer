@@ -475,6 +475,7 @@ function parseFilter(jsonPath, filter) {
                                 filteredLog.push(element);
                             });
                         }
+                        console.log(filteredLog);
                         resolve(filteredLog);
                     });
                     // console.log(filteredLog);
