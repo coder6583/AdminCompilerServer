@@ -145,11 +145,11 @@ io.sockets.on('connection', async (socket:any) => {
       {
         functions.parseFilter('/home/pi/log.json', input.filter).then((value: any) => {
           console.log(value);
-          filteredLog.concat(value);
+          filteredLog = filteredLog.concat(value);
           if(serverFilter.admin == true)
           {
             functions.parseFilter('/home/pi/adminlog.json', input.filter).then((value: any) => {
-              filteredLog.concat(value);
+              filteredLog = filteredLog.concat(value);
               console.log(filteredLog);
               socket.emit('logReturn', {
                 value: filteredLog
@@ -162,7 +162,7 @@ io.sockets.on('connection', async (socket:any) => {
       else if(serverFilter.admin == true)
       {
         functions.parseFilter('/home/pi/adminlog.json', input.filter).then((value: any) => {
-          filteredLog.concat(value);
+          filteredLog = filteredLog.concat(value);
 
           socket.emit('logReturn', {
             value: filteredLog

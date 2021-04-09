@@ -164,10 +164,10 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 if (serverFilter.main == true) {
                     functions.parseFilter('/home/pi/log.json', input.filter).then(function (value) {
                         console.log(value);
-                        filteredLog.concat(value);
+                        filteredLog = filteredLog.concat(value);
                         if (serverFilter.admin == true) {
                             functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
-                                filteredLog.concat(value);
+                                filteredLog = filteredLog.concat(value);
                                 console.log(filteredLog);
                                 socket.emit('logReturn', {
                                     value: filteredLog
@@ -178,7 +178,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 }
                 else if (serverFilter.admin == true) {
                     functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
-                        filteredLog.concat(value);
+                        filteredLog = filteredLog.concat(value);
                         socket.emit('logReturn', {
                             value: filteredLog
                         });
