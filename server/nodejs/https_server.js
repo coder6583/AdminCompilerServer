@@ -171,7 +171,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         filteredLog = filteredLog.concat(element);
                     });
                     console.log(filteredLog[0]);
-                    socket.emit('LogReturn', {
+                    socket.emit('logReturn', {
                         value: filteredLog
                     });
                 });

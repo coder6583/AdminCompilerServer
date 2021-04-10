@@ -146,7 +146,7 @@ io.sockets.on('connection', async (socket: any) => {
 				filteredLog = filteredLog.concat(element);
 			});
 			console.log(filteredLog[0]);
-			socket.emit('LogReturn', {
+			socket.emit('logReturn', {
 				value: filteredLog
 			});
 		});
