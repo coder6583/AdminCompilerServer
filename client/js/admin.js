@@ -180,7 +180,8 @@ $(function () {
         }, 200);
     });
     socket.on('logReturn', function (log) {
-        $('#server-log > tbody').html();
+        console.log(log);
+        $('#server-log > tbody').html('');
         parseServerLog(log.value);
         $('#server-log ~ .loading-div').removeClass('show');
     });

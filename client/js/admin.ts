@@ -134,7 +134,8 @@ $(() => {
 		}, 200);
 	});
 	socket.on('logReturn', (log :{value: serverLog[]}) => {
-		$('#server-log > tbody').html();
+		console.log(log);
+		$('#server-log > tbody').html('');
 		parseServerLog(log.value);
 		$('#server-log ~ .loading-div').removeClass('show');
 	});
