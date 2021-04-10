@@ -154,36 +154,27 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
             });
         }); });
         socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-            var serverFilter, filteredLog;
+            var serverFilter, filteredLog, jsonLogs;
             return __generator(this, function (_a) {
                 console.log(input);
                 serverFilter = functions.parseServerFilter(input.filter.server);
                 filteredLog = [];
-                ;
-                // console.log(filterMainBool, filterAdminBool);
+                jsonLogs = [];
                 if (serverFilter.main == true) {
-                    functions.parseFilter('/home/pi/log.json', input.filter).then(function (value) {
-                        console.log(value);
-                        filteredLog = filteredLog.concat(value);
-                        if (serverFilter.admin == true) {
-                            functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
-                                filteredLog = filteredLog.concat(value);
-                                console.log(filteredLog);
-                                socket.emit('logReturn', {
-                                    value: filteredLog
-                                });
-                            });
-                        }
-                    });
+                    jsonLogs.push(functions.parseFilter('/home/pi/log.json', input.filter));
                 }
-                else if (serverFilter.admin == true) {
-                    functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
-                        filteredLog = filteredLog.concat(value);
-                        socket.emit('logReturn', {
-                            value: filteredLog
-                        });
+                // if (serverFilter.admin == true) {
+                // 	jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
+                // }
+                Promise.all(jsonLogs).then(function (value) {
+                    value.forEach(function (element) {
+                        filteredLog = filteredLog.concat(element);
                     });
-                }
+                    console.log(filteredLog[0]);
+                    socket.emit('logReturn', {
+                        value: filteredLog
+                    });
+                });
                 return [2 /*return*/];
             });
         }); });
