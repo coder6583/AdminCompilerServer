@@ -40,96 +40,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var functions = require('./functions.js');
 var express_1 = __importDefault(require("express"));
 var fs_1 = __importDefault(require("fs"));
 var path = require('path');
-var exec = require('child_process').exec;
 var app = express_1.default();
 //https settings
 var rootDir = path.resolve(__dirname, '../../');
 var http = require('http');
-//http to https auto redirection
-// const http = require('http');
-// http.createServer((express()).all("*", function (request, response) {
-//   response.redirect(`https://${request.hostname}${request.url}`);
-// })).listen(80);
 var httpServer = http.createServer(app);
 var io = require('socket.io')(httpServer);
 var port = 8080;
 //mount usb
 var accountsDir = '/media/usb/compilerserver/accounts/';
-fs_1.default.access(accountsDir, function (err) {
-    if (err && err.code == 'ENOENT') {
-        fs_1.default.access('/media/pi/A042-416A', function (err) {
-            if (!err) {
-                exec('sudo umount /media/pi/A042-416A', function () {
-                    exec('sudo mount /dev/sda1 /media/usb', function () {
-                        console.log('mounted usb');
-                    });
-                });
-            }
-            else {
-                exec('sudo mount /dev/sda1 /media/usb', function () {
-                    console.log('mounted usb');
-                });
-            }
-        });
-    }
-});
+functions.mountUsb(accountsDir);
 //ip filter
+var blacklistPath = '/home/pi/ipBlacklist';
 var ipList;
-fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
-    if (err) {
-        console.log('Could not read blacklist.');
-    }
-    else {
-        var blacklistData = data.toString();
-        ipList = blacklistData.split(';\n');
-        console.log(ipList.length + ' blocked ip addresses.');
-    }
-});
+functions.updateIpBlacklist(blacklistPath).then(function (value) { return ipList = value; });
 // const ipfilter = require('express-ipfilter').IpFilter;
-fs_1.default.watchFile('/home/pi/ipBlacklist', function (curr, prev) {
-    fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
-        if (err) {
-            console.log('Could not read ipBlacklist.');
-        }
-        else {
-            var blacklistData = data.toString();
-            ipList = blacklistData.split(';\n');
-            console.log(ipList);
-            // app.use(ipfilter(ipList));
-        }
-    });
+fs_1.default.watchFile(blacklistPath, function (curr, prev) {
+    functions.updateIpBlacklist(blacklistPath).then(function (value) { return ipList = value; });
 });
 //database (mongoose)
 var mongoose_1 = __importDefault(require("mongoose"));
-var User = require('./database');
 mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(function () { console.log('connected'); });
+}).then(function () { console.log('connected to database.'); });
 mongoose_1.default.Promise = global.Promise;
 //passport
-var hash = "$2b$10$aha8xyjAjp971NX3MXzq.Ouj6YhstYcBCXlsdrpBB5xrJxjI5RoOe";
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
-passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
-    console.log('hello');
-    if (username == 'admin') {
-        bcrypt_1.default.compare(password, hash, function (err, isMatch) {
-            if (err)
-                console.log(err);
-            if (isMatch) {
-                console.log('logged in!');
-                return done(null, username);
-            }
-            else {
-                return done(err, false, { message: 'password incorrect' });
-            }
-        });
-    }
-}));
+passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, functions.loginCheck));
 passport_1.default.serializeUser(function (user, done) {
     console.log(user, 'serialize');
     done(null, user);
@@ -137,23 +80,15 @@ passport_1.default.serializeUser(function (user, done) {
 passport_1.default.deserializeUser(function (user, done) {
     console.log(user, 'deserialize');
     done(null, user);
-    // User.findById(id, (err: any, user: any) => {
-    //   // console.log(user.id);
-    //   done(err, user);
-    // })
 });
 //Login with Google
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport_1.default.use(GoogleStrategy);
 //bcrypt = hash function
-var bcrypt_1 = __importDefault(require("bcrypt"));
 var rootdirectory = path.resolve(rootDir, 'client');
 //express session
 var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
-//task manager
-var systeminformation_1 = __importDefault(require("systeminformation"));
-var os_utils_1 = __importDefault(require("os-utils"));
 //request時に実行するmiddleware function
 app.use(express_1.default.static(rootdirectory));
 var bodyParser = require('body-parser');
@@ -178,13 +113,6 @@ function everyRequest(req, res, next) {
         // console.log(req.user);
         console.log('not logged in');
     }
-    // else if(req.session.passport.user != "admin")
-    // {
-    //   console.log('a');
-    //   res.sendFile('index.html', {root: rootdirectory});
-    //   console.log(req.session.passport.user);
-    //   next();
-    // }
     else {
         if (ipList.includes(req.socket.remoteAddress)) {
             console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
@@ -214,440 +142,57 @@ app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
 });
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
-io.sockets.on('connection', function (socket) {
-    function taskManager() {
-        os_utils_1.default.cpuUsage(function (percentage) {
-            // console.log('CPU: ' + percentage * 100 + '%');
-            socket.emit('cpu-usage', {
-                percentage: percentage * 100
+io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0, function () {
+    var taskManagerTimer;
+    return __generator(this, function (_a) {
+        taskManagerTimer = setInterval(function () { functions.taskManager(socket); }, 1000);
+        console.log(JSON.stringify(socket.handshake.address));
+        socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                functions.parseCommand(input.command, socket);
+                return [2 /*return*/];
             });
-        });
-        systeminformation_1.default.mem().then(function (data) {
-            // console.log('Memory: ' + (100 - data.available / data.total * 100));
-            socket.emit('memory-usage', {
-                percentage: (100 - data.available / data.total * 100),
-                total: data.total,
-                using: data.total - data.available,
-            });
-        });
-        systeminformation_1.default.networkStats().then(function (data) {
-            // console.log('Received:', data[0].rx_sec, 'Transmitted: ', data[0].tx_sec);
-            socket.emit('network-usage', {
-                received: data[0].rx_sec,
-                transmitted: data[0].tx_sec
-            });
-        });
-        systeminformation_1.default.fsStats().then(function (data) {
-            // console.log('Read: ',data.rx_sec, 'Wrote: ', data.wx_sec);
-            socket.emit('disk-usage', {
-                read: data.rx_sec,
-                write: data.wx_sec
-            });
-        });
-    }
-    var taskManagerTimer = setInterval(function () { taskManager(); }, 1000);
-    console.log(JSON.stringify(socket.handshake.address));
-    socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        var words;
-        return __generator(this, function (_a) {
-            words = input.command.split(' ');
-            console.log(words[0]);
-            //update
-            if (words[0] == 'update') {
-                if (words.length == 1) {
-                    socket.emit('result', {
-                        success: false,
-                        result: 'アップデートするサーバーを選んでください。(main, admin)'
+        }); });
+        socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            var serverFilter, filteredLog;
+            return __generator(this, function (_a) {
+                console.log(input);
+                serverFilter = functions.parseServerFilter(input.filter.server);
+                filteredLog = [];
+                ;
+                // console.log(filterMainBool, filterAdminBool);
+                if (serverFilter.main == true) {
+                    functions.parseFilter('/home/pi/log.json', input.filter).then(function (value) {
+                        console.log(value);
+                        filteredLog = filteredLog.concat(value);
+                        if (serverFilter.admin == true) {
+                            functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
+                                filteredLog = filteredLog.concat(value);
+                                console.log(filteredLog);
+                                socket.emit('logReturn', {
+                                    value: filteredLog
+                                });
+                            });
+                        }
                     });
                 }
-                else if (words.length > 2) {
-                    socket.emit('result', {
-                        success: false,
-                        result: 'パラメターが多すぎます。'
-                    });
-                }
-                else if (words[1] == 'main') {
-                    exec('git -C /home/pi/Compiler stash', function (err, stdout, stderr) {
-                        if (err)
-                            socket.emit('result', {
-                                success: false,
-                                result: 'スタッシュ失敗'
-                            });
-                        else
-                            socket.emit('result', {
-                                success: true,
-                                result: 'スタッシュ失敗'
-                            });
-                        exec('git -C /home/pi/Compiler pull', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    result: stdout + ' ' + stderr
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    result: stdout + ' ' + stderr
-                                });
-                            exec('chmod +x /home/pi/Compiler/server/nodejs/https_server.js', function (err, stdout, stderr) {
-                                if (err)
-                                    socket.emit('result', {
-                                        success: false,
-                                        result: stdout + ' ' + stderr
-                                    });
-                                else
-                                    socket.emit('result', {
-                                        success: true,
-                                        result: stdout + ' ' + stderr
-                                    });
-                            });
+                else if (serverFilter.admin == true) {
+                    functions.parseFilter('/home/pi/adminlog.json', input.filter).then(function (value) {
+                        filteredLog = filteredLog.concat(value);
+                        socket.emit('logReturn', {
+                            value: filteredLog
                         });
                     });
                 }
-                else if (words[1] == 'admin') {
-                    exec('git -C /home/pi/AdminCompilerServer stash', function (err, stdout, stderr) {
-                        if (err)
-                            socket.emit('result', {
-                                success: false,
-                                result: 'スタッシュ失敗'
-                            });
-                        else
-                            socket.emit('result', {
-                                success: true,
-                                result: 'スタッシュ失敗'
-                            });
-                        exec('git -C /home/pi/AdminCompilerServer pull', function (err, stdout, stderr) {
-                            if (err)
-                                socket.emit('result', {
-                                    success: false,
-                                    result: stdout + '\n' + stderr
-                                });
-                            else
-                                socket.emit('result', {
-                                    success: true,
-                                    result: stdout + '\n' + stderr
-                                });
-                            exec('chmod +x /home/pi/AdminCompilerServer/server/nodejs/https_server.js', function (err, stdout, stderr) {
-                                if (err)
-                                    socket.emit('result', {
-                                        success: false,
-                                        result: stdout + '\n' + stderr
-                                    });
-                                else
-                                    socket.emit('result', {
-                                        success: true,
-                                        result: stdout + '\n' + stderr
-                                    });
-                            });
-                        });
-                    });
-                }
-                else if (words[1] != 'main' && words[1] != 'admin') {
-                    socket.emit('result', {
-                        success: false,
-                        result: 'アップデートするサーバーを選んでください。(main, admin)'
-                    });
-                }
-                else {
-                    socket.emit('result', {
-                        success: false,
-                        result: '変なことしないでください'
-                    });
-                }
-            }
-            //restart
-            else if (words[0] == 'restart') {
-                if (words.length == 1) {
-                    socket.emit('result', {
-                        success: false,
-                        result: '再起動するサーバーを選んでください。(main, admin)'
-                    });
-                }
-                else if (words.length > 2) {
-                    socket.emit('result', {
-                        success: false,
-                        result: 'パラメターが多すぎます。'
-                    });
-                }
-                else if (words[1] == 'main') {
-                    exec('sudo systemctl restart compilerserver', function (err, stdout, stderr) {
-                        if (err)
-                            socket.emit('result', {
-                                success: false,
-                                value: stdout + '\n' + stderr
-                            });
-                        else
-                            socket.emit('result', {
-                                success: true,
-                                value: '再起動成功'
-                            });
-                    });
-                }
-                else if (words[1] == 'admin') {
-                    exec('sudo systemctl restart admincompilerserver', function (err, stdout, stderr) {
-                        if (err)
-                            socket.emit('result', {
-                                success: false,
-                                value: stdout + '\n' + stderr
-                            });
-                        else
-                            socket.emit('result', {
-                                success: true,
-                                value: '再起動成功'
-                            });
-                    });
-                }
-                else if (words[1] != 'main' && words[1] != 'admin') {
-                    socket.emit('result', {
-                        success: false,
-                        result: '再起動するサーバーを選んでください。(main, admin)'
-                    });
-                }
-                else {
-                    socket.emit('result', {
-                        success: false,
-                        result: '変なことしないでください'
-                    });
-                }
-            }
-            //start
-            else if (words[0] == 'start') {
-                if (words.length == 1) {
-                    socket.emit('result', {
-                        success: false,
-                        result: '起動するサーバーを選んでください。(main, admin)'
-                    });
-                }
-                else if (words.length > 2) {
-                    socket.emit('result', {
-                        success: false,
-                        result: 'パラメターが多すぎます。'
-                    });
-                }
-                else if (words[1] == 'main') {
-                    exec('sudo systemctl start compilerserver', function (err, stdout, stderr) {
-                        if (err)
-                            socket.emit('result', {
-                                success: false,
-                                value: stdout + '\n' + stderr
-                            });
-                        else
-                            socket.emit('result', {
-                                success: true,
-                                value: '起動成功'
-                            });
-                    });
-                }
-                else if (words[1] == 'admin') {
-                    exec('sudo systemctl start admincompilerserver', function (err, stdout, stderr) {
-                        if (err)
-                            socket.emit('result', {
-                                success: false,
-                                value: stdout + '\n' + stderr
-                            });
-                        else
-                            socket.emit('result', {
-                                success: true,
-                                value: '起動成功'
-                            });
-                    });
-                }
-                else if (words[1] != 'main' && words[1] != 'admin') {
-                    socket.emit('result', {
-                        success: false,
-                        result: '起動するサーバーを選んでください。(main, admin)'
-                    });
-                }
-                else {
-                    socket.emit('result', {
-                        success: false,
-                        result: '変なことしないでください'
-                    });
-                }
-            }
-            //stop
-            else if (words[0] == 'stop') {
-                if (words.length == 1) {
-                    socket.emit('result', {
-                        success: false,
-                        result: '停止するサーバーを選んでください。(main, admin)'
-                    });
-                }
-                else if (words.length > 2) {
-                    socket.emit('result', {
-                        success: false,
-                        result: 'パラメターが多すぎます。'
-                    });
-                }
-                else if (words[1] == 'main') {
-                    exec('sudo systemctl stop compilerserver', function (err, stdout, stderr) {
-                        if (err)
-                            socket.emit('result', {
-                                success: false,
-                                value: stdout + '\n' + stderr
-                            });
-                        else
-                            socket.emit('result', {
-                                success: true,
-                                value: '停止成功'
-                            });
-                    });
-                }
-                else if (words[1] == 'admin') {
-                    exec('sudo systemctl stop admincompilerserver', function (err, stdout, stderr) {
-                        if (err)
-                            socket.emit('result', {
-                                success: false,
-                                value: stdout + '\n' + stderr
-                            });
-                        else
-                            socket.emit('result', {
-                                success: true,
-                                value: '停止成功'
-                            });
-                    });
-                }
-                else if (words[1] != 'main' && words[1] != 'admin') {
-                    socket.emit('result', {
-                        success: false,
-                        result: '停止するサーバーを選んでください。(main, admin)'
-                    });
-                }
-                else {
-                    socket.emit('result', {
-                        success: false,
-                        result: '変なことしないでください'
-                    });
-                }
-            }
-            else if (words[0] == 'list') {
-                console.log('aaaa');
-                socket.emit('result', {
-                    success: true,
-                    result: 'list'
-                });
-            }
-            return [2 /*return*/];
-        });
-    }); });
-    socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        var filterMainBool, filterAdminBool, filteredLog;
-        return __generator(this, function (_a) {
-            console.log(input);
-            filterMainBool = false;
-            filterAdminBool = false;
-            if (!input.filter.server) {
-                filterMainBool = true;
-                filterAdminBool = true;
-            }
-            else if (input.filter.server) {
-                input.filter.server.forEach(function (element) {
-                    if (element == "main")
-                        filterMainBool = true;
-                    else if (element == "admin")
-                        filterAdminBool = true;
-                });
-            }
-            filteredLog = [];
-            console.log(filterMainBool, filterAdminBool);
-            if (filterMainBool == true) {
-                fs_1.default.readFile('/home/pi/log.json', function (err, data) {
-                    if (err)
-                        console.error(err);
-                    else {
-                        var logArray = JSON.parse(data);
-                        logArray.forEach(function (element) {
-                            if (input.filter.before && input.filter.after) {
-                                console.log('time');
-                                if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
-                                    console.log('not in between');
-                                    return;
-                                }
-                            }
-                            if (input.filter.category.length > 0) {
-                                console.log('category');
-                                var inCategory_1 = false;
-                                input.filter.category.forEach(function (cat) {
-                                    if (element.category == cat) {
-                                        inCategory_1 = true;
-                                    }
-                                });
-                                if (inCategory_1 == false) {
-                                    return;
-                                }
-                            }
-                            if (input.filter.keyword.length > 0) {
-                                console.log('keyword');
-                                var hasKeyword_1 = false;
-                                input.filter.keyword.forEach(function (keyword) {
-                                    if (element.value.includes(keyword)) {
-                                        hasKeyword_1 = true;
-                                    }
-                                });
-                                if (hasKeyword_1 == false) {
-                                    return;
-                                }
-                            }
-                            console.log('i made it');
-                            filteredLog.push(element);
-                        });
-                    }
-                });
-            }
-            if (filterMainBool == true) {
-                console.log('admin');
-                fs_1.default.readFile('/home/pi/adminlog.json', function (err, data) {
-                    if (err)
-                        console.error(err);
-                    else {
-                        var logArray = JSON.parse(data);
-                        logArray.forEach(function (element) {
-                            if (input.filter.before && input.filter.after) {
-                                console.log('time');
-                                if (!(input.filter.before <= element.timestamp && element.timestamp <= input.filter.after)) {
-                                    return;
-                                }
-                            }
-                            if (input.filter.category.length > 0) {
-                                console.log('category');
-                                var inCategory_2 = false;
-                                input.filter.category.forEach(function (cat) {
-                                    if (element.category == cat) {
-                                        inCategory_2 = true;
-                                    }
-                                });
-                                if (inCategory_2 == false) {
-                                    return;
-                                }
-                            }
-                            if (input.filter.keyword.length > 0) {
-                                console.log('keyword');
-                                var hasKeyword_2 = false;
-                                input.filter.keyword.forEach(function (keyword) {
-                                    if (element.value.includes(keyword)) {
-                                        hasKeyword_2 = true;
-                                    }
-                                });
-                                if (hasKeyword_2 == false) {
-                                    return;
-                                }
-                            }
-                            filteredLog.push(element);
-                        });
-                    }
-                });
-            }
-            console.log(filteredLog);
-            socket.emit('logReturn', {
-                value: filteredLog
+                return [2 /*return*/];
             });
-            return [2 /*return*/];
+        }); });
+        socket.on('disconnect', function () {
+            socket.removeAllListeners('command');
         });
-    }); });
-    socket.on('disconnect', function () {
-        socket.removeAllListeners('command');
+        return [2 /*return*/];
     });
-});
+}); });
 // 404
 app.use(function (req, res, next) {
     res.status(404);

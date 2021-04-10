@@ -57,11 +57,19 @@ interface serverLog {
 	server: string,
 	category: string;
 	value: string;
-	timestmap: number;
+	timestamp: number;
 }
 
 interface banIP {
 	ip: string;
 	memo: string;
 	timestamp: number;
+}
+
+interface logFilter {
+	keyword: string[],
+	category: string[],
+	server: string[],
+	before: number | undefined,
+	after: number | undefined
 }
