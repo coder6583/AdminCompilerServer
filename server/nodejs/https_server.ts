@@ -136,7 +136,7 @@ io.sockets.on('connection', async (socket: any) => {
 		let filteredLog: serverLog[] = [];
 		let jsonLogs: Promise<serverLog[]>[] = [];
 		if (serverFilter.main == true) {
-			jsonLogs.push(functions.parseFilter('/home/pi/log.json', input.filter));
+			jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
 		}
 		// if (serverFilter.admin == true) {
 		// 	jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
