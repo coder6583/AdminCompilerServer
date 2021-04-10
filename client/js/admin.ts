@@ -124,10 +124,11 @@ $(() => {
 
 			// 読み込み中
 			const labelHeight = $('#server-log').parent().find('.label').height() || 0;
+			const controlHeight = $('#server-log').parent().find('.control').height() || 0;
 			const loading = $('#server-log ~ .loading-div');
 			loading.css({
 				'top': `${labelHeight + 40}px`,
-				'height': `${($(window).height() || 0) - labelHeight - 40}px`
+				'height': `${($(window).height() || 0) - labelHeight - controlHeight - 40}px`
 			});
 			loading.addClass('show');
 		}, 200);
@@ -144,11 +145,10 @@ $(() => {
 		for (let i = 0; i < tables.length; i++) {
 			const table = tables[i];
 			const tbody = table.getElementsByTagName('tbody')[0];
-			const labelHeight = table.parentElement?.getElementsByClassName('label')[0].scrollHeight;
-			if (labelHeight) {
-				table.style.maxHeight = `${($(window).height() || 0) - labelHeight}px`;
-				tbody.style.maxHeight = `${($(window).height() || 0) - labelHeight - 40}px`;
-			}
+			const labelHeight = table.parentElement?.getElementsByClassName('label')[0].scrollHeight || 0;
+			const controlHeight = table.parentElement?.getElementsByClassName('control')[0]?.scrollHeight || 0;
+			table.style.maxHeight = `${($(window).height() || 0) - labelHeight - controlHeight}px`;
+			tbody.style.maxHeight = `${($(window).height() || 0) - labelHeight - controlHeight - 40}px`;
 		}
 	};
 	$(window).on('resize', heightRefresh).trigger('resize');
@@ -369,7 +369,7 @@ function parseServerLog(logs :serverLog[]) {
 		return servers[server] || '';
 	};
 	logs.forEach(log => {
-		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${log.value}</td><td>${moment(new Date(log.timestmap)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`)
+		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${log.value}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
 	});
 }
 
