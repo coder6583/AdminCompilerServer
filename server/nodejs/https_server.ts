@@ -145,7 +145,7 @@ io.sockets.on('connection', async (socket: any) => {
 			value.forEach((element: serverLog[]) => {
 				filteredLog = filteredLog.concat(element);
 			});
-			console.log(filteredLog[0]);
+			// console.log(filteredLog[0]);
 			socket.emit('logReturn', {
 				value: filteredLog
 			});
