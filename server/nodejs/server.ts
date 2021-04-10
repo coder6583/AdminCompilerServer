@@ -221,7 +221,7 @@ io.sockets.on('connection', (socket:any) => {
       {
         if(usersDirectory.get(socket.id))
         {
-          fs.rmdir((usersDirectory.get(socket.id)), (err: NodeJS.ErrnoException | null) => {
+          fs.rmdir((usersDirectory.get(socket.id)!), (err: NodeJS.ErrnoException | null) => {
             console.log(usersDirectory.get(socket.id));
           });        
         }
