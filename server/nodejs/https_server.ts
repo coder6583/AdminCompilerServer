@@ -29,12 +29,18 @@ fs.watchFile(blacklistPath, (curr: any, prev: any) => {
 
 //database (mongoose)
 import mongoose from 'mongoose';
+const User: mongoose.Model<any, any> = require('./database');
 mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
 }).then(() => { console.log('connected to database.'); });
 
 mongoose.Promise = global.Promise;
+User.find((err: any, docs: any[]) => {
+	docs.forEach((element: any) => {
+		console.log(element);
+	});	
+})
 //passport
 import passport from 'passport';
 const LocalStrategy = require('passport-local').Strategy;
@@ -150,6 +156,9 @@ io.sockets.on('connection', async (socket: any) => {
 				value: filteredLog
 			});
 		});
+	});
+	socket.on('usersGet', async (input: any) => {
+
 	})
 	socket.on('disconnect', () => {
 		socket.removeAllListeners('command');

@@ -64,11 +64,17 @@ fs_1.default.watchFile(blacklistPath, function (curr, prev) {
 });
 //database (mongoose)
 var mongoose_1 = __importDefault(require("mongoose"));
+var User = require('./database');
 mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(function () { console.log('connected to database.'); });
 mongoose_1.default.Promise = global.Promise;
+User.find(function (err, docs) {
+    docs.forEach(function (element) {
+        console.log(element);
+    });
+});
 //passport
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
@@ -175,6 +181,11 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         value: filteredLog
                     });
                 });
+                return [2 /*return*/];
+            });
+        }); });
+        socket.on('usersGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
                 return [2 /*return*/];
             });
         }); });
