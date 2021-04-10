@@ -170,31 +170,32 @@ $(function () {
             });
             // 読み込み中
             var labelHeight = $('#server-log').parent().find('.label').height() || 0;
+            var controlHeight = $('#server-log').parent().find('.control').height() || 0;
             var loading = $('#server-log ~ .loading-div');
             loading.css({
                 'top': labelHeight + 40 + "px",
-                'height': ($(window).height() || 0) - labelHeight - 40 + "px"
+                'height': ($(window).height() || 0) - labelHeight - controlHeight - 40 + "px"
             });
             loading.addClass('show');
         }, 200);
     });
     socket.on('logReturn', function (log) {
-        $('#server-log > tbody').html();
+        console.log(log);
+        $('#server-log > tbody').html('');
         parseServerLog(log.value);
         $('#server-log ~ .loading-div').removeClass('show');
     });
     // レイアウト
     var heightRefresh = function () {
-        var _a;
+        var _a, _b, _c;
         var tables = $('.list-tab > .table');
         for (var i = 0; i < tables.length; i++) {
             var table = tables[i];
             var tbody = table.getElementsByTagName('tbody')[0];
-            var labelHeight = (_a = table.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('label')[0].scrollHeight;
-            if (labelHeight) {
-                table.style.maxHeight = ($(window).height() || 0) - labelHeight + "px";
-                tbody.style.maxHeight = ($(window).height() || 0) - labelHeight - 40 + "px";
-            }
+            var labelHeight = ((_a = table.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName('label')[0].scrollHeight) || 0;
+            var controlHeight = ((_c = (_b = table.parentElement) === null || _b === void 0 ? void 0 : _b.getElementsByClassName('control')[0]) === null || _c === void 0 ? void 0 : _c.scrollHeight) || 0;
+            table.style.maxHeight = ($(window).height() || 0) - labelHeight - controlHeight + "px";
+            tbody.style.maxHeight = ($(window).height() || 0) - labelHeight - controlHeight - 40 + "px";
         }
     };
     $(window).on('resize', heightRefresh).trigger('resize');
@@ -418,7 +419,7 @@ function parseServerLog(logs) {
         return servers[server] || '';
     };
     logs.forEach(function (log) {
-        $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + log.value + "</td><td>" + moment(new Date(log.timestmap)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
+        $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + log.value + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
     });
 }
 function parseBanIP(banIPs) {
