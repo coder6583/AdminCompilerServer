@@ -161,7 +161,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 filteredLog = [];
                 jsonLogs = [];
                 if (serverFilter.main == true) {
-                    jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
+                    jsonLogs.push(functions.parseFilter('/home/pi/log.json', input.filter));
                 }
                 // if (serverFilter.admin == true) {
                 // 	jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
