@@ -428,6 +428,10 @@ function parseServerFilter(filter: string[])
     {
         return {main: true, admin: true};
     }
+    else
+    {
+      return {main: true, admin: true};
+    }
 }
 async function parseFilter(jsonPath: string, filter: logFilter)
 {
