@@ -470,7 +470,7 @@ function parseServerLog(logs) {
     var resolveCategory = function (category) { return categorys[category] || ''; };
     var resolveServer = function (server) { return servers[server] || ''; };
     var escapeLog = function (log) {
-        console.log(log.replace('<', '&lt;').replace(/>/g, '&gt;'));
+        console.log(log.replace('<', '&lt;').replace(/</g, '&lt;'));
         return log.replace('<', '&lt;').replace(/>/g, '&gt;');
     };
     logs.forEach(function (log) {

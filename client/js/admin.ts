@@ -420,7 +420,7 @@ function parseServerLog(logs :serverLog[]) {
 	const resolveCategory = (category :string) => categorys[category] || '';
 	const resolveServer = (server :string) => servers[server] || '';
 	const escapeLog = (log :string) => {
-		console.log(log.replace('<', '&lt;').replace(/>/g, '&gt;'));
+		console.log(log.replace('<', '&lt;').replace(/</g, '&lt;'));
 		return log.replace('<', '&lt;').replace(/>/g, '&gt;')
 	};
 	logs.forEach(log => {
