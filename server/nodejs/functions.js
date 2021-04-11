@@ -84,7 +84,7 @@ function updateIpBlacklist(blacklistDir) {
 }
 var bcrypt_1 = __importDefault(require("bcrypt"));
 function loginCheck(username, password, done) {
-    var hash = "$2b$10$aha8xyjAjp971NX3MXzq.Ouj6YhstYcBCXlsdrpBB5xrJxjI5RoOe";
+    var hash = "$2b$10$ieCh/0DZR.B/T2pAwzNHVO757UQ1PtTpkv9XdF/T51ag1KCkMstXi";
     console.log('Login Attempt');
     if (username == 'admin') {
         bcrypt_1.default.compare(password, hash, function (err, isMatch) {
