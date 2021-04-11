@@ -419,9 +419,9 @@ const servers :{[key:string]:string} = {
 function parseServerLog(logs :serverLog[]) {
 	const resolveCategory = (category :string) => categorys[category] || '';
 	const resolveServer = (server :string) => servers[server] || '';
+	const escapeLog = (log :string) => log.replace('<', '&lt;').replace('>', '&gt;');
 	logs.forEach(log => {
-		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td></td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
-		$('#server-log > tbody > tr:last-of-type > td:nth-of-type(3)').text(log.value);
+		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
 	});
 }
 
