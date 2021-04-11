@@ -471,8 +471,9 @@ function parseFilter(jsonPath, filter) {
                                         return;
                                     }
                                 }
-                                // console.log('i made it');
-                                // console.log(element);
+                                if (element.value != "") {
+                                    return;
+                                }
                                 filteredLog.push(element);
                             });
                         }
