@@ -164,9 +164,9 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 if (serverFilter.main == true) {
                     jsonLogs.push(functions.parseFilter('/home/pi/log.json', input.filter));
                 }
-                // if (serverFilter.admin == true) {
-                // 	jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
-                // }
+                if (serverFilter.admin == true) {
+                    jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
+                }
                 Promise.all(jsonLogs).then(function (value) {
                     value.forEach(function (element) {
                         filteredLog = filteredLog.concat(element);

@@ -139,9 +139,9 @@ io.sockets.on('connection', async (socket: any) => {
 		if (serverFilter.main == true) {
 			jsonLogs.push(functions.parseFilter('/home/pi/log.json', input.filter));
 		}
-		// if (serverFilter.admin == true) {
-		// 	jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
-		// }
+		if (serverFilter.admin == true) {
+			jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
+		}
 		Promise.all(jsonLogs).then((value: serverLog[][]) => {
 			value.forEach((element: serverLog[]) => {
 				filteredLog = filteredLog.concat(element);
