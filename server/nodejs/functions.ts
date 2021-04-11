@@ -480,7 +480,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
             }
           }
           // console.log('i made it');
-          console.log(element);
+          // console.log(element);
           filteredLog.push(element);
         });
       }

@@ -472,7 +472,7 @@ function parseFilter(jsonPath, filter) {
                                     }
                                 }
                                 // console.log('i made it');
-                                console.log(element);
+                                // console.log(element);
                                 filteredLog.push(element);
                             });
                         }
