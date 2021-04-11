@@ -470,8 +470,8 @@ function parseServerLog(logs) {
     var resolveCategory = function (category) { return categorys[category] || ''; };
     var resolveServer = function (server) { return servers[server] || ''; };
     var escapeLog = function (log) {
-        console.log(log.replace('<', '&lt;').replace(/</g, '&lt;'));
-        return log.replace('<', '&lt;').replace(/>/g, '&gt;');
+        console.log(log.replace('<', '&lt;').replace(/\</g, '&lt;'));
+        return log.replace('<', '&lt;').replace(/\>/g, '&gt;');
     };
     logs.forEach(function (log) {
         $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + escapeLog(log.value) + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
