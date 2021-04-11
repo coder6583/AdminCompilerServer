@@ -27,6 +27,9 @@
 	<!-- chartjs-plugin-streaming.js -->
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@1.8.0/dist/chartjs-plugin-streaming.min.js"></script>
 
+	<!-- Material Fonts -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 	<!-- My Code -->
 	<link rel="stylesheet" href="./css/admin.css">
 	<script src="./js/admin.js"></script>
@@ -77,6 +80,37 @@
 						<tbody>
 						</tbody>
 					</table>
+
+					<div class="control row m-0">
+						<div class="lines-per-page col-auto">
+							<p>1ページあたりの行数</p>
+							<select id="lines-per-page">
+								<option value="50" selected>50</option>
+								<option value="100">100</option>
+								<option value="200">200</option>
+							</select>
+						</div>
+
+						<div class="page-control col-auto">
+							<button id="log-page-first" class="page-first">
+								<span class="material-icons-outlined">
+									first_page
+								</span>
+							</button>
+							<p>ページ<span id="log-current-page" class="current-page"></span> / <span id="log-max-page" class="max-page"></span></p>
+							<button id="log-page-back" class="page-back">
+								<span class="material-icons-outlined">
+									chevron_left
+								</span>
+							</button>
+							<button id="log-page-forward" class="page-forward">
+								<span class="material-icons-outlined">
+									chevron_right
+								</span>
+							</button>
+						</div>
+					</div>
+
 					<div class="loading-div">
 						<div class="loading">
 							
@@ -218,6 +252,6 @@
 	<!-- Bootstrap -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">	
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
 </body>
 </html>

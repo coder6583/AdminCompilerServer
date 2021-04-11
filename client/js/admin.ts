@@ -41,11 +41,18 @@ $(() => {
 
 	// フィルター
 	let filterTimer: NodeJS.Timeout | undefined;
+	let filter :{keyword: string[], category: string[], server: string[], before: number | undefined, after: number | undefined} = {
+		keyword: [],
+		category: [],
+		server: [],
+		before: undefined,
+		after: undefined
+	};
 	$('#log-filter-box').on('keyup', () => {
 		if (filterTimer) clearTimeout(filterTimer);
 		filterTimer = setTimeout(() => {
 			const filterString = $('#log-filter-box').val()?.toString() || '';
-			const filterObject = (() => {
+			filter = (() => {
 				let result :{keyword: string[], category: string[], server: string[], before: number | undefined, after: number | undefined} = {
 					keyword: [],
 					category: [],
@@ -54,7 +61,7 @@ $(() => {
 					after: undefined
 				}
 				const selectors = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)?.map(selector => selector.replace(/^"?(.*)"?$/, '$1'));
-				if (!selectors) return;
+				if (!selectors) return result;
 				selectors.forEach(selector => {
 					const unEscape = (str :string) => str.replace('\\#', '#').replace('\\@', '@').replace('\\~', '~').replace('\\*', '*').replace('\\\\', '\\');
 					const getKey = (obj :{[key: string]: string}, keyword :string) => {
@@ -115,12 +122,8 @@ $(() => {
 					}
 				});
 				return result;
-			})();			
-			socket.emit('logGet', {
-				from: 1,
-				until: 50,
-				filter: filterObject,
-			});
+			})();
+			getLogs();
 
 			// 読み込み中
 			const labelHeight = $('#server-log').parent().find('.label').height() || 0;
@@ -133,11 +136,62 @@ $(() => {
 			loading.addClass('show');
 		}, 200);
 	});
-	socket.on('logReturn', (log :{value: serverLog[]}) => {
+	let currentPage = 1;
+	let maxPage = 1;
+	$('#lines-per-page').on('change', () => {
+		linesPerPage = Number($('#lines-per-page').val());
+		localStorage.setItem('linesPerPage', String($('#lines-per-page').val()))
+	});
+	let linesPerPage = Number(localStorage.getItem('linesPerPage')) || 50;
+	$('#lines-per-page').val(linesPerPage);
+	const refreshPageControl = () => {
+		if (currentPage === 1) {
+			$('.page-first').prop('disabled', true);
+			$('.page-back').prop('disabled', true);
+		}else {
+			$('.page-first').prop('disabled', false);
+			$('.page-back').prop('disabled', false);
+		}
+		if (maxPage === currentPage) {
+			$('.page-forward').prop('disabled', true);
+		}else {
+			$('.page-forward').prop('disabled', false);
+		}
+		$('.current-page').text(`${currentPage}`);
+		$('.max-page').text(`${maxPage}`);
+	};
+	const getLogs = () => {
+		socket.emit('logGet', {
+			from: (currentPage - 1) * linesPerPage + 1,
+			until: currentPage * linesPerPage,
+			filter: filter,
+		});
+	};
+	$('.page-first').on('click', () => currentPage = 1);
+	$('.page-back').on('click', () => currentPage > 1 ? currentPage-- : 1);
+	$('.page-forward').on('click', () => currentPage < maxPage ? currentPage++ : maxPage);
+	$('#log-page-first').on('click', getLogs);
+	$('#log-page-back').on('click', getLogs);
+	$('#log-page-forward').on('click', getLogs);
+
+	socket.emit('logGet', {
+		from: (currentPage - 1) * linesPerPage + 1,
+		until: currentPage * linesPerPage,
+		filter: {
+			keyword: [],
+			server: [],
+			category: [],
+			before: undefined,
+			after: undefined
+		}
+	})
+	socket.on('logReturn', (log :{max: number, value: serverLog[]}) => {
 		console.log(log);
 		$('#server-log > tbody').html('');
 		parseServerLog(log.value);
 		$('#server-log ~ .loading-div').removeClass('show');
+		maxPage = Math.ceil(log.max / linesPerPage);
+		refreshPageControl();
 	});
 
 	// レイアウト
@@ -363,14 +417,11 @@ const servers :{[key:string]:string} = {
 	admin: '管理者',
 }
 function parseServerLog(logs :serverLog[]) {
-	const resolveCategory = (category :string) => {
-		return categorys[category] || '';
-	};
-	const resolveServer = (server :string) => {
-		return servers[server] || '';
-	};
+	const resolveCategory = (category :string) => categorys[category] || '';
+	const resolveServer = (server :string) => servers[server] || '';
+	const escapeLog = (log :string) => log.replace('<', '&lt;').replace('>', '&gt;');
 	logs.forEach(log => {
-		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${log.value}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
+		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
 	});
 }
 
