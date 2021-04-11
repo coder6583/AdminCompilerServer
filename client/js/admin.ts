@@ -1,5 +1,3 @@
-import { max } from "moment";
-
 $(() => {
 	// タブ切り替え
 	$('.nav-content').on('click', function() {
