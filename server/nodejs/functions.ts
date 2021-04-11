@@ -479,7 +479,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
               return;
             }
           }
-          if(element.value != "")
+          if(element.value == "")
           {
             return;
           }
