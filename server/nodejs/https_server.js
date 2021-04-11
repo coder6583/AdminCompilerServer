@@ -75,11 +75,11 @@ var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, functions.loginCheck));
 passport_1.default.serializeUser(function (user, done) {
-    console.log(user, 'serialize');
+    // console.log(user, 'serialize');
     done(null, user);
 });
 passport_1.default.deserializeUser(function (user, done) {
-    console.log(user, 'deserialize');
+    // console.log(user, 'deserialize');
     done(null, user);
 });
 //Login with Google
@@ -105,7 +105,7 @@ app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.use(everyRequest);
 function everyRequest(req, res, next) {
-    console.log(req.user);
+    // console.log(req.user);
     if (req.user != "admin" && (req.originalUrl != '/login')) {
         passport_1.default.authenticate('local', {
             successRedirect: '/admin',
@@ -133,7 +133,7 @@ app.get('/login', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
 });
 app.post('/login', function (req, res, next) {
-    console.log(req.body);
+    // console.log(req.body);
     passport_1.default.authenticate('local', {
         successRedirect: '/admin',
         failureRedirect: '/login'
@@ -147,7 +147,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
     var taskManagerTimer;
     return __generator(this, function (_a) {
         taskManagerTimer = setInterval(function () { functions.taskManager(socket); }, 1000);
-        console.log(JSON.stringify(socket.handshake.address));
+        // console.log(JSON.stringify(socket.handshake.address));
         socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 functions.parseCommand(input.command, socket);
