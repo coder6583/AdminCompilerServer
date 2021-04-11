@@ -64,6 +64,7 @@ fs_1.default.watchFile(blacklistPath, function (curr, prev) {
 });
 //database (mongoose)
 var mongoose_1 = __importDefault(require("mongoose"));
+var User = require('./database');
 mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -156,24 +157,33 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             var serverFilter, filteredLog, jsonLogs;
             return __generator(this, function (_a) {
-                console.log(input);
                 serverFilter = functions.parseServerFilter(input.filter.server);
                 filteredLog = [];
                 jsonLogs = [];
                 if (serverFilter.main == true) {
                     jsonLogs.push(functions.parseFilter('/home/pi/log.json', input.filter));
                 }
-                // if (serverFilter.admin == true) {
-                // 	jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
-                // }
+                if (serverFilter.admin == true) {
+                    jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
+                }
                 Promise.all(jsonLogs).then(function (value) {
                     value.forEach(function (element) {
                         filteredLog = filteredLog.concat(element);
                     });
-                    console.log(filteredLog[0]);
+                    // console.log(filteredLog[0]);
+                    filteredLog.sort(function (a, b) {
+                        return b.timestamp - a.timestamp;
+                    });
                     socket.emit('logReturn', {
                         value: filteredLog
                     });
+                });
+                return [2 /*return*/];
+            });
+        }); });
+        socket.on('usersGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                User.find().then(function (err, docs) {
                 });
                 return [2 /*return*/];
             });

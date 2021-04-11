@@ -431,7 +431,7 @@ function parseServerFilter(filter) {
 function parseFilter(jsonPath, filter) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            console.log(jsonPath);
+            // console.log(jsonPath);
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     var filteredLog = [];
                     fs_1.default.readFile(jsonPath, function (err, data) {
@@ -471,8 +471,9 @@ function parseFilter(jsonPath, filter) {
                                         return;
                                     }
                                 }
-                                // console.log('i made it');
-                                // console.log(element);
+                                if (element.value == "") {
+                                    return;
+                                }
                                 filteredLog.push(element);
                             });
                         }

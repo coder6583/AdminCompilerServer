@@ -29,6 +29,7 @@ fs.watchFile(blacklistPath, (curr: any, prev: any) => {
 
 //database (mongoose)
 import mongoose from 'mongoose';
+const User: mongoose.Model<any, any> = require('./database');
 mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
@@ -131,25 +132,33 @@ io.sockets.on('connection', async (socket: any) => {
 		functions.parseCommand(input.command, socket);
 	});
 	socket.on('logGet', async (input: any) => {
-		console.log(input);
+		// console.log(input);
 		let serverFilter = functions.parseServerFilter(input.filter.server);
 		let filteredLog: serverLog[] = [];
 		let jsonLogs: Promise<serverLog[]>[] = [];
 		if (serverFilter.main == true) {
 			jsonLogs.push(functions.parseFilter('/home/pi/log.json', input.filter));
 		}
-		// if (serverFilter.admin == true) {
-		// 	jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
-		// }
+		if (serverFilter.admin == true) {
+			jsonLogs.push(functions.parseFilter('/home/pi/adminlog.json', input.filter));
+		}
 		Promise.all(jsonLogs).then((value: serverLog[][]) => {
 			value.forEach((element: serverLog[]) => {
 				filteredLog = filteredLog.concat(element);
 			});
-			console.log(filteredLog[0]);
+			// console.log(filteredLog[0]);
+			filteredLog.sort((a, b) => {
+				return b.timestamp - a.timestamp;
+			})
 			socket.emit('logReturn', {
 				value: filteredLog
 			});
 		});
+	});
+	socket.on('usersGet', async (input: any) => {
+		User.find().then((err: any, docs: any[]) => {
+			
+		})
 	})
 	socket.on('disconnect', () => {
 		socket.removeAllListeners('command');
