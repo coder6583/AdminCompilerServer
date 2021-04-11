@@ -427,6 +427,9 @@ function parseServerFilter(filter) {
     else if (filter.length == 2) {
         return { main: true, admin: true };
     }
+    else {
+        return { main: true, admin: true };
+    }
 }
 function parseFilter(jsonPath, filter) {
     return __awaiter(this, void 0, void 0, function () {
