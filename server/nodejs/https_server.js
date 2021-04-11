@@ -70,11 +70,6 @@ mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserve
     useUnifiedTopology: true
 }).then(function () { console.log('connected to database.'); });
 mongoose_1.default.Promise = global.Promise;
-User.find(function (err, docs) {
-    docs.forEach(function (element) {
-        console.log(element);
-    });
-});
 //passport
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
@@ -186,6 +181,8 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         }); });
         socket.on('usersGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                User.find().then(function (err, docs) {
+                });
                 return [2 /*return*/];
             });
         }); });

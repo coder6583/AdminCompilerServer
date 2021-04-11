@@ -36,11 +36,6 @@ mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mo
 }).then(() => { console.log('connected to database.'); });
 
 mongoose.Promise = global.Promise;
-User.find((err: any, docs: any[]) => {
-	docs.forEach((element: any) => {
-		console.log(element);
-	});	
-})
 //passport
 import passport from 'passport';
 const LocalStrategy = require('passport-local').Strategy;
@@ -158,7 +153,9 @@ io.sockets.on('connection', async (socket: any) => {
 		});
 	});
 	socket.on('usersGet', async (input: any) => {
-
+		User.find().then((err: any, docs: any[]) => {
+			
+		})
 	})
 	socket.on('disconnect', () => {
 		socket.removeAllListeners('command');
