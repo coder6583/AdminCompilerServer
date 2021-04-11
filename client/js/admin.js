@@ -35,6 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 $(function () {
     // タブ切り替え
     $('.nav-content').on('click', function () {
@@ -74,13 +75,20 @@ $(function () {
     });
     // フィルター
     var filterTimer;
+    var filter = {
+        keyword: [],
+        category: [],
+        server: [],
+        before: undefined,
+        after: undefined
+    };
     $('#log-filter-box').on('keyup', function () {
         if (filterTimer)
             clearTimeout(filterTimer);
         filterTimer = setTimeout(function () {
             var _a;
             var filterString = ((_a = $('#log-filter-box').val()) === null || _a === void 0 ? void 0 : _a.toString()) || '';
-            var filterObject = (function () {
+            filter = (function () {
                 var _a;
                 var result = {
                     keyword: [],
@@ -91,7 +99,7 @@ $(function () {
                 };
                 var selectors = (_a = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)) === null || _a === void 0 ? void 0 : _a.map(function (selector) { return selector.replace(/^"?(.*)"?$/, '$1'); });
                 if (!selectors)
-                    return;
+                    return result;
                 selectors.forEach(function (selector) {
                     var _a;
                     var unEscape = function (str) { return str.replace('\\#', '#').replace('\\@', '@').replace('\\~', '~').replace('\\*', '*').replace('\\\\', '\\'); };
@@ -163,11 +171,7 @@ $(function () {
                 });
                 return result;
             })();
-            socket.emit('logGet', {
-                from: 1,
-                until: 50,
-                filter: filterObject,
-            });
+            getLogs();
             // 読み込み中
             var labelHeight = $('#server-log').parent().find('.label').height() || 0;
             var controlHeight = $('#server-log').parent().find('.control').height() || 0;
@@ -179,11 +183,63 @@ $(function () {
             loading.addClass('show');
         }, 200);
     });
+    var currentPage = 1;
+    var maxPage = 1;
+    $('#lines-per-page').on('change', function () {
+        linesPerPage = Number($('#lines-per-page').val());
+        localStorage.setItem('linesPerPage', String($('#lines-per-page').val()));
+    });
+    var linesPerPage = Number(localStorage.getItem('linesPerPage')) || 50;
+    $('#lines-per-page').val(linesPerPage);
+    var refreshPageControl = function () {
+        if (currentPage === 1) {
+            $('.page-first').prop('disabled', true);
+            $('.page-back').prop('disabled', true);
+        }
+        else {
+            $('.page-first').prop('disabled', false);
+            $('.page-back').prop('disabled', false);
+        }
+        if (maxPage === currentPage) {
+            $('.page-forward').prop('disabled', true);
+        }
+        else {
+            $('.page-forward').prop('disabled', false);
+        }
+        $('.current-page').text("" + currentPage);
+        $('.max-page').text("" + maxPage);
+    };
+    var getLogs = function () {
+        socket.emit('logGet', {
+            from: (currentPage - 1) * linesPerPage + 1,
+            until: currentPage * linesPerPage,
+            filter: filter,
+        });
+    };
+    $('.page-first').on('click', function () { return currentPage = 1; });
+    $('.page-back').on('click', function () { return currentPage > 1 ? currentPage-- : 1; });
+    $('.page-forward').on('click', function () { return currentPage < maxPage ? currentPage++ : maxPage; });
+    $('#log-page-first').on('click', getLogs);
+    $('#log-page-back').on('click', getLogs);
+    $('#log-page-forward').on('click', getLogs);
+    socket.emit('logGet', {
+        from: (currentPage - 1) * linesPerPage + 1,
+        until: currentPage * linesPerPage,
+        filter: {
+            keyword: [],
+            server: [],
+            category: [],
+            before: undefined,
+            after: undefined
+        }
+    });
     socket.on('logReturn', function (log) {
         console.log(log);
         $('#server-log > tbody').html('');
         parseServerLog(log.value);
         $('#server-log ~ .loading-div').removeClass('show');
+        maxPage = Math.ceil(log.max / linesPerPage);
+        refreshPageControl();
     });
     // レイアウト
     var heightRefresh = function () {

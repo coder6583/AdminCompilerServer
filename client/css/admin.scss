@@ -182,6 +182,71 @@ div.list-tab {
 				}
 			}
 		}
+
+		border-bottom: solid #ccc 1px;
+	}
+
+	.control {
+		div {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+
+			p {
+				margin: 10px 0;
+			}
+		}
+		.page-control {
+			margin: 0 20px 0 auto;
+
+			button {
+				width: 30px;
+				height: 30px;
+				padding: 0;
+				margin: 0 10px;
+
+				.material-icons-outlined {
+					font-size: 1.2rem;
+					color: #555;
+				}
+
+				&:disabled .material-icons-outlined {
+					color: #888;
+				}
+
+				&.page-first::after {
+					content: '最初のページに移動';
+				}
+				&.page-back::after {
+					content: '前のページに移動';
+				}
+				&.page-forward::after {
+					content: '次のページに移動';
+				}
+				&::after {
+					position: absolute;
+					display: inline-block;
+					margin: -20px 0 0 -100px;
+					padding: 2px 5px;
+					color: whitesmoke;
+					font-size: .8rem;
+					background-color: rgba(#444, .8);
+					border-radius: 5px;
+					pointer-events: none;
+
+					visibility: hidden;
+					opacity: 0;
+					transform-origin: calc(140px - 50%) center;
+					transform: scale(0.7) translateX(calc(-50% + 90px));
+					transition: all .1s;
+				}
+				&:hover::after {
+					visibility: visible;
+					opacity: 1;
+					transform: scale(1) translateX(calc(-50% + 90px));
+				}
+			}
+		}
 	}
 }
 

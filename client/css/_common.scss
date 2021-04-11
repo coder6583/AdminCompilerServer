@@ -3,6 +3,10 @@ $color-lines: rgb(141, 141, 141);
 $color-bg: rgb(216, 216, 216);
 
 // ボタン
+button {
+	border: none;
+	background-color: inherit;
+}
 button.btn-primary {
 	background-color: $color-accent;
 	border-color: darken($color-accent, 10%);
@@ -37,6 +41,12 @@ button.btn-secondary {
 		background-color: darken($color-lines, 10%);
 		border: solid darken($color-lines, 20%) 2px;
 	}
+}
+
+// セレクトボックス
+select {
+	border: none;
+	outline: 0;
 }
 
 @mixin hover {
@@ -81,4 +91,9 @@ ul.dropdown-menu {
 // 高さ
 html, body {
 	height: 100%;
+}
+
+// マテリアルアイコン
+.material-icons-outlined {
+	font-family: 'Material Icons';
 }
