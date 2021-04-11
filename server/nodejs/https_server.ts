@@ -147,6 +147,9 @@ io.sockets.on('connection', async (socket: any) => {
 				filteredLog = filteredLog.concat(element);
 			});
 			// console.log(filteredLog[0]);
+			filteredLog.sort((a, b) => {
+				return b.timestamp - a.timestamp;
+			})
 			socket.emit('logReturn', {
 				value: filteredLog
 			});

@@ -171,6 +171,9 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         filteredLog = filteredLog.concat(element);
                     });
                     // console.log(filteredLog[0]);
+                    filteredLog.sort(function (a, b) {
+                        return b.timestamp - a.timestamp;
+                    });
                     socket.emit('logReturn', {
                         value: filteredLog
                     });
