@@ -469,7 +469,7 @@ var servers = {
 function parseServerLog(logs) {
     var resolveCategory = function (category) { return categorys[category] || ''; };
     var resolveServer = function (server) { return servers[server] || ''; };
-    var escapeLog = function (log) { return log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;'); };
+    var escapeLog = function (log) { return log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>'); };
     logs.forEach(function (log) {
         $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + escapeLog(log.value) + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
     });
