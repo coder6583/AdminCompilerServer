@@ -469,10 +469,9 @@ var servers = {
 function parseServerLog(logs) {
     var resolveCategory = function (category) { return categorys[category] || ''; };
     var resolveServer = function (server) { return servers[server] || ''; };
-    var escapeLog = function (log) { return log.replace('\n', '<br>'); };
     logs.forEach(function (log) {
         $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td></td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
-        $('#server-log > tbody > tr:last-of-type > td:nth-of-type(3)').text(escapeLog(log.value));
+        $('#server-log > tbody > tr:last-of-type > td:nth-of-type(3)').text(log.value);
     });
 }
 function parseBanIP(banIPs) {
