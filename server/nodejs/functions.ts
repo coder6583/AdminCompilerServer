@@ -449,13 +449,13 @@ async function parseFilter(jsonPath: string, filter: logFilter)
             // console.log('time');
             if(!(filter.before <= element.timestamp && element.timestamp <= filter.after))
             {
-              console.log('not in between');
+              // console.log('not in between');
               return;
             }
           }
           if(filter.category.length > 0)
           {
-            console.log('category');
+            // console.log('category');
             let inCategory = false;
             filter.category.forEach((cat: any) => {
               if(element.category == cat)
@@ -470,7 +470,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
           }
           if(filter.keyword.length > 0)
           {
-            console.log('keyword');
+            // console.log('keyword');
             let hasKeyword = false;
             filter.keyword.forEach((keyword: any) => {
               if(element.value.includes(keyword))

@@ -446,12 +446,12 @@ function parseFilter(jsonPath, filter) {
                                 if (filter.before && filter.after) {
                                     // console.log('time');
                                     if (!(filter.before <= element.timestamp && element.timestamp <= filter.after)) {
-                                        console.log('not in between');
+                                        // console.log('not in between');
                                         return;
                                     }
                                 }
                                 if (filter.category.length > 0) {
-                                    console.log('category');
+                                    // console.log('category');
                                     var inCategory_1 = false;
                                     filter.category.forEach(function (cat) {
                                         if (element.category == cat) {
@@ -463,7 +463,7 @@ function parseFilter(jsonPath, filter) {
                                     }
                                 }
                                 if (filter.keyword.length > 0) {
-                                    console.log('keyword');
+                                    // console.log('keyword');
                                     var hasKeyword_1 = false;
                                     filter.keyword.forEach(function (keyword) {
                                         if (element.value.includes(keyword)) {
