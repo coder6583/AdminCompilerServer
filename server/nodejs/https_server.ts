@@ -44,11 +44,11 @@ passport.use(new LocalStrategy(
 	{ usernameField: 'loginId', passwordField: 'loginPassword' }, functions.loginCheck
 ));
 passport.serializeUser((user: any, done) => {
-	console.log(user, 'serialize');
+	// console.log(user, 'serialize');
 	done(null, user);
 })
 passport.deserializeUser((user: any, done) => {
-	console.log(user, 'deserialize');
+	// console.log(user, 'deserialize');
 	done(null, user);
 })
 
@@ -80,7 +80,7 @@ app.use(passport.session());
 app.use(everyRequest);
 
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction) {
-	console.log(req.user);
+	// console.log(req.user);
 	if (req.user != "admin" && (req.originalUrl != '/login')) {
 		passport.authenticate('local', {
 			successRedirect: '/admin',
@@ -112,7 +112,7 @@ app.get('/login', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-	console.log(req.body);
+	// console.log(req.body);
 	passport.authenticate('local', {
 		successRedirect: '/admin',
 		failureRedirect: '/login'
@@ -127,7 +127,7 @@ io.use(sharedSession(sessionMiddleware, {
 }));
 io.sockets.on('connection', async (socket: any) => {
 	let taskManagerTimer = setInterval(() => { functions.taskManager(socket); }, 1000);
-	console.log(JSON.stringify(socket.handshake.address));
+	// console.log(JSON.stringify(socket.handshake.address));
 	socket.on('command', async (input: any) => {
 		functions.parseCommand(input.command, socket);
 	});
