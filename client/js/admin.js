@@ -471,7 +471,8 @@ function parseServerLog(logs) {
     var resolveServer = function (server) { return servers[server] || ''; };
     var escapeLog = function (log) { return log.replace('\n', '<br>'); };
     logs.forEach(function (log) {
-        $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + escapeLog(log.value) + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
+        $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td></td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
+        $('#server-log > tbody > tr:last-of-type > td:nth-of-type(3)').text(escapeLog(log.value));
     });
 }
 function parseBanIP(banIPs) {

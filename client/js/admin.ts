@@ -421,7 +421,8 @@ function parseServerLog(logs :serverLog[]) {
 	const resolveServer = (server :string) => servers[server] || '';
 	const escapeLog = (log :string) => log.replace('\n', '<br>');
 	logs.forEach(log => {
-		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
+		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td></td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
+		$('#server-log > tbody > tr:last-of-type > td:nth-of-type(3)').text(escapeLog(log.value));
 	});
 }
 
