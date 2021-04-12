@@ -309,8 +309,11 @@ div.tab-server-log {
 			}
 			& > *:nth-child(3) {
 				flex: 1;
-				font-family: 'My Consolas', sans-serif;
-				font-size: .7rem;
+
+				tbody & {
+					font-family: 'My Consolas', sans-serif;
+					font-size: .7rem;
+				}
 			}
 			& > *:nth-child(4) {
 				width: 150px;
