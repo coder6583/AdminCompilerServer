@@ -463,14 +463,7 @@ function parseFilter(jsonPath, filter) {
                                     }
                                 }
                                 if (filter.keyword.length > 0) {
-                                    // console.log('keyword');
-                                    var hasKeyword_1 = false;
-                                    filter.keyword.forEach(function (keyword) {
-                                        if (element.value.includes(keyword)) {
-                                            hasKeyword_1 = true;
-                                        }
-                                    });
-                                    if (hasKeyword_1 == false) {
+                                    if (!filter.keyword.every(function (s) { return element.value.includes(s); })) {
                                         return;
                                     }
                                 }

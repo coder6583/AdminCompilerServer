@@ -470,15 +470,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
           }
           if(filter.keyword.length > 0)
           {
-            // console.log('keyword');
-            let hasKeyword = false;
-            filter.keyword.forEach((keyword: any) => {
-              if(element.value.includes(keyword))
-              {
-                hasKeyword = true;
-              }
-            });
-            if(hasKeyword == false)
+            if(!filter.keyword.every((s: string) => element.value.includes(s)))
             {
               return;
             }
