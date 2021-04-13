@@ -60,7 +60,7 @@ $(() => {
 					before: undefined,
 					after: undefined
 				}
-				const selectors = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)?.map(selector => selector.replace(/^"?(.*)"?$/, '$1'));
+				const selectors = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)?.map(selector => selector.replace(/^"(.*)"$/, '$1'));
 				if (!selectors) return result;
 				selectors.forEach(selector => {
 					const unEscape = (str :string) => str.replace('\\#', '#').replace('\\@', '@').replace('\\~', '~').replace('\\*', '*').replace('\\\\', '\\');
