@@ -89,7 +89,7 @@ nav.navigation {
 	.content {
 		display: none;
 		height: 100%;
-		overflow-y: auto;
+		overflow: auto;
 
 		&.show {
 			display: block;
@@ -343,6 +343,7 @@ div.tab-server-log {
 			}
 			& > *:nth-child(3) {
 				flex: 1;
+				min-width: 100px;
 
 				tbody & {
 					font-family: 'My Consolas', sans-serif;
@@ -393,9 +394,11 @@ div.tab-users {
 		}
 		& > *:nth-child(3) {
 			flex: 1;
+			min-width: 100px;
 		}
 		& > *:nth-child(4) {
 			flex: 1;
+			min-width: 200px;
 		}
 		& > *:nth-child(5) {
 			display: flex;
@@ -454,6 +457,7 @@ div.tab-ban-ip {
 		}
 		& > *:nth-child(2) {
 			flex: 1;
+			min-width: 100px;
 		}
 		& > *:nth-child(3) {
 			width: 160px;

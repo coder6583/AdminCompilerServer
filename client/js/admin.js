@@ -198,63 +198,20 @@ $(function () {
             loading.addClass('show');
         }, 200);
     });
-    var currentPage = 1;
-    var maxPage = 1;
-    $('#lines-per-page').on('change', function () {
-        linesPerPage = Number($('#lines-per-page').val());
-        localStorage.setItem('linesPerPage', String($('#lines-per-page').val()));
-    });
-    var linesPerPage = Number(localStorage.getItem('linesPerPage')) || 50;
-    $('#lines-per-page').val(linesPerPage);
-    var refreshPageControl = function () {
-        if (currentPage === 1) {
-            $('.page-first').prop('disabled', true);
-            $('.page-back').prop('disabled', true);
-        }
-        else {
-            $('.page-first').prop('disabled', false);
-            $('.page-back').prop('disabled', false);
-        }
-        if (maxPage === currentPage) {
-            $('.page-forward').prop('disabled', true);
-        }
-        else {
-            $('.page-forward').prop('disabled', false);
-        }
-        $('.current-page').text("" + currentPage);
-        $('.max-page').text("" + maxPage);
-    };
+    var linesPerPage = 50;
     var getLogs = function () {
+        var currentLogs = $('#server-log tbody').children().length;
         socket.emit('logGet', {
-            from: (currentPage - 1) * linesPerPage + 1,
-            until: currentPage * linesPerPage,
+            from: currentLogs + 1,
+            until: currentLogs + linesPerPage,
             filter: filter,
         });
     };
-    $('.page-first').on('click', function () { return currentPage = 1; });
-    $('.page-back').on('click', function () { return currentPage > 1 ? currentPage-- : 1; });
-    $('.page-forward').on('click', function () { return currentPage < maxPage ? currentPage++ : maxPage; });
-    $('#log-page-first').on('click', getLogs);
-    $('#log-page-back').on('click', getLogs);
-    $('#log-page-forward').on('click', getLogs);
-    socket.emit('logGet', {
-        from: (currentPage - 1) * linesPerPage + 1,
-        until: currentPage * linesPerPage,
-        filter: {
-            keyword: [],
-            server: [],
-            category: [],
-            before: undefined,
-            after: undefined
-        }
-    });
+    getLogs();
     socket.on('logReturn', function (log) {
         console.log(log);
-        $('#server-log > tbody').html('');
         parseServerLog(log.value);
         $('#server-log ~ .loading-div').removeClass('show');
-        maxPage = Math.ceil(log.max / linesPerPage);
-        refreshPageControl();
     });
     // レイアウト
     var heightRefresh = function () {

@@ -151,62 +151,21 @@ $(() => {
 			loading.addClass('show');
 		}, 200);
 	});
-	let currentPage = 1;
-	let maxPage = 1;
-	$('#lines-per-page').on('change', () => {
-		linesPerPage = Number($('#lines-per-page').val());
-		localStorage.setItem('linesPerPage', String($('#lines-per-page').val()))
-	});
-	let linesPerPage = Number(localStorage.getItem('linesPerPage')) || 50;
-	$('#lines-per-page').val(linesPerPage);
-	const refreshPageControl = () => {
-		if (currentPage === 1) {
-			$('.page-first').prop('disabled', true);
-			$('.page-back').prop('disabled', true);
-		}else {
-			$('.page-first').prop('disabled', false);
-			$('.page-back').prop('disabled', false);
-		}
-		if (maxPage === currentPage) {
-			$('.page-forward').prop('disabled', true);
-		}else {
-			$('.page-forward').prop('disabled', false);
-		}
-		$('.current-page').text(`${currentPage}`);
-		$('.max-page').text(`${maxPage}`);
-	};
+	const linesPerPage = 50;
 	const getLogs = () => {
+		const currentLogs = $('#server-log tbody').children().length;
 		socket.emit('logGet', {
-			from: (currentPage - 1) * linesPerPage + 1,
-			until: currentPage * linesPerPage,
+			from: currentLogs + 1,
+			until: currentLogs + linesPerPage,
 			filter: filter,
 		});
 	};
-	$('.page-first').on('click', () => currentPage = 1);
-	$('.page-back').on('click', () => currentPage > 1 ? currentPage-- : 1);
-	$('.page-forward').on('click', () => currentPage < maxPage ? currentPage++ : maxPage);
-	$('#log-page-first').on('click', getLogs);
-	$('#log-page-back').on('click', getLogs);
-	$('#log-page-forward').on('click', getLogs);
+	getLogs();
 
-	socket.emit('logGet', {
-		from: (currentPage - 1) * linesPerPage + 1,
-		until: currentPage * linesPerPage,
-		filter: {
-			keyword: [],
-			server: [],
-			category: [],
-			before: undefined,
-			after: undefined
-		}
-	})
 	socket.on('logReturn', (log :{max: number, value: serverLog[]}) => {
 		console.log(log);
-		$('#server-log > tbody').html('');
 		parseServerLog(log.value);
 		$('#server-log ~ .loading-div').removeClass('show');
-		maxPage = Math.ceil(log.max / linesPerPage);
-		refreshPageControl();
 	});
 
 	// レイアウト
