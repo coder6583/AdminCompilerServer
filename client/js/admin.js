@@ -46,6 +46,22 @@ $(function () {
         // 高さ更新
         heightRefresh();
     });
+    // タブのハンバーガー化
+    $('#nav-show').on('click', function () {
+        $('.navigation').removeClass('hide');
+        $('.navigation').addClass('show');
+    });
+    $('#nav-hide').on('click', function () {
+        $('.navigation').removeClass('show');
+        $('.navigation').addClass('hide');
+    });
+    // レスポンシブ
+    if (matchMedia('(max-width: 480px)').matches) {
+        $('.navigation').addClass('hide');
+    }
+    else {
+        $('.navigation').addClass('show');
+    }
     // コンソール
     $('#console').terminal(function (command) {
         if (command) {
