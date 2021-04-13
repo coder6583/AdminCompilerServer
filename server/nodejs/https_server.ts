@@ -150,10 +150,10 @@ io.sockets.on('connection', async (socket: any) => {
 			filteredLog.sort((a, b) => {
 				return b.timestamp - a.timestamp;
 			})
-			filteredLog = filteredLog.slice(input.from, input.until);
+			filteredLog = filteredLog.slice(input.from - 1, input.until);
 			socket.emit('logReturn', {
 				value: filteredLog,
-				max: input.until - input.from
+				max: input.until - input.from + 1
 			});
 		});
 	});
