@@ -38,13 +38,17 @@
 	<main class="container-fluid h-100 p-0">
 		<div class="row w-100 h-100 flex-nowrap m-0">
 			<nav class="navigation col-auto h-100 p-0">
-				<ul class="p-0">
+				<ul class="tabs p-0">
 					<li class="nav-content" data-bind="console"><i class="bi bi-terminal"></i>コンソール</li>
 					<li class="nav-content selected" data-bind="server-log"><i class="bi bi-file-earmark-ruled"></i>サーバーログ</li>
 					<li class="nav-content" data-bind="users"><i class="bi bi-people"></i>ユーザーの一覧</li>
 					<li class="nav-content" data-bind="ban-ip"><i class="bi bi-person-x"></i>アクセス禁止IP</li>
 					<li class="nav-content" data-bind="status"><i class="bi bi-hdd-stack"></i>サーバーの状態</li>
 				</ul>
+				<div class="nav-control">
+					<button id="nav-show">▶</button>
+					<button id="nav-hide">◀</button>
+				</div>
 			</nav>
 			
 			<div class="contents col p-0 h-100">
@@ -80,36 +84,6 @@
 						<tbody>
 						</tbody>
 					</table>
-
-					<div class="control row m-0">
-						<div class="lines-per-page col-auto">
-							<p>1ページあたりの行数</p>
-							<select id="lines-per-page">
-								<option value="50" selected>50</option>
-								<option value="100">100</option>
-								<option value="200">200</option>
-							</select>
-						</div>
-
-						<div class="page-control col-auto">
-							<button id="log-page-first" class="page-first">
-								<span class="material-icons-outlined">
-									first_page
-								</span>
-							</button>
-							<p>ページ<span id="log-current-page" class="current-page"></span> / <span id="log-max-page" class="max-page"></span></p>
-							<button id="log-page-back" class="page-back">
-								<span class="material-icons-outlined">
-									chevron_left
-								</span>
-							</button>
-							<button id="log-page-forward" class="page-forward">
-								<span class="material-icons-outlined">
-									chevron_right
-								</span>
-							</button>
-						</div>
-					</div>
 
 					<div class="loading-div">
 						<div class="loading">
