@@ -48,7 +48,7 @@ $(() => {
 		before: undefined,
 		after: undefined
 	};
-	$('#log-filter-box').on('keyup', () => {
+	$('#log-filter-box').on('input', () => {		
 		if (filterTimer) clearTimeout(filterTimer);
 		filterTimer = setTimeout(() => {
 			const filterString = $('#log-filter-box').val()?.toString() || '';

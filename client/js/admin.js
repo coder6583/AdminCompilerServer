@@ -81,7 +81,7 @@ $(function () {
         before: undefined,
         after: undefined
     };
-    $('#log-filter-box').on('keyup', function () {
+    $('#log-filter-box').on('input', function () {
         if (filterTimer)
             clearTimeout(filterTimer);
         filterTimer = setTimeout(function () {
