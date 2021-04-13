@@ -81,7 +81,7 @@ $(function () {
         before: undefined,
         after: undefined
     };
-    $('#log-filter-box').on('keyup', function () {
+    $('#log-filter-box').on('input', function () {
         if (filterTimer)
             clearTimeout(filterTimer);
         filterTimer = setTimeout(function () {
@@ -96,7 +96,7 @@ $(function () {
                     before: undefined,
                     after: undefined
                 };
-                var selectors = (_a = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)) === null || _a === void 0 ? void 0 : _a.map(function (selector) { return selector.replace(/^"?(.*)"?$/, '$1'); });
+                var selectors = (_a = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)) === null || _a === void 0 ? void 0 : _a.map(function (selector) { return selector.replace(/^"(.*)"$/, '$1'); });
                 if (!selectors)
                     return result;
                 selectors.forEach(function (selector) {

@@ -48,7 +48,7 @@ $(() => {
 		before: undefined,
 		after: undefined
 	};
-	$('#log-filter-box').on('keyup', () => {
+	$('#log-filter-box').on('input', () => {		
 		if (filterTimer) clearTimeout(filterTimer);
 		filterTimer = setTimeout(() => {
 			const filterString = $('#log-filter-box').val()?.toString() || '';
@@ -60,7 +60,7 @@ $(() => {
 					before: undefined,
 					after: undefined
 				}
-				const selectors = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)?.map(selector => selector.replace(/^"?(.*)"?$/, '$1'));
+				const selectors = filterString.match(/"(\\["]|[^"])*"|[^\s]+/g)?.map(selector => selector.replace(/^"(.*)"$/, '$1'));
 				if (!selectors) return result;
 				selectors.forEach(selector => {
 					const unEscape = (str :string) => str.replace('\\#', '#').replace('\\@', '@').replace('\\~', '~').replace('\\*', '*').replace('\\\\', '\\');
