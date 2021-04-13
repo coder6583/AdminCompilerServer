@@ -47,6 +47,8 @@ var path = require('path');
 var app = express_1.default();
 //https settings
 var rootDir = path.resolve(__dirname, '../../');
+var logJsonPath = '/home/pi/log.json';
+var adminlogJsonPath = '/home/pi/adminlog.json';
 var http = require('http');
 var httpServer = http.createServer(app);
 var io = require('socket.io')(httpServer);
@@ -148,6 +150,22 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
     return __generator(this, function (_a) {
         taskManagerTimer = setInterval(function () { functions.taskManager(socket); }, 1000);
         // console.log(JSON.stringify(socket.handshake.address));
+        fs_1.default.watchFile(logJsonPath, function (curr, prev) {
+            fs_1.default.readFile(logJsonPath, function (err, data) {
+                var temp = JSON.parse(data.toString() || "null");
+                socket.emit('newLog', {
+                    value: temp.slice(-1)
+                });
+            });
+        });
+        fs_1.default.watchFile(adminlogJsonPath, function (curr, prev) {
+            fs_1.default.readFile(adminlogJsonPath, function (err, data) {
+                var temp = JSON.parse(data.toString() || "null");
+                socket.emit('newLog', {
+                    value: temp.slice(-1)
+                });
+            });
+        });
         socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 functions.parseCommand(input.command, socket);
