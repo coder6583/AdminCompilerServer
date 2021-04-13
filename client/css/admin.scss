@@ -45,11 +45,12 @@ nav.navigation {
 			&.selected {
 				background-color: rgba(white, .6);
 				color: darken($color-accent, 15%);
+				position: relative;
 
 				&::after {
 					content: '';
 					position: absolute;
-					margin-left: 178px;
+					right: 0;
 					border: solid transparent 6px;
 					border-right: solid white 6px;
 				}
