@@ -175,8 +175,10 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                     filteredLog.sort(function (a, b) {
                         return b.timestamp - a.timestamp;
                     });
+                    filteredLog = filteredLog.slice(input.from, input.until);
                     socket.emit('logReturn', {
-                        value: filteredLog
+                        value: filteredLog,
+                        max: input.until - input.from
                     });
                 });
                 return [2 /*return*/];
