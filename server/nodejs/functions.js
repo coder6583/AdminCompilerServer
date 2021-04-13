@@ -84,7 +84,7 @@ function updateIpBlacklist(blacklistDir) {
 }
 var bcrypt_1 = __importDefault(require("bcrypt"));
 function loginCheck(username, password, done) {
-    var hash = "$2b$10$aha8xyjAjp971NX3MXzq.Ouj6YhstYcBCXlsdrpBB5xrJxjI5RoOe";
+    var hash = "$2b$10$ieCh/0DZR.B/T2pAwzNHVO757UQ1PtTpkv9XdF/T51ag1KCkMstXi";
     console.log('Login Attempt');
     if (username == 'admin') {
         bcrypt_1.default.compare(password, hash, function (err, isMatch) {
@@ -463,14 +463,7 @@ function parseFilter(jsonPath, filter) {
                                     }
                                 }
                                 if (filter.keyword.length > 0) {
-                                    // console.log('keyword');
-                                    var hasKeyword_1 = false;
-                                    filter.keyword.forEach(function (keyword) {
-                                        if (element.value.includes(keyword)) {
-                                            hasKeyword_1 = true;
-                                        }
-                                    });
-                                    if (hasKeyword_1 == false) {
+                                    if (!filter.keyword.every(function (s) { return element.value.includes(s); })) {
                                         return;
                                     }
                                 }

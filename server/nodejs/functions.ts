@@ -46,7 +46,7 @@ async function updateIpBlacklist(blacklistDir: string)
 import bcrypt from 'bcrypt';
 function loginCheck(username: string, password: string, done: any)
 {
-    const hash = "$2b$10$aha8xyjAjp971NX3MXzq.Ouj6YhstYcBCXlsdrpBB5xrJxjI5RoOe";
+    const hash = "$2b$10$ieCh/0DZR.B/T2pAwzNHVO757UQ1PtTpkv9XdF/T51ag1KCkMstXi";
     console.log('Login Attempt');
     if(username == 'admin')
     {
@@ -470,15 +470,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
           }
           if(filter.keyword.length > 0)
           {
-            // console.log('keyword');
-            let hasKeyword = false;
-            filter.keyword.forEach((keyword: any) => {
-              if(element.value.includes(keyword))
-              {
-                hasKeyword = true;
-              }
-            });
-            if(hasKeyword == false)
+            if(!filter.keyword.every((s: string) => element.value.includes(s)))
             {
               return;
             }

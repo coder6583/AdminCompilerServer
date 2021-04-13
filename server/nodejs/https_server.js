@@ -157,6 +157,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             var serverFilter, filteredLog, jsonLogs;
             return __generator(this, function (_a) {
+                console.log(input);
                 serverFilter = functions.parseServerFilter(input.filter.server);
                 filteredLog = [];
                 jsonLogs = [];

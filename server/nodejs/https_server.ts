@@ -132,7 +132,7 @@ io.sockets.on('connection', async (socket: any) => {
 		functions.parseCommand(input.command, socket);
 	});
 	socket.on('logGet', async (input: any) => {
-		// console.log(input);
+		console.log(input);
 		let serverFilter = functions.parseServerFilter(input.filter.server);
 		let filteredLog: serverLog[] = [];
 		let jsonLogs: Promise<serverLog[]>[] = [];
