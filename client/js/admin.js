@@ -213,6 +213,12 @@ $(function () {
         parseServerLog(log.value);
         $('#server-log ~ .loading-div').removeClass('show');
     });
+    // 無限スクロール
+    $('#server-log tbody').on('scroll', function () {
+        if (this.scrollTop + this.clientHeight >= this.scrollHeight - 50) {
+            getLogs();
+        }
+    });
     // レイアウト
     var heightRefresh = function () {
         var _a, _b, _c;
