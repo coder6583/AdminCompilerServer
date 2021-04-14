@@ -11,6 +11,8 @@ const path = require('path');
 const app: express.Express = express();
 //https settings
 const rootDir: string = path.resolve(__dirname, '../../');
+const logJsonPath: string = '/home/pi/log.json';
+const adminlogJsonPath: string = '/home/pi/adminlog.json';
 const http = require('http');
 const httpServer = http.createServer(app);
 const io = require('socket.io')(httpServer);
@@ -128,6 +130,22 @@ io.use(sharedSession(sessionMiddleware, {
 io.sockets.on('connection', async (socket: any) => {
 	let taskManagerTimer = setInterval(() => { functions.taskManager(socket); }, 1000);
 	// console.log(JSON.stringify(socket.handshake.address));
+	fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
+		fs.readFile(logJsonPath, (err, data) => {
+			let temp = JSON.parse(data.toString() || "null");
+			socket.emit('newLog', {
+				value: temp.slice(-1)
+			});
+		})
+	});
+	fs.watchFile(adminlogJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
+		fs.readFile(adminlogJsonPath, (err, data) => {
+			let temp = JSON.parse(data.toString() || "null");
+			socket.emit('newLog', {
+				value: temp.slice(-1)
+			});
+		})
+	});
 	socket.on('command', async (input: any) => {
 		functions.parseCommand(input.command, socket);
 	});

@@ -63,6 +63,10 @@ function loginCheck(username: string, password: string, done: any)
         }
       })
     }
+    else if(username != 'admin')
+    {
+      return done(null, false, {message: 'username incorrect'});
+    }
 }
 import si from 'systeminformation';
 import os from 'os-utils';
