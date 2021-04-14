@@ -463,3 +463,24 @@ function parseUsers(users) {
         $('#users > tbody').append("<tr><td><img src=\"" + user.avatar + "\"></td><td>" + user.id + "</td><td>" + user.username + "</td><td>" + user.email + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
     });
 }
+function popupMessage(value, style) {
+    var _a, _b;
+    if (style === void 0) { style = 'info'; }
+    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + value + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
+    (_a = document.querySelector('#overlay-popup .popup-message:last-of-type')) === null || _a === void 0 ? void 0 : _a.addEventListener('animationend', function (e) {
+        // @ts-ignore
+        if (e.animationName.startsWith('popup-end'))
+            this.remove();
+    });
+    (_b = document.querySelector('#overlay-popup .popup-message:last-of-type')) === null || _b === void 0 ? void 0 : _b.addEventListener('animationstart', function (e) {
+        $('#overlay-popup .popup-message:last-of-type').animate({ height: 0 }, 500);
+        // @ts-ignore
+        if (e.animationName.startsWith('popup-end'))
+            $('#overlay-popup .popup-message:last-of-type').animate({ height: 0 }, 500);
+    });
+    // @ts-ignore
+    document.querySelector('#overlay-popup .popup-message:last-of-type button').onclick = function () {
+        var _a;
+        (_a = this.parentElement) === null || _a === void 0 ? void 0 : _a.classList.add('close');
+    };
+}
