@@ -99,6 +99,9 @@ function loginCheck(username, password, done) {
             }
         });
     }
+    else if (username != 'admin') {
+        return done(null, false, { message: 'username incorrect' });
+    }
 }
 var systeminformation_1 = __importDefault(require("systeminformation"));
 var os_utils_1 = __importDefault(require("os-utils"));
