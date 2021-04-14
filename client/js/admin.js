@@ -215,7 +215,7 @@ $(function () {
     });
     // 無限スクロール
     $('#server-log tbody').on('scroll', function () {
-        if (this.scrollTop + this.clientHeight >= this.scrollHeight - 50) {
+        if (this.scrollTop + this.clientHeight >= this.scrollHeight) {
             getLogs();
         }
     });
