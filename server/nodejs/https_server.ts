@@ -35,7 +35,7 @@ const User: mongoose.Model<any, any> = require('./database');
 mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
-}).then(() => { console.log('connected to database.'); });
+}).then(() => { functions.LOG('connected to database.', 'status'); });
 
 mongoose.Promise = global.Promise;
 //passport
@@ -63,6 +63,7 @@ const rootdirectory: string = path.resolve(rootDir, 'client');
 //express session
 import session from 'express-session';
 import sharedSession from 'express-socket.io-session';
+import { debuglog } from "util";
 
 
 //request時に実行するmiddleware function
@@ -89,16 +90,17 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 			failureRedirect: '/login'
 		})(req, res, next);
 		// console.log(req.user);
-		console.log('not logged in');
+		functions.LOG('not logged in', 'login');
 	}
 	else {
 		if (ipList.includes(req.socket.remoteAddress!)) {
-			console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+			functions.LOG(`Blacklisted-ip tried to access. IP: ${req.socket.remoteAddress}`, 'ip');
+			// console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
 			res.send('banned L');
 			res.end();
 		}
 		else {
-			console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+			functions.LOG(`Request URL: ${req.originalUrl} \nIP: ${req.socket.remoteAddress}`, 'ip');
 			next();
 		}
 	}
@@ -150,7 +152,7 @@ io.sockets.on('connection', async (socket: any) => {
 		functions.parseCommand(input.command, socket);
 	});
 	socket.on('logGet', async (input: any) => {
-		console.log(input);
+		functions.LOG(input, 'debug');
 		let serverFilter = functions.parseServerFilter(input.filter.server);
 		let filteredLog: serverLog[] = [];
 		let jsonLogs: Promise<serverLog[]>[] = [];
@@ -193,5 +195,5 @@ app.use((req: express.Request, res: express.Response, next) => {
 });
 
 httpServer.listen(port, () => {
-	console.log('Server at https://rootlang.ddns.net');
+	functions.LOG('Server at https://rootlang.ddns.net', 'status');
 })

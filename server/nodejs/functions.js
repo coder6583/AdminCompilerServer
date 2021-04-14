@@ -48,13 +48,13 @@ function mountUsb(accountsDir) {
                 if (!err) {
                     exec('sudo umount /media/pi/A042-416A', function () {
                         exec('sudo mount /dev/sda1 /media/usb', function () {
-                            console.log('mounted usb');
+                            LOG('mounted usb', 'status');
                         });
                     });
                 }
                 else {
                     exec('sudo mount /dev/sda1 /media/usb', function () {
-                        console.log('mounted usb');
+                        LOG('mounted usb', 'status');
                     });
                 }
             });
@@ -69,12 +69,12 @@ function updateIpBlacklist(blacklistDir) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     fs_1.default.readFile(blacklistDir, function (err, data) {
                         if (err) {
-                            console.log('Could not read blacklist.');
+                            LOG('Could not read blacklist.', 'status');
                         }
                         else {
                             var blacklistData = data.toString();
                             ipList = blacklistData.split(';\n');
-                            console.log(ipList.length + ' blocked ip addresses.');
+                            LOG(ipList.length + ' blocked ip addresses.', 'status');
                         }
                         resolve(ipList);
                     });
@@ -85,13 +85,13 @@ function updateIpBlacklist(blacklistDir) {
 var bcrypt_1 = __importDefault(require("bcrypt"));
 function loginCheck(username, password, done) {
     var hash = "$2b$10$ieCh/0DZR.B/T2pAwzNHVO757UQ1PtTpkv9XdF/T51ag1KCkMstXi";
-    console.log('Login Attempt');
+    LOG('Login Attempt', 'login');
     if (username == 'admin') {
         bcrypt_1.default.compare(password, hash, function (err, isMatch) {
             if (err)
-                console.log(err);
+                LOG(err, 'login');
             if (isMatch) {
-                console.log('logged in!');
+                LOG('logged in!', 'login');
                 return done(null, username);
             }
             else {
@@ -138,7 +138,7 @@ function taskManager(socket) {
 var io = require('socket.io');
 function parseCommand(command, socket) {
     var words = command.split(' ');
-    console.log(words[0]);
+    LOG(words[0], 'debug');
     //update
     if (words[0] == 'update') {
         if (words.length == 1) {
@@ -408,7 +408,7 @@ function parseCommand(command, socket) {
         }
     }
     else if (words[0] == 'list') {
-        console.log('aaaa');
+        LOG('aaaa', 'debug');
         socket.emit('result', {
             success: true,
             result: 'list'
@@ -437,7 +437,6 @@ function parseServerFilter(filter) {
 function parseFilter(jsonPath, filter) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            // console.log(jsonPath);
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     var filteredLog = [];
                     fs_1.default.readFile(jsonPath, function (err, data) {
@@ -447,14 +446,11 @@ function parseFilter(jsonPath, filter) {
                             var logArray = JSON.parse(data || "null");
                             logArray.forEach(function (element) {
                                 if (filter.before && filter.after) {
-                                    // console.log('time');
                                     if (!(filter.before <= element.timestamp && element.timestamp <= filter.after)) {
-                                        // console.log('not in between');
                                         return;
                                     }
                                 }
                                 if (filter.category.length > 0) {
-                                    // console.log('category');
                                     var inCategory_1 = false;
                                     filter.category.forEach(function (cat) {
                                         if (element.category == cat) {
@@ -476,11 +472,13 @@ function parseFilter(jsonPath, filter) {
                                 filteredLog.push(element);
                             });
                         }
-                        // console.log(filteredLog);
                         resolve(filteredLog);
                     });
                 })];
         });
     });
 }
-module.exports = { mountUsb: mountUsb, updateIpBlacklist: updateIpBlacklist, loginCheck: loginCheck, taskManager: taskManager, parseCommand: parseCommand, parseServerFilter: parseServerFilter, parseFilter: parseFilter };
+function LOG(log, title) {
+    console.log(title + "(" + log + ")");
+}
+module.exports = { mountUsb: mountUsb, updateIpBlacklist: updateIpBlacklist, loginCheck: loginCheck, taskManager: taskManager, parseCommand: parseCommand, parseServerFilter: parseServerFilter, parseFilter: parseFilter, LOG: LOG };
