@@ -632,19 +632,10 @@ div.tab-status {
 		background-color: rgba(black, .6);
 
 		transform-origin: bottom;
-		animation: popup-end .5s 5.5s forwards, slide-in .5s forwards;
+		animation: popup-end .5s 5.5s forwards, slide-in .5s;
 		margin-top: 10px;
 		overflow: hidden;
-		@keyframes popup-end {
-			from {
-				opacity: 1;
-			}
-			to {
-				margin-top: 0;
-				padding: 0 10px;
-				opacity: 0;
-			}
-		}
+		left: 0;
 		@keyframes slide-in {
 			from {
 				left: 100px;
@@ -653,6 +644,15 @@ div.tab-status {
 			to {
 				left: 0;
 				opacity: 1;
+			}
+		}
+		@keyframes popup-end {
+			from {
+				opacity: 1;
+			}
+			to {
+				margin-top: 0;
+				opacity: .5;
 			}
 		}
 
@@ -664,8 +664,7 @@ div.tab-status {
 				}
 				to {
 					margin-top: 0;
-					padding: 0 10px;
-					opacity: 0;
+					opacity: .5;
 				}
 			}
 		}

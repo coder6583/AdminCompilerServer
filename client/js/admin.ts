@@ -425,9 +425,8 @@ function popupMessage(value :string, style='info') {
 		if (e.animationName.startsWith('popup-end')) this.remove();
 	});
 	document.querySelector('#overlay-popup .popup-message:last-of-type')?.addEventListener('animationstart', function(e) {
-		$('#overlay-popup .popup-message:last-of-type').animate({height: 0}, 500)
 		// @ts-ignore
-		if (e.animationName.startsWith('popup-end')) $('#overlay-popup .popup-message:last-of-type').animate({height: 0}, 500);
+		if (e.animationName.startsWith('popup-end')) $(this).animate({height: 0, padding: '0 10px'}, 500);
 	});
 	
 	// @ts-ignore

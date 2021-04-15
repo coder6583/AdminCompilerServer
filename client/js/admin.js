@@ -473,10 +473,9 @@ function popupMessage(value, style) {
             this.remove();
     });
     (_b = document.querySelector('#overlay-popup .popup-message:last-of-type')) === null || _b === void 0 ? void 0 : _b.addEventListener('animationstart', function (e) {
-        $('#overlay-popup .popup-message:last-of-type').animate({ height: 0 }, 500);
         // @ts-ignore
         if (e.animationName.startsWith('popup-end'))
-            $('#overlay-popup .popup-message:last-of-type').animate({ height: 0 }, 500);
+            $(this).animate({ height: 0, padding: '0 10px' }, 500);
     });
     // @ts-ignore
     document.querySelector('#overlay-popup .popup-message:last-of-type button').onclick = function () {
