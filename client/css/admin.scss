@@ -138,12 +138,13 @@ div.list-tab {
 		h2 {
 			display: flex;
 			flex-wrap: wrap;
+			align-items: center;
 			border-bottom: solid #ccc 1px;
 
 			span {
 				font-weight: normal;
 				font-size: 1.5rem;
-				padding: 10px 20px;
+				padding: 10px 10px 10px 20px;
 				color: #222;
 			}
 		}
@@ -290,13 +291,13 @@ div.list-tab {
 
 div.tab-server-log {
 	.label, table {
-		// min-width: 600px;
+		min-width: 500px;
 	}
 
 	.label {
 
 		form {
-			margin: 0 40px 10px auto;
+			margin: 0 10px 0 auto;
 			display: inline-block;
 
 			input {
@@ -404,6 +405,10 @@ div.tab-server-log {
 }
 
 div.tab-users {
+	.label, table {
+		min-width: 650px;
+	}
+
 	table tr {
 		& > *:nth-child(1) {
 			width: 70px;
@@ -436,8 +441,12 @@ div.tab-users {
 }
 
 div.tab-ban-ip {
+	.label, table {
+		min-width: 600px;
+	}
+
 	.label form {
-		margin: auto 20px auto auto;
+		margin: auto 20px 10px auto;
 		width: 200px;
 		height: 25px;
 		display: flex;
