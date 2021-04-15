@@ -233,6 +233,7 @@ $(function () {
         }
     };
     $(window).on('resize', heightRefresh).trigger('resize');
+    $('.label').on('resize', heightRefresh);
     // submit無効化
     $('.disable-submit').on('submit', function () { return false; });
     // banIP
