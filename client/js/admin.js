@@ -233,6 +233,7 @@ $(function () {
         }
     };
     $(window).on('resize', heightRefresh).trigger('resize');
+    $('.label').on('reize', function () { return console.log('resized'); });
     $('.label').on('resize', heightRefresh);
     // submit無効化
     $('.disable-submit').on('submit', function () { return false; });

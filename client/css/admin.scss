@@ -296,7 +296,7 @@ div.tab-server-log {
 	.label {
 
 		form {
-			margin: 0 40px 0 auto;
+			margin: 0 40px 10px auto;
 			display: inline-block;
 
 			input {
@@ -349,6 +349,7 @@ div.tab-server-log {
 		tr {
 			& > *:nth-child(1) {
 				width: 70px;
+				
 			}
 			& > *:nth-child(2) {
 				width: 70px;

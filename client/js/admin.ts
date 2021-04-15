@@ -188,6 +188,7 @@ $(() => {
 		}
 	};
 	$(window).on('resize', heightRefresh).trigger('resize');
+	$('.label').on('reize', () => console.log('resized'));
 	$('.label').on('resize', heightRefresh);
 
 	// submit無効化
