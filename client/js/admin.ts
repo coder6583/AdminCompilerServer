@@ -186,6 +186,8 @@ $(() => {
 			table.style.maxHeight = `${($(window).height() || 0) - labelHeight - controlHeight}px`;
 			tbody.style.maxHeight = `${($(window).height() || 0) - labelHeight - controlHeight - 40}px`;
 		}
+
+		
 	};
 	$(window).on('resize', heightRefresh).trigger('resize');
 	document.querySelectorAll('.label').forEach(label => {
