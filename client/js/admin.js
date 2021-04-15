@@ -234,7 +234,7 @@ $(function () {
     };
     $(window).on('resize', heightRefresh).trigger('resize');
     document.querySelectorAll('.label').forEach(function (label) {
-        new ResizeObserver(function () { return console.log('うぇい'); }).observe(label);
+        new ResizeObserver(heightRefresh).observe(label);
     });
     // submit無効化
     $('.disable-submit').on('submit', function () { return false; });

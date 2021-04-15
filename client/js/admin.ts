@@ -189,7 +189,7 @@ $(() => {
 	};
 	$(window).on('resize', heightRefresh).trigger('resize');
 	document.querySelectorAll('.label').forEach(label => {
-		new ResizeObserver(() => console.log('うぇい')).observe(label);
+		new ResizeObserver(heightRefresh).observe(label);
 	});
 
 	// submit無効化
