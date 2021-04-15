@@ -174,7 +174,7 @@ div.list-tab {
 
 		tbody {
 			height: calc(100vh - 1.5rem - 67px);
-			overflow-y: scroll;
+			overflow: hidden scroll;
 			padding: 0;
 
 			&::-webkit-scrollbar {
