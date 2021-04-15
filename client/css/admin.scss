@@ -87,6 +87,8 @@ nav.navigation {
 }
 
 .contents {
+	min-width: 0;
+
 	.content {
 		display: none;
 		height: 100%;
@@ -135,6 +137,7 @@ div.list-tab {
 	.label {
 		h2 {
 			display: flex;
+			flex-wrap: wrap;
 			border-bottom: solid #ccc 1px;
 
 			span {
@@ -286,54 +289,62 @@ div.list-tab {
 }
 
 div.tab-server-log {
-	.label form {
-		margin: 0 40px 0 auto;
-		display: inline-block;
+	.label, table {
+		// min-width: 600px;
+	}
 
-		input {
-			outline: 0;
-			border: none;
-			border-bottom: solid lightgray 1px;
-			font-size: .9rem;
-			height: 25px;
-			width: 300px;
-		}
+	.label {
 
-		label {
-			padding: 0;
+		form {
+			margin: 0 40px 0 auto;
+			display: inline-block;
 
-			.bi {
-				font-size: 1.2rem;
-				cursor: pointer;
+			input {
+				outline: 0;
+				border: none;
+				border-bottom: solid lightgray 1px;
+				font-size: .9rem;
+				height: 25px;
+				width: 300px;
 			}
 
-			&::after {
-				content: 'フィルターのヒント';
-				font-style: normal;
-				font-size: 1rem;
-				font-weight: normal;
-				display: inline-block;
-				position: absolute;
-				margin-top: 40px;
-				margin-left: -65px;
-				background-color: rgba(#444, .8);
-				color: whitesmoke;
-				padding: 3px 5px;
-				border-radius: 3px;
-				pointer-events: none;
-				opacity: 0;
-				visibility: hidden;
-				transform-origin: top;
-				transform: scale(.8);
-				transition: all .1s;
-			}
-			&:hover::after {
-				opacity: 1;
-				visibility: visible;
-				transform: scale(1);
+			label {
+				padding: 0;
+
+				.bi {
+					font-size: 1.2rem;
+					cursor: pointer;
+				}
+
+				&::after {
+					content: 'フィルターのヒント';
+					font-style: normal;
+					font-size: 1rem;
+					font-weight: normal;
+					display: inline-block;
+					position: absolute;
+					margin-top: 40px;
+					margin-left: -65px;
+					background-color: rgba(#444, .8);
+					color: whitesmoke;
+					padding: 3px 5px;
+					border-radius: 3px;
+					pointer-events: none;
+					opacity: 0;
+					visibility: hidden;
+					transform-origin: top;
+					transform: scale(.8);
+					transition: all .1s;
+				}
+				&:hover::after {
+					opacity: 1;
+					visibility: visible;
+					transform: scale(1);
+				}
 			}
 		}
 	}
+
 	table {
 		tr {
 			& > *:nth-child(1) {
