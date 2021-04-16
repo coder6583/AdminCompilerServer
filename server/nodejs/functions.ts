@@ -10,14 +10,14 @@ function mountUsb(accountsDir: string)
             {
               exec('sudo umount /media/pi/A042-416A', () => {
                 exec('sudo mount /dev/sda1 /media/usb', () => {
-                  console.log('mounted usb');
+                  LOG('mounted usb', 'status');
                 })
               });
             }
             else
             {
               exec('sudo mount /dev/sda1 /media/usb', () => {
-                console.log('mounted usb')
+                LOG('mounted usb', 'status')
               });
             }
           })
@@ -31,13 +31,13 @@ async function updateIpBlacklist(blacklistDir: string)
       fs.readFile(blacklistDir, (err, data) => {
           if(err)
           {
-            console.log('Could not read blacklist.');
+            LOG('Could not read blacklist.', 'status');
           }
           else
           {
             let blacklistData: string = data.toString();
             ipList = blacklistData.split(';\n');
-            console.log(ipList.length + ' blocked ip addresses.');
+            LOG(ipList.length + ' blocked ip addresses.', 'status');
           }
           resolve(ipList);
       });
@@ -47,14 +47,14 @@ import bcrypt from 'bcrypt';
 function loginCheck(username: string, password: string, done: any)
 {
     const hash = "$2b$10$ieCh/0DZR.B/T2pAwzNHVO757UQ1PtTpkv9XdF/T51ag1KCkMstXi";
-    console.log('Login Attempt');
+    LOG('Login Attempt', 'login');
     if(username == 'admin')
     {
       bcrypt.compare(password, hash, (err, isMatch) => {
-        if(err) console.log(err);
+        if(err) LOG(err, 'login');
         if(isMatch)
         {
-          console.log('logged in!');
+          LOG('logged in!', 'login');
           return done(null, username);
         }
         else 
@@ -105,7 +105,7 @@ const io = require('socket.io');
 function parseCommand(command: string, socket: any)
 {
     let words = command.split(' ');
-    console.log(words[0]);
+    LOG(words[0], 'debug');
     //update
     if(words[0] == 'update')
     {
@@ -404,7 +404,7 @@ function parseCommand(command: string, socket: any)
     }
     else if(words[0] == 'list')
     {
-      console.log('aaaa');
+      LOG('aaaa', 'debug');
       socket.emit('result', {
         success: true,
         result: 'list'
@@ -439,7 +439,6 @@ function parseServerFilter(filter: string[])
 }
 async function parseFilter(jsonPath: string, filter: logFilter)
 {
-  // console.log(jsonPath);
   return new Promise((resolve, reject) => {
     let filteredLog: serverLog[] = [];
     fs.readFile(jsonPath, (err: any, data: any) => {
@@ -450,16 +449,13 @@ async function parseFilter(jsonPath: string, filter: logFilter)
         logArray.forEach((element: any) => {
           if(filter.before && filter.after)
           {
-            // console.log('time');
             if(!(filter.before <= element.timestamp && element.timestamp <= filter.after))
             {
-              // console.log('not in between');
               return;
             }
           }
           if(filter.category.length > 0)
           {
-            // console.log('category');
             let inCategory = false;
             filter.category.forEach((cat: any) => {
               if(element.category == cat)
@@ -486,9 +482,12 @@ async function parseFilter(jsonPath: string, filter: logFilter)
           filteredLog.push(element);
         });
       }
-      // console.log(filteredLog);
       resolve(filteredLog);
     })
   })
 }
-module.exports = {mountUsb, updateIpBlacklist, loginCheck, taskManager, parseCommand, parseServerFilter, parseFilter};
+function LOG(log: string| Error, title: string)
+{
+  console.log(`${title}(${log})\``);
+}
+module.exports = {mountUsb, updateIpBlacklist, loginCheck, taskManager, parseCommand, parseServerFilter, parseFilter, LOG};

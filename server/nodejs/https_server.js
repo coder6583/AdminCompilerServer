@@ -70,7 +70,7 @@ var User = require('./database');
 mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(function () { console.log('connected to database.'); });
+}).then(function () { functions.LOG('connected to database.', 'status'); });
 mongoose_1.default.Promise = global.Promise;
 //passport
 var passport_1 = __importDefault(require("passport"));
@@ -114,16 +114,17 @@ function everyRequest(req, res, next) {
             failureRedirect: '/login'
         })(req, res, next);
         // console.log(req.user);
-        console.log('not logged in');
+        functions.LOG('not logged in', 'login');
     }
     else {
         if (ipList.includes(req.socket.remoteAddress)) {
-            console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+            functions.LOG("Blacklisted-ip tried to access. IP: " + req.socket.remoteAddress, 'ip');
+            // console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
             res.send('banned L');
             res.end();
         }
         else {
-            console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+            functions.LOG("Request URL: " + req.originalUrl + " \nIP: " + req.socket.remoteAddress, 'ip');
             next();
         }
     }
@@ -175,7 +176,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         socket.on('logGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             var serverFilter, filteredLog, jsonLogs;
             return __generator(this, function (_a) {
-                console.log(input);
+                functions.LOG(input, 'debug');
                 serverFilter = functions.parseServerFilter(input.filter.server);
                 filteredLog = [];
                 jsonLogs = [];
@@ -221,5 +222,5 @@ app.use(function (req, res, next) {
     res.sendFile('err404.html', { root: rootdirectory });
 });
 httpServer.listen(port, function () {
-    console.log('Server at https://rootlang.ddns.net');
+    functions.LOG('Server at https://rootlang.ddns.net', 'status');
 });
