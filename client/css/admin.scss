@@ -87,6 +87,8 @@ nav.navigation {
 }
 
 .contents {
+	min-width: 0;
+
 	.content {
 		display: none;
 		height: 100%;
@@ -135,12 +137,14 @@ div.list-tab {
 	.label {
 		h2 {
 			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
 			border-bottom: solid #ccc 1px;
 
 			span {
 				font-weight: normal;
 				font-size: 1.5rem;
-				padding: 10px 20px;
+				padding: 10px 10px 10px 20px;
 				color: #222;
 			}
 		}
@@ -170,7 +174,7 @@ div.list-tab {
 
 		tbody {
 			height: calc(100vh - 1.5rem - 67px);
-			overflow-y: scroll;
+			overflow: hidden scroll;
 			padding: 0;
 
 			&::-webkit-scrollbar {
@@ -286,73 +290,89 @@ div.list-tab {
 }
 
 div.tab-server-log {
-	.label form {
-		margin: 0 40px 0 auto;
-		display: inline-block;
+	.label, table {
+		min-width: 500px;
+	}
 
-		input {
-			outline: 0;
-			border: none;
-			border-bottom: solid lightgray 1px;
-			font-size: .9rem;
-			height: 25px;
-			width: 300px;
-		}
+	.label {
 
-		label {
-			padding: 0;
+		form {
+			margin: 0 10px 0 auto;
+			display: inline-block;
 
-			.bi {
-				font-size: 1.2rem;
-				cursor: pointer;
+			input {
+				outline: 0;
+				border: none;
+				border-bottom: solid lightgray 1px;
+				font-size: .9rem;
+				height: 25px;
+				width: 300px;
 			}
 
-			&::after {
-				content: 'フィルターのヒント';
-				font-style: normal;
-				font-size: 1rem;
-				font-weight: normal;
-				display: inline-block;
-				position: absolute;
-				margin-top: 40px;
-				margin-left: -65px;
-				background-color: rgba(#444, .8);
-				color: whitesmoke;
-				padding: 3px 5px;
-				border-radius: 3px;
-				pointer-events: none;
-				opacity: 0;
-				visibility: hidden;
-				transform-origin: top;
-				transform: scale(.8);
-				transition: all .1s;
-			}
-			&:hover::after {
-				opacity: 1;
-				visibility: visible;
-				transform: scale(1);
+			label {
+				padding: 0;
+
+				.bi {
+					font-size: 1.2rem;
+					cursor: pointer;
+				}
+
+				&::after {
+					content: 'フィルターのヒント';
+					font-style: normal;
+					font-size: 1rem;
+					font-weight: normal;
+					display: inline-block;
+					position: absolute;
+					margin-top: 40px;
+					margin-left: -65px;
+					background-color: rgba(#444, .8);
+					color: whitesmoke;
+					padding: 3px 5px;
+					border-radius: 3px;
+					pointer-events: none;
+					opacity: 0;
+					visibility: hidden;
+					transform-origin: top;
+					transform: scale(.8);
+					transition: all .1s;
+				}
+				&:hover::after {
+					opacity: 1;
+					visibility: visible;
+					transform: scale(1);
+				}
 			}
 		}
 	}
+
 	table {
 		tr {
 			& > *:nth-child(1) {
-				width: 100px;
+				width: 70px;
+				
 			}
 			& > *:nth-child(2) {
-				width: 100px;
+				width: 70px;
 			}
 			& > *:nth-child(3) {
 				flex: 1;
 				min-width: 100px;
-
-				tbody & {
-					font-family: 'My Consolas', sans-serif;
-					font-size: .7rem;
-				}
 			}
 			& > *:nth-child(4) {
-				width: 150px;
+				width: 135px;
+			}
+		}
+		tbody {
+			tr {
+				& > *:nth-child(3) {
+					font-family: 'My Consolas', sans-serif;
+					font-size: .7rem;
+					word-break: break-all;
+				}
+				& > *:nth-child(4) {
+					font-size: .8rem;
+				}
 			}
 		}
 	}
@@ -386,6 +406,10 @@ div.tab-server-log {
 }
 
 div.tab-users {
+	.label, table {
+		min-width: 650px;
+	}
+
 	table tr {
 		& > *:nth-child(1) {
 			width: 70px;
@@ -418,8 +442,12 @@ div.tab-users {
 }
 
 div.tab-ban-ip {
+	.label, table {
+		min-width: 600px;
+	}
+
 	.label form {
-		margin: auto 20px auto auto;
+		margin: auto 20px 10px auto;
 		width: 200px;
 		height: 25px;
 		display: flex;
@@ -484,10 +512,11 @@ div.tab-status {
 	
 	.monitor {
 		width: 100%;
-		height: 200px;
+		// height: 200px;
 
 		h3 {
 			display: flex;
+			flex-wrap: wrap;
 			align-items: flex-end;
 			margin: 10px 0 20px 0;
 
@@ -499,23 +528,23 @@ div.tab-status {
 				font-weight: normal;
 				font-size: 1rem;
 
-				.network-up, .network-down, .disk-read, .disk-write {
+				&.network-up, &.network-down, &.disk-read, &.disk-write {
 					display: flex;
 					align-items: center;
 					height: 1.5rem;
 					border-left: solid 3px;
 					padding-left: 3px;
 				}
-				.network-up, .network-down {
+				&.network-up, &.network-down {
 					border-left-color: rgb(167, 79, 1);
 				}
-				.disk-read, .disk-write {
+				&.disk-read, &.disk-write {
 					border-left-color: rgb(77, 166, 12);
 				}
-				.network-up, .disk-read {
-					margin-right: 20px;
+				&.network-down, &.disk-write {
+					// margin-left: 20px;
 				}
-				.network-down, .disk-write {
+				&.network-down, &.disk-write {
 					border-left-style: dashed;
 				}
 			}
@@ -607,6 +636,108 @@ div.tab-status {
 	}
 }
 
-.tab-users {
+#overlay-popup {
+	position: fixed;
+	right: 20px;
+	top: 0;
+	width: 300px;
+	height: 100%;
+	padding-bottom: 10px;
+	pointer-events: visible;
+	visibility: hidden;
+	display: flex;
+	flex-direction: column-reverse;
 
+	.popup-message {
+		visibility: visible;
+		position: relative;
+		display: flex;
+		align-items: center;
+		padding: 5px 10px;
+		background-color: rgba(black, .6);
+
+		transform-origin: bottom;
+		animation: popup-end .5s 5.5s forwards, slide-in .5s;
+		margin-top: 10px;
+		overflow: hidden;
+		left: 0;
+		@keyframes slide-in {
+			from {
+				left: 100px;
+				opacity: 0;
+			}
+			to {
+				left: 0;
+				opacity: 1;
+			}
+		}
+		@keyframes popup-end {
+			from {
+				opacity: 1;
+			}
+			to {
+				margin-top: 0;
+				opacity: .5;
+			}
+		}
+
+		&.close {
+			animation: popup-end2 .5s linear forwards;
+			@keyframes popup-end2 {
+				from {
+					opacity: 1;
+				}
+				to {
+					margin-top: 0;
+					opacity: .5;
+				}
+			}
+		}
+
+		span {
+			color: whitesmoke;
+		}
+
+		button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 7px;
+			margin-left: auto;
+			background-color: transparent;
+			border-radius: 50%;
+			outline: 0;
+
+			svg {
+				color: whitesmoke;
+				width: 10px;
+				height: 10px;
+			}
+
+			transition: all .1s;
+			&:hover {
+				background-color: rgba(white, .1);
+			}
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			display: block;
+			height: 2px;
+			background-color: rgba(black, .5);
+
+			animation: popup 5s .5s linear forwards;
+			@keyframes popup {
+				from {
+					width: 0;
+				}
+				to {
+					width: 100%;
+				}
+			}
+		}
+	}
 }

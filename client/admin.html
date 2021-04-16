@@ -11,7 +11,7 @@
 	<link rel="shortcut icon" href="assets/icons/favicon.svg" type="image/x-icon">
 
 	<!-- jQuery -->
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 	<!-- jQuery Terminal -->
 	<script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
@@ -155,7 +155,8 @@
 					<div class="monitor monitor-ram">
 						<h3>
 							<span class="label">メモリ</span>
-							<span class="info">使用率：<span id="memory-rate"></span>% （<span id="memory-using"></span>MB／<span id="memory-total"></span>MB）</span>
+							<span class="info">使用率：<span id="memory-rate"></span>%</span>
+							<span class="info">（<span id="memory-using"></span>MB／<span id="memory-total"></span>MB）</span>
 						</h3>
 						<div class="chart-div">
 							<canvas id="monitor-memory"></canvas>
@@ -164,10 +165,8 @@
 					<div class="monitor monitor-network">
 						<h3>
 							<span class="label">ネットワーク</span>
-							<span class="info">
-								<span class="network-up">上り：<span id="network-up-rate"></span>bps</span>
-								<span class="network-down">下り：<span id="network-down-rate"></span>bps</span>
-							</span>
+							<span class="info network-up">上り：<span id="network-up-rate"></span>bps</span>
+							<span class="info network-down">下り：<span id="network-down-rate"></span>bps</span>
 						</h3>
 						<div class="chart-div">
 							<canvas id="monitor-network"></canvas>
@@ -176,11 +175,9 @@
 					<div class="monitor monitor-disk">
 						<h3>
 							<span class="label">ディスク</span>
-							<span class="info">
-								<span class="disk-read">読み取り：<span id="disk-read-rate"></span>bps</span>
-								<span class="disk-write">書き込み：<span id="disk-write-rate"></span>bps</span>
-							</span>
-						</h3>
+							<span class="info disk-read">読み取り：<span id="disk-read-rate"></span>bps</span>
+							<span class="info disk-write">書き込み：<span id="disk-write-rate"></span>bps</span>
+					</h3>
 						<div class="chart-div">
 							<canvas id="monitor-disk"></canvas>
 						</div>
@@ -190,6 +187,7 @@
 		</div>
 	</main>
 
+	<!-- フィルターのヒント -->
 	<div class="overlay-hint overlay-window">
 		<div class="overlay-content">
 			<h2>
@@ -222,6 +220,9 @@
 			<p>※タイムスタンプの書き方はISO 8601基準（例：2021-04-01T10:53:15）</p>
 		</div>
 	</div>
+
+	<!-- ポップアップメッセージ -->
+	<div id="overlay-popup"></div>
 
 	<!-- Bootstrap -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">

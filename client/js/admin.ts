@@ -168,6 +168,13 @@ $(() => {
 		$('#server-log ~ .loading-div').removeClass('show');
 	});
 
+	// 無限スクロール
+	$('#server-log tbody').on('scroll', function() {
+		if (this.scrollTop + this.clientHeight >= this.scrollHeight) {
+			getLogs();
+		}
+	});
+
 	// レイアウト
 	const heightRefresh = () => {
 		const tables = $('.list-tab > .table');
@@ -179,8 +186,13 @@ $(() => {
 			table.style.maxHeight = `${($(window).height() || 0) - labelHeight - controlHeight}px`;
 			tbody.style.maxHeight = `${($(window).height() || 0) - labelHeight - controlHeight - 40}px`;
 		}
+
+		
 	};
 	$(window).on('resize', heightRefresh).trigger('resize');
+	document.querySelectorAll('.label').forEach(label => {
+		new ResizeObserver(heightRefresh).observe(label);
+	});
 
 	// submit無効化
 	$('.disable-submit').on('submit', () => false);
@@ -409,4 +421,21 @@ function parseUsers(users: userData[]) {
 	users.forEach(user => {
 		$('#users > tbody').append(`<tr><td><img src="${user.avatar}"></td><td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td><button class="btn btn-outline-secondary edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary remove"><i class="bi bi-x"></i></button></td></tr>`)
 	});	
+}
+
+function popupMessage(value :string, style='info') {
+	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${value}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
+	document.querySelector('#overlay-popup .popup-message:last-of-type')?.addEventListener('animationend', function(e) {
+		// @ts-ignore
+		if (e.animationName.startsWith('popup-end')) this.remove();
+	});
+	document.querySelector('#overlay-popup .popup-message:last-of-type')?.addEventListener('animationstart', function(e) {
+		// @ts-ignore
+		if (e.animationName.startsWith('popup-end')) $(this).animate({height: 0, padding: '0 10px'}, 500);
+	});
+	
+	// @ts-ignore
+	document.querySelector('#overlay-popup .popup-message:last-of-type button')!.onclick = function() {
+		this.parentElement?.classList.add('close');
+	}
 }
