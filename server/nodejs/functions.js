@@ -479,6 +479,6 @@ function parseFilter(jsonPath, filter) {
     });
 }
 function LOG(log, title) {
-    console.log(title + "(" + log + ")");
+    console.log(title + "(" + log + ")`");
 }
 module.exports = { mountUsb: mountUsb, updateIpBlacklist: updateIpBlacklist, loginCheck: loginCheck, taskManager: taskManager, parseCommand: parseCommand, parseServerFilter: parseServerFilter, parseFilter: parseFilter, LOG: LOG };
