@@ -423,6 +423,8 @@ function parseServerLog(logs :serverLog[]) {
 }
 socket.on('newLog', (result: {value: serverLog}) => {
 	const log = result.value;
+	console.log(log);
+	
 	$('#server-log > tbody').prepend(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
 });
 

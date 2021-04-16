@@ -469,6 +469,7 @@ function parseServerLog(logs) {
 }
 socket.on('newLog', function (result) {
     var log = result.value;
+    console.log(log);
     $('#server-log > tbody').prepend("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + escapeLog(log.value) + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
 });
 function parseBanIP(banIPs) {
