@@ -375,7 +375,18 @@ $(() => {
 });
 
 // @ts-ignore
-const socket = io.connect('');
+const socket = io.connect('', {
+	'reconnection': true,
+	'reconnectionDelay': 10000,
+	'reconnectionDelayMax' : 60000,
+	'reconnectionAttempts': 10,
+});
+socket.on('connect_error', () => {
+	popupMessage('ソケットに接続できません\n再接続を試みています...', 'err');
+});
+socket.on('disconnect', () => {
+	popupMessage('ソケットが切断されました\n再接続を試みています...', 'err');
+});
 async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 	terminal.pause();
 
@@ -424,7 +435,7 @@ function parseUsers(users: userData[]) {
 }
 
 function popupMessage(value :string, style='info') {
-	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${value}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
+	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${value.replace('\n','<br>')}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
 	document.querySelector('#overlay-popup .popup-message:last-of-type')?.addEventListener('animationend', function(e) {
 		// @ts-ignore
 		if (e.animationName.startsWith('popup-end')) this.remove();

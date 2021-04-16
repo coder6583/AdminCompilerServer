@@ -675,7 +675,9 @@ div.tab-status {
 		display: flex;
 		align-items: center;
 		padding: 5px 10px;
-		background-color: rgba(black, .6);
+
+		&.info { background-color: rgba(black, .6); }
+		&.err { background-color: rgba(#c00, .6); }
 
 		transform-origin: bottom;
 		animation: popup-end .5s 5.5s forwards, slide-in .5s;
@@ -748,7 +750,7 @@ div.tab-status {
 			left: 0;
 			display: block;
 			height: 2px;
-			background-color: rgba(black, .5);
+			background-color: rgba(black, .3);
 
 			animation: popup 5s .5s linear forwards;
 			@keyframes popup {

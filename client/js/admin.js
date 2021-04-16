@@ -396,8 +396,8 @@ $(function () {
     socket.on('memory-usage', function (usage) {
         chartData.Memory = usage.percentage;
         $('#memory-rate').text(usage.percentage.toFixed(1));
-        $('#memory-using').text((usage.using / 1000000).toFixed(1));
-        $('#memory-total').text((usage.total / 1000000).toFixed(1));
+        $('#memory-using').text((usage.using / 1000000).toFixed(0));
+        $('#memory-total').text((usage.total / 1000000).toFixed(0));
     });
     socket.on('network-usage', function (usage) {
         var transmitted = usage.transmitted || 0;
@@ -417,7 +417,18 @@ $(function () {
     });
 });
 // @ts-ignore
-var socket = io.connect('');
+var socket = io.connect('', {
+    'reconnection': true,
+    'reconnectionDelay': 10000,
+    'reconnectionDelayMax': 60000,
+    'reconnectionAttempts': 10,
+});
+socket.on('connect_error', function () {
+    popupMessage('ソケットに接続できません\n再接続を試みています...', 'err');
+});
+socket.on('disconnect', function () {
+    popupMessage('ソケットが切断されました\n再接続を試みています...', 'err');
+});
 function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
         function receiveResult(result) {
@@ -469,7 +480,7 @@ function parseUsers(users) {
 function popupMessage(value, style) {
     var _a, _b;
     if (style === void 0) { style = 'info'; }
-    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + value + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
+    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + value.replace('\n', '<br>') + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
     (_a = document.querySelector('#overlay-popup .popup-message:last-of-type')) === null || _a === void 0 ? void 0 : _a.addEventListener('animationend', function (e) {
         // @ts-ignore
         if (e.animationName.startsWith('popup-end'))
