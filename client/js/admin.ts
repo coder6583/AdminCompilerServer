@@ -353,8 +353,8 @@ $(() => {
 	socket.on('memory-usage', (usage :{percentage: number, total: number, using: number}) => {
 		chartData.Memory = usage.percentage;
 		$('#memory-rate').text(usage.percentage.toFixed(1));
-		$('#memory-using').text((usage.using / 1000000).toFixed(1));
-		$('#memory-total').text((usage.total / 1000000).toFixed(1));
+		$('#memory-using').text((usage.using / 1000000).toFixed(0));
+		$('#memory-total').text((usage.total / 1000000).toFixed(0));
 	});
 	socket.on('network-usage', (usage :{received: number, transmitted: number}) => {
 		const transmitted = usage.transmitted || 0;
