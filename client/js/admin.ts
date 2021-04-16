@@ -421,6 +421,10 @@ function parseServerLog(logs :serverLog[]) {
 		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
 	});
 }
+socket.on('newLog', (result: {value: serverLog}) => {
+	const log = result.value;
+	$('#server-log > tbody').prepend(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
+});
 
 function parseBanIP(banIPs :banIP[]) {
 	banIPs.forEach(banIP => {
