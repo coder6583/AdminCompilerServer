@@ -459,10 +459,10 @@ var servers = {
     main: 'メイン',
     admin: '管理者',
 };
+var resolveCategory = function (category) { return categorys[category] || ''; };
+var resolveServer = function (server) { return servers[server] || ''; };
+var escapeLog = function (log) { return log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>'); };
 function parseServerLog(logs) {
-    var resolveCategory = function (category) { return categorys[category] || ''; };
-    var resolveServer = function (server) { return servers[server] || ''; };
-    var escapeLog = function (log) { return log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>'); };
     logs.forEach(function (log) {
         $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + escapeLog(log.value) + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
     });
@@ -480,7 +480,7 @@ function parseUsers(users) {
 function popupMessage(value, style) {
     var _a, _b;
     if (style === void 0) { style = 'info'; }
-    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + value.replace('\n', '<br>') + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
+    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + escapeLog(value) + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
     (_a = document.querySelector('#overlay-popup .popup-message:last-of-type')) === null || _a === void 0 ? void 0 : _a.addEventListener('animationend', function (e) {
         // @ts-ignore
         if (e.animationName.startsWith('popup-end'))

@@ -413,10 +413,10 @@ const servers :{[key:string]:string} = {
 	main: 'メイン',
 	admin: '管理者',
 }
+const resolveCategory = (category :string) => categorys[category] || '';
+const resolveServer = (server :string) => servers[server] || '';
+const escapeLog = (log :string) => log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
 function parseServerLog(logs :serverLog[]) {
-	const resolveCategory = (category :string) => categorys[category] || '';
-	const resolveServer = (server :string) => servers[server] || '';
-	const escapeLog = (log :string) => log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
 	logs.forEach(log => {
 		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
 	});
@@ -435,7 +435,7 @@ function parseUsers(users: userData[]) {
 }
 
 function popupMessage(value :string, style='info') {
-	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${value.replace('\n','<br>')}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
+	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${escapeLog(value)}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
 	document.querySelector('#overlay-popup .popup-message:last-of-type')?.addEventListener('animationend', function(e) {
 		// @ts-ignore
 		if (e.animationName.startsWith('popup-end')) this.remove();
