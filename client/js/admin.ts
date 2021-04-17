@@ -372,6 +372,20 @@ $(() => {
 		$('#disk-read-rate').text(SI(read));
 		$('#disk-write-rate').text(SI(write));
 	});
+
+	parseServerLog([{
+		server: 'main',
+		category: 'info',
+		title: 'ログ1',
+		value: 'ログ1の内容だよ～',
+		timestamp: moment().unix() * 1000
+	},{
+		server: 'main',
+		category: 'info',
+		title: 'ログ2',
+		value: 'ログ2の内容だよ～',
+		timestamp: moment().unix() * 1000
+	}])
 });
 
 // @ts-ignore
@@ -416,16 +430,35 @@ const servers :{[key:string]:string} = {
 const resolveCategory = (category :string) => categorys[category] || '';
 const resolveServer = (server :string) => servers[server] || '';
 const escapeLog = (log :string) => log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
-function parseServerLog(logs :serverLog[]) {
-	logs.forEach(log => {
-		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
+const serverLogAdd = (log: serverLog, first=false) => {
+	const tr = `<tr class="log-main"><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${log.title}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr><tr class="log-detail"><td>${escapeLog(log.value)}</td></tr>`;
+	const logLine = (() => {
+		if (first) {
+			$('#server-log > tbody').prepend(tr);
+			return $('#server-log > tbody > .log-main')[0];
+		}else {
+			$('#server-log > tbody').append(tr);
+			return $('#server-log > tbody > .log-main').slice(-1)[0];
+		}
+	})();
+	
+	$(logLine).on('click', function() {
+		if (this.classList.contains('show')) {
+			this.classList.remove('show');
+			$(this).next().animate({height: 0}, 100);
+		}else {
+			this.classList.add('show');
+			$(this).next().animate({height: $(this).css('height', 'auto').height()}, 100);
+		}
 	});
+}
+function parseServerLog(logs :serverLog[]) {
+	logs.forEach(log => serverLogAdd(log));
 }
 socket.on('newLog', (result: {value: serverLog}) => {
 	const log = result.value;
 	console.log(log);
-	
-	$('#server-log > tbody').prepend(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
+	serverLogAdd(log, true);
 });
 
 function parseBanIP(banIPs :banIP[]) {

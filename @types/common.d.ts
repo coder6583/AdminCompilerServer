@@ -56,6 +56,7 @@ interface createProjectData
 interface serverLog {
 	server: string,
 	category: string;
+	title: string;
 	value: string;
 	timestamp: number;
 }

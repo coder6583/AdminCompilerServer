@@ -350,7 +350,7 @@ div.tab-server-log {
 	}
 
 	table {
-		tr {
+		tr:not(.log-detail) {
 			& > *:nth-child(1) {
 				width: 70px;
 				min-width: 70px;
@@ -368,12 +368,35 @@ div.tab-server-log {
 				min-width: 135px;
 			}
 		}
+
+		.log-main {
+			cursor: pointer;
+
+			&.show {
+
+			}
+		}
+		.log-main.show + .log-detail {
+			visibility: visible;
+		}
+		tr.log-detail {
+			visibility: hidden;
+			transition: all .1s;
+			height: 0;
+
+			td {
+				width: 100%;
+				font-family: 'My Consolas', sans-serif;
+				font-size: .7rem;
+				word-break: break-all;
+			}
+		}
+
 		tbody {
 			tr {
 				& > *:nth-child(3) {
 					font-family: 'My Consolas', sans-serif;
 					font-size: .7rem;
-					word-break: break-all;
 				}
 				& > *:nth-child(4) {
 					font-size: .8rem;
