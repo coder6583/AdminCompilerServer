@@ -2,6 +2,26 @@ $color-accent: rgb(34, 148, 201);
 $color-lines: rgb(141, 141, 141);
 $color-bg: rgb(216, 216, 216);
 
+$pc: 1024px; // PC
+$tab: 680px; // タブレット
+$sp: 480px;  // スマホ
+
+@mixin pc {
+  @media (max-width: ($pc)) {
+    @content;
+  }
+}
+@mixin tab {
+  @media (max-width: ($tab)) {
+    @content;
+  }
+}
+@mixin sp {
+  @media (max-width: ($sp)) {
+    @content;
+  }
+}
+
 // ボタン
 button {
 	border: none;
@@ -99,9 +119,6 @@ html, body {
 }
 
 // フォント
-html {
-	position: absolute;
-}
 html > body {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 13px;

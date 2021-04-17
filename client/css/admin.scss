@@ -305,10 +305,13 @@ div.tab-server-log {
 				border-bottom: solid lightgray 1px;
 				font-size: .9rem;
 				height: 25px;
-				width: 300px;
+				width: calc(100vw - 420px);
+				min-width: 150px;
+				max-width: 300px;
 			}
 
 			label {
+				position: relative;
 				padding: 0;
 
 				.bi {
@@ -323,8 +326,9 @@ div.tab-server-log {
 					font-weight: normal;
 					display: inline-block;
 					position: absolute;
-					margin-top: 40px;
-					margin-left: -65px;
+					margin-top: 10px;
+					right: 30px;
+					white-space: nowrap;
 					background-color: rgba(#444, .8);
 					color: whitesmoke;
 					padding: 3px 5px;
@@ -332,7 +336,7 @@ div.tab-server-log {
 					pointer-events: none;
 					opacity: 0;
 					visibility: hidden;
-					transform-origin: top;
+					transform-origin: right;
 					transform: scale(.8);
 					transition: all .1s;
 				}
@@ -583,8 +587,8 @@ div.tab-status {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	visibility: hidden;
 	display: flex;
 	justify-content: center;
@@ -662,7 +666,7 @@ div.tab-status {
 	right: 20px;
 	top: 0;
 	width: 300px;
-	height: 100%;
+	height: 100vh;
 	padding-bottom: 10px;
 	pointer-events: visible;
 	visibility: hidden;
