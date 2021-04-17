@@ -495,7 +495,8 @@ var serverLogAdd = function (log, first) {
         }
         else {
             this.classList.add('show');
-            $(this).next().animate({ height: $(this).css('height', 'auto').height() }, 100);
+            var autoHeight = $(this).next().css('height', 'auto').height();
+            $(this).next().height(0).animate({ height: autoHeight }, 100);
         }
     });
 };

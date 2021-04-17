@@ -448,7 +448,8 @@ const serverLogAdd = (log: serverLog, first=false) => {
 			$(this).next().animate({height: 0}, 100);
 		}else {
 			this.classList.add('show');
-			$(this).next().animate({height: $(this).css('height', 'auto').height()}, 100);
+			const autoHeight = $(this).next().css('height', 'auto').height();
+			$(this).next().height(0).animate({height: autoHeight}, 100);
 		}
 	});
 }
