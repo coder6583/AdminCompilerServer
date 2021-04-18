@@ -118,7 +118,7 @@
 				<div class="content tab-ban-ip list-tab container-fluid p-0">
 					<div class="label row m-0">
 						<h2 class="m-0">
-							<span>アクセス禁止済みのIPアドレスの一覧</span>
+							<span>アクセス禁止IPの一覧</span>
 							<form id="add-ban-ip">
 								<input id="ban-ip-box" type="text" placeholder="アクセス禁止IPアドレスを入力">
 								<button>
@@ -146,7 +146,9 @@
 					<div class="monitor monitor-cpu">
 						<h3>
 							<span class="label">CPU</span>
-							<span class="info">使用率：<span id="cpu-rate"></span>%</span>
+							<div class="info">
+								<span>使用率：<span class="res res-short" id="cpu-rate"></span>%</span>
+							</div>
 						</h3>
 						<div class="chart-div">
 							<canvas id="monitor-cpu"></canvas>
@@ -155,8 +157,10 @@
 					<div class="monitor monitor-ram">
 						<h3>
 							<span class="label">メモリ</span>
-							<span class="info">使用率：<span id="memory-rate"></span>%</span>
-							<span class="info">（<span id="memory-using"></span>MB／<span id="memory-total"></span>MB）</span>
+							<div class="info">
+								<span>使用率：<span class="res res-short" id="memory-rate"></span>%</span>
+								<span>（<span class="res res-short" id="memory-using"></span>MB／<span class="res res-short" id="memory-total"></span>MB）</span>
+							</div>
 						</h3>
 						<div class="chart-div">
 							<canvas id="monitor-memory"></canvas>
@@ -165,8 +169,10 @@
 					<div class="monitor monitor-network">
 						<h3>
 							<span class="label">ネットワーク</span>
-							<span class="info network-up">上り：<span id="network-up-rate"></span>bps</span>
-							<span class="info network-down">下り：<span id="network-down-rate"></span>bps</span>
+							<div class="info">
+								<span class="network-up">上り：<span class="res res-long" id="network-up-rate"></span>bps</span>
+								<span class="network-down">下り：<span class="res res-long" id="network-down-rate"></span>bps</span>
+							</div>
 						</h3>
 						<div class="chart-div">
 							<canvas id="monitor-network"></canvas>
@@ -175,8 +181,10 @@
 					<div class="monitor monitor-disk">
 						<h3>
 							<span class="label">ディスク</span>
-							<span class="info disk-read">読み取り：<span id="disk-read-rate"></span>bps</span>
-							<span class="info disk-write">書き込み：<span id="disk-write-rate"></span>bps</span>
+							<div class="info">
+								<span class="disk-read">読み取り：<span class="res res-long" id="disk-read-rate"></span>bps</span>
+								<span class="disk-write">書き込み：<span class="res res-long" id="disk-write-rate"></span>bps</span>
+							</div>
 					</h3>
 						<div class="chart-div">
 							<canvas id="monitor-disk"></canvas>

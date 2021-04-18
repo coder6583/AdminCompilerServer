@@ -158,7 +158,6 @@ div.list-tab {
 		}
 
 		thead.thread-light {
-			height: 40px;
 			padding: 0 15px 0 0;
 			background-color: rgb(245, 245, 245);
 			border-bottom: solid gray 2px;
@@ -306,10 +305,13 @@ div.tab-server-log {
 				border-bottom: solid lightgray 1px;
 				font-size: .9rem;
 				height: 25px;
-				width: 300px;
+				width: calc(100vw - 420px);
+				min-width: 150px;
+				max-width: 300px;
 			}
 
 			label {
+				position: relative;
 				padding: 0;
 
 				.bi {
@@ -324,8 +326,9 @@ div.tab-server-log {
 					font-weight: normal;
 					display: inline-block;
 					position: absolute;
-					margin-top: 40px;
-					margin-left: -65px;
+					margin-top: 10px;
+					right: 30px;
+					white-space: nowrap;
 					background-color: rgba(#444, .8);
 					color: whitesmoke;
 					padding: 3px 5px;
@@ -333,7 +336,7 @@ div.tab-server-log {
 					pointer-events: none;
 					opacity: 0;
 					visibility: hidden;
-					transform-origin: top;
+					transform-origin: right;
 					transform: scale(.8);
 					transition: all .1s;
 				}
@@ -347,13 +350,14 @@ div.tab-server-log {
 	}
 
 	table {
-		tr {
+		tr:not(.log-detail) {
 			& > *:nth-child(1) {
 				width: 70px;
-				
+				min-width: 70px;
 			}
 			& > *:nth-child(2) {
 				width: 70px;
+				min-width: 70px;
 			}
 			& > *:nth-child(3) {
 				flex: 1;
@@ -361,14 +365,39 @@ div.tab-server-log {
 			}
 			& > *:nth-child(4) {
 				width: 135px;
+				min-width: 135px;
 			}
 		}
+
+		.log-main {
+			cursor: pointer;
+
+			&.show {
+
+			}
+		}
+		.log-main.show + .log-detail {
+			visibility: visible;
+		}
+		tr.log-detail {
+			visibility: hidden;
+			transition: all .1s;
+			height: 0;
+			overflow-y: hidden;
+
+			td {
+				width: 100%;
+				font-family: 'My Consolas', sans-serif;
+				font-size: .7rem;
+				word-break: break-all;
+			}
+		}
+
 		tbody {
 			tr {
 				& > *:nth-child(3) {
 					font-family: 'My Consolas', sans-serif;
 					font-size: .7rem;
-					word-break: break-all;
 				}
 				& > *:nth-child(4) {
 					font-size: .8rem;
@@ -413,9 +442,11 @@ div.tab-users {
 	table tr {
 		& > *:nth-child(1) {
 			width: 70px;
+			min-width: 70px;
 		}
 		& > *:nth-child(2) {
 			width: 200px;
+			min-width: 200px;
 		}
 		& > *:nth-child(3) {
 			flex: 1;
@@ -428,6 +459,7 @@ div.tab-users {
 		& > *:nth-child(5) {
 			display: flex;
 			width: 80px;
+			min-width: 80px;
 		}
 		
 		& > td:nth-child(1) {
@@ -483,6 +515,7 @@ div.tab-ban-ip {
 	table tr {
 		& > *:nth-child(1) {
 			width: 200px;
+			min-width: 200px;
 		}
 		& > *:nth-child(2) {
 			flex: 1;
@@ -490,10 +523,12 @@ div.tab-ban-ip {
 		}
 		& > *:nth-child(3) {
 			width: 160px;
+			min-width: 160px;
 		}
 		& > *:nth-child(4) {
 			display: flex;
 			width: 80px;
+			min-width: 80px;
 		}
 
 		td button {
@@ -512,39 +547,53 @@ div.tab-status {
 	
 	.monitor {
 		width: 100%;
-		// height: 200px;
 
 		h3 {
 			display: flex;
 			flex-wrap: wrap;
-			align-items: flex-end;
-			margin: 10px 0 20px 0;
+			align-items: center;
+			margin: 10px 0 0 0;
 
 			.label {
+				margin: 0 10px 10px 0;
+				font-family: var(--bs-font-sans-serif);
 			}
 			.info {
 				display: flex;
-				margin: 0 10px 0 auto;
+				flex-wrap: wrap;
 				font-weight: normal;
 				font-size: 1rem;
+				margin-left: auto;
 
-				&.network-up, &.network-down, &.disk-read, &.disk-write {
+				& > span {
+					margin-bottom: 10px;
+				}
+
+				.res {
+					display: inline-block;
+					text-align: end;
+
+					&.res-short { width: 30px; }
+					&.res-long { width: 50px; }
+				}
+
+				.network-up, .network-down, .disk-read, .disk-write {
 					display: flex;
 					align-items: center;
 					height: 1.5rem;
 					border-left: solid 3px;
 					padding-left: 3px;
 				}
-				&.network-up, &.network-down {
+				.network-up, .network-down {
 					border-left-color: rgb(167, 79, 1);
 				}
-				&.disk-read, &.disk-write {
+				.disk-read, .disk-write {
 					border-left-color: rgb(77, 166, 12);
 				}
-				&.network-down, &.disk-write {
-					// margin-left: 20px;
+				.network-up, .disk-read {
+					margin-right: 20px;
 				}
-				&.network-down, &.disk-write {
+				.network-down, .disk-write {
 					border-left-style: dashed;
 				}
 			}
@@ -562,8 +611,8 @@ div.tab-status {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	visibility: hidden;
 	display: flex;
 	justify-content: center;
@@ -641,7 +690,7 @@ div.tab-status {
 	right: 20px;
 	top: 0;
 	width: 300px;
-	height: 100%;
+	height: 100vh;
 	padding-bottom: 10px;
 	pointer-events: visible;
 	visibility: hidden;
@@ -654,7 +703,9 @@ div.tab-status {
 		display: flex;
 		align-items: center;
 		padding: 5px 10px;
-		background-color: rgba(black, .6);
+
+		&.info { background-color: rgba(black, .6); }
+		&.err { background-color: rgba(#c00, .6); }
 
 		transform-origin: bottom;
 		animation: popup-end .5s 5.5s forwards, slide-in .5s;
@@ -727,7 +778,7 @@ div.tab-status {
 			left: 0;
 			display: block;
 			height: 2px;
-			background-color: rgba(black, .5);
+			background-color: rgba(black, .3);
 
 			animation: popup 5s .5s linear forwards;
 			@keyframes popup {

@@ -396,8 +396,8 @@ $(function () {
     socket.on('memory-usage', function (usage) {
         chartData.Memory = usage.percentage;
         $('#memory-rate').text(usage.percentage.toFixed(1));
-        $('#memory-using').text((usage.using / 1000000).toFixed(1));
-        $('#memory-total').text((usage.total / 1000000).toFixed(1));
+        $('#memory-using').text((usage.using / 1000000).toFixed(0));
+        $('#memory-total').text((usage.total / 1000000).toFixed(0));
     });
     socket.on('network-usage', function (usage) {
         var transmitted = usage.transmitted || 0;
@@ -417,7 +417,18 @@ $(function () {
     });
 });
 // @ts-ignore
-var socket = io.connect('');
+var socket = io.connect('', {
+    'reconnection': true,
+    'reconnectionDelay': 10000,
+    'reconnectionDelayMax': 60000,
+    'reconnectionAttempts': 10,
+});
+socket.on('connect_error', function () {
+    popupMessage('ソケットに接続できません\n再接続を試みています...', 'err');
+});
+socket.on('disconnect', function () {
+    popupMessage('ソケットが切断されました\n再接続を試みています...', 'err');
+});
 function evalCommand(cmd, terminal) {
     return __awaiter(this, void 0, void 0, function () {
         function receiveResult(result) {
@@ -448,14 +459,42 @@ var servers = {
     main: 'メイン',
     admin: '管理者',
 };
-function parseServerLog(logs) {
-    var resolveCategory = function (category) { return categorys[category] || ''; };
-    var resolveServer = function (server) { return servers[server] || ''; };
-    var escapeLog = function (log) { return log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>'); };
-    logs.forEach(function (log) {
-        $('#server-log > tbody').append("<tr><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + escapeLog(log.value) + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr>");
+var resolveCategory = function (category) { return categorys[category] || ''; };
+var resolveServer = function (server) { return servers[server] || ''; };
+var escapeLog = function (log) { return log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>'); };
+var serverLogAdd = function (log, first) {
+    if (first === void 0) { first = false; }
+    var tr = "<tr class=\"log-main\"><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + log.title + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr><tr class=\"log-detail\"><td>" + escapeLog(log.value) + "</td></tr>";
+    var logLine = (function () {
+        if (first) {
+            $('#server-log > tbody').prepend(tr);
+            return $('#server-log > tbody > .log-main')[0];
+        }
+        else {
+            $('#server-log > tbody').append(tr);
+            return $('#server-log > tbody > .log-main').slice(-1)[0];
+        }
+    })();
+    $(logLine).on('click', function () {
+        if (this.classList.contains('show')) {
+            this.classList.remove('show');
+            $(this).next().animate({ height: 0 }, 100);
+        }
+        else {
+            this.classList.add('show');
+            var autoHeight = $(this).next().css('height', 'auto').height();
+            $(this).next().height(0).animate({ height: autoHeight }, 100);
+        }
     });
+};
+function parseServerLog(logs) {
+    logs.forEach(function (log) { return serverLogAdd(log); });
 }
+socket.on('newLog', function (result) {
+    var log = result.value;
+    console.log(log);
+    serverLogAdd(log, true);
+});
 function parseBanIP(banIPs) {
     banIPs.forEach(function (banIP) {
         $('#ban-ip > tbody').append("<tr><td>" + banIP.ip + "</td><td>" + banIP.memo + "</td><td>" + moment(new Date(banIP.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
@@ -469,7 +508,7 @@ function parseUsers(users) {
 function popupMessage(value, style) {
     var _a, _b;
     if (style === void 0) { style = 'info'; }
-    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + value + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
+    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + escapeLog(value) + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
     (_a = document.querySelector('#overlay-popup .popup-message:last-of-type')) === null || _a === void 0 ? void 0 : _a.addEventListener('animationend', function (e) {
         // @ts-ignore
         if (e.animationName.startsWith('popup-end'))

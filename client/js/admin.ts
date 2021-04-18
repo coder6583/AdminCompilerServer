@@ -353,8 +353,8 @@ $(() => {
 	socket.on('memory-usage', (usage :{percentage: number, total: number, using: number}) => {
 		chartData.Memory = usage.percentage;
 		$('#memory-rate').text(usage.percentage.toFixed(1));
-		$('#memory-using').text((usage.using / 1000000).toFixed(1));
-		$('#memory-total').text((usage.total / 1000000).toFixed(1));
+		$('#memory-using').text((usage.using / 1000000).toFixed(0));
+		$('#memory-total').text((usage.total / 1000000).toFixed(0));
 	});
 	socket.on('network-usage', (usage :{received: number, transmitted: number}) => {
 		const transmitted = usage.transmitted || 0;
@@ -375,7 +375,18 @@ $(() => {
 });
 
 // @ts-ignore
-const socket = io.connect('');
+const socket = io.connect('', {
+	'reconnection': true,
+	'reconnectionDelay': 10000,
+	'reconnectionDelayMax' : 60000,
+	'reconnectionAttempts': 10,
+});
+socket.on('connect_error', () => {
+	popupMessage('ソケットに接続できません\n再接続を試みています...', 'err');
+});
+socket.on('disconnect', () => {
+	popupMessage('ソケットが切断されました\n再接続を試みています...', 'err');
+});
 async function evalCommand(cmd :string, terminal :JQueryTerminal) {
 	terminal.pause();
 
@@ -402,14 +413,40 @@ const servers :{[key:string]:string} = {
 	main: 'メイン',
 	admin: '管理者',
 }
-function parseServerLog(logs :serverLog[]) {
-	const resolveCategory = (category :string) => categorys[category] || '';
-	const resolveServer = (server :string) => servers[server] || '';
-	const escapeLog = (log :string) => log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
-	logs.forEach(log => {
-		$('#server-log > tbody').append(`<tr><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${escapeLog(log.value)}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr>`);
+const resolveCategory = (category :string) => categorys[category] || '';
+const resolveServer = (server :string) => servers[server] || '';
+const escapeLog = (log :string) => log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
+const serverLogAdd = (log: serverLog, first=false) => {
+	const tr = `<tr class="log-main"><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${log.title}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr><tr class="log-detail"><td>${escapeLog(log.value)}</td></tr>`;
+	const logLine = (() => {
+		if (first) {
+			$('#server-log > tbody').prepend(tr);
+			return $('#server-log > tbody > .log-main')[0];
+		}else {
+			$('#server-log > tbody').append(tr);
+			return $('#server-log > tbody > .log-main').slice(-1)[0];
+		}
+	})();
+	
+	$(logLine).on('click', function() {
+		if (this.classList.contains('show')) {
+			this.classList.remove('show');
+			$(this).next().animate({height: 0}, 100);
+		}else {
+			this.classList.add('show');
+			const autoHeight = $(this).next().css('height', 'auto').height();
+			$(this).next().height(0).animate({height: autoHeight}, 100);
+		}
 	});
 }
+function parseServerLog(logs :serverLog[]) {
+	logs.forEach(log => serverLogAdd(log));
+}
+socket.on('newLog', (result: {value: serverLog}) => {
+	const log = result.value;
+	console.log(log);
+	serverLogAdd(log, true);
+});
 
 function parseBanIP(banIPs :banIP[]) {
 	banIPs.forEach(banIP => {
@@ -424,7 +461,7 @@ function parseUsers(users: userData[]) {
 }
 
 function popupMessage(value :string, style='info') {
-	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${value}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
+	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${escapeLog(value)}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
 	document.querySelector('#overlay-popup .popup-message:last-of-type')?.addEventListener('animationend', function(e) {
 		// @ts-ignore
 		if (e.animationName.startsWith('popup-end')) this.remove();
