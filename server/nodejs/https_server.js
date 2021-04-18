@@ -195,6 +195,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         return b.timestamp - a.timestamp;
                     });
                     filteredLog = filteredLog.slice(input.from - 1, input.until);
+                    console.error(filteredLog);
                     socket.emit('logReturn', {
                         value: filteredLog,
                         max: input.until - input.from + 1

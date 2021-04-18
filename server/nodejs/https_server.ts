@@ -171,6 +171,7 @@ io.sockets.on('connection', async (socket: any) => {
 				return b.timestamp - a.timestamp;
 			})
 			filteredLog = filteredLog.slice(input.from - 1, input.until);
+			console.error(filteredLog);
 			socket.emit('logReturn', {
 				value: filteredLog,
 				max: input.until - input.from + 1
