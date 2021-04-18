@@ -488,6 +488,6 @@ async function parseFilter(jsonPath: string, filter: logFilter)
 }
 function LOG(log: any, title: string)
 {
-  console.log(`${title}(${log})\``);
+  console.log(`${title}(${JSON.stringify(log)})\``);
 }
 module.exports = {mountUsb, updateIpBlacklist, loginCheck, taskManager, parseCommand, parseServerFilter, parseFilter, LOG};
