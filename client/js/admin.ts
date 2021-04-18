@@ -381,14 +381,6 @@ $(() => {
 		$('.log-main').addClass('show');
 		$('.log-detail').css('height', 'auto');
 	});
-
-	parseServerLog([{
-		server: 'main',
-		category: 'info',
-		timestamp: moment().unix()*1000,
-		title: 'ログ',
-		value: 'ログの内容だよ～'
-	}])
 });
 
 // @ts-ignore
