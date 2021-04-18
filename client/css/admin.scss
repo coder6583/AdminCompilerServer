@@ -113,6 +113,10 @@ $color-terminal-text: rgb(216, 228, 228);
 .terminal {
 	background-color: $color-terminal-bg;
 
+	.terminal-wrapper .terminal-output > div:not(.raw) div {
+		white-space: normal;
+	}
+
 	.terminal-command > div {
 		background-color: $color-terminal-bg;
 	}
