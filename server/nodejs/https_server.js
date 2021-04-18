@@ -146,27 +146,27 @@ app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
 });
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
+fs_1.default.watchFile(logJsonPath, function (curr, prev) {
+    fs_1.default.readFile(logJsonPath, function (err, data) {
+        var temp = JSON.parse(data.toString() || "null");
+        io.sockets.emit('newLog', {
+            value: temp.slice(-1)
+        });
+    });
+});
+fs_1.default.watchFile(adminlogJsonPath, function (curr, prev) {
+    fs_1.default.readFile(adminlogJsonPath, function (err, data) {
+        var temp = JSON.parse(data.toString() || "null");
+        io.sockets.emit('newLog', {
+            value: temp.slice(-1)
+        });
+    });
+});
 io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0, function () {
     var taskManagerTimer;
     return __generator(this, function (_a) {
         taskManagerTimer = setInterval(function () { functions.taskManager(socket); }, 1000);
         // console.log(JSON.stringify(socket.handshake.address));
-        fs_1.default.watchFile(logJsonPath, function (curr, prev) {
-            fs_1.default.readFile(logJsonPath, function (err, data) {
-                var temp = JSON.parse(data.toString() || "null");
-                socket.emit('newLog', {
-                    value: temp.slice(-1)
-                });
-            });
-        });
-        fs_1.default.watchFile(adminlogJsonPath, function (curr, prev) {
-            fs_1.default.readFile(adminlogJsonPath, function (err, data) {
-                var temp = JSON.parse(data.toString() || "null");
-                socket.emit('newLog', {
-                    value: temp.slice(-1)
-                });
-            });
-        });
         socket.on('command', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 functions.parseCommand(input.command, socket);
