@@ -415,6 +415,14 @@ $(function () {
         $('#disk-read-rate').text(SI(read));
         $('#disk-write-rate').text(SI(write));
     });
+    $('#log-fold-all').on('click', function () {
+        $('.log-main').removeClass('show');
+        $('.log-detail').css('height', 0);
+    });
+    $('#log-unfold-all').on('click', function () {
+        $('.log-main').addClass('show');
+        $('.log-detail').css('height', 'auto');
+    });
     parseServerLog([{
             server: 'main',
             category: 'info',
