@@ -488,6 +488,9 @@ async function parseFilter(jsonPath: string, filter: logFilter)
 }
 function LOG(log: any, title: string)
 {
-  console.log(`${title}(${JSON.stringify(log)})\``);
+  if(typeof log === 'object' && log != null)
+    console.log(`${title}(${JSON.stringify(log)})\``);
+  else
+  console.log(`${title}(${log})\``);
 }
 module.exports = {mountUsb, updateIpBlacklist, loginCheck, taskManager, parseCommand, parseServerFilter, parseFilter, LOG};
