@@ -372,6 +372,14 @@ $(() => {
 		$('#disk-read-rate').text(SI(read));
 		$('#disk-write-rate').text(SI(write));
 	});
+
+	parseServerLog([{
+		server: 'main',
+		category: 'info',
+		timestamp: moment().unix()*1000,
+		title: 'ログ',
+		value: 'ログの内容だよ～'
+	}])
 });
 
 // @ts-ignore
@@ -415,7 +423,7 @@ const servers :{[key:string]:string} = {
 }
 const resolveCategory = (category :string) => categorys[category] || '';
 const resolveServer = (server :string) => servers[server] || '';
-const escapeLog = (log :string) => log.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
+const escapeLog = (log :string) => log.replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
 const serverLogAdd = (log: serverLog, first=false) => {
 	const tr = `<tr class="log-main"><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${log.title}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr><tr class="log-detail"><td>${escapeLog(log.value)}</td></tr>`;
 	const logLine = (() => {
