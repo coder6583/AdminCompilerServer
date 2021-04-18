@@ -145,6 +145,17 @@ app.post('/login', function (req, res, next) {
 app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
 });
+app.get('/avatar/id', function (req, res) {
+    var avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
+    fs_1.default.access(avatarPath, function (err) {
+        if (err) {
+            res.sendFile('./guest.png');
+        }
+        else {
+            res.sendFile(avatarPath);
+        }
+    });
+});
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 fs_1.default.watchFile(logJsonPath, function (curr, prev) {
     fs_1.default.readFile(logJsonPath, function (err, data) {

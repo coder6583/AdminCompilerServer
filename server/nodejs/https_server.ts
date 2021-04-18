@@ -123,7 +123,19 @@ app.post('/login', (req: express.Request, res: express.Response, next: express.N
 })
 app.get('/admin', (req: express.Request, res: express.Response) => {
 	res.sendFile('admin.html', { root: rootdirectory });
-})
+});
+
+app.get('/avatar/id', (req: express.Request, res: express.Response) => {
+	let avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
+	fs.access(avatarPath, (err) => {
+		if(err){
+			res.sendFile('./guest.png');
+		}
+		else{
+			res.sendFile(avatarPath);
+		}
+	})
+});
 
 io.use(sharedSession(sessionMiddleware, {
 
