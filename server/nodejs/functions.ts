@@ -486,7 +486,7 @@ async function parseFilter(jsonPath: string, filter: logFilter)
     })
   })
 }
-function LOG(log: string| Error, title: string)
+function LOG(log: any, title: string)
 {
   console.log(`${title}(${log})\``);
 }

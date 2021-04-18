@@ -65,7 +65,6 @@ import session from 'express-session';
 import sharedSession from 'express-socket.io-session';
 import { debuglog } from "util";
 
-
 //request時に実行するmiddleware function
 app.use(express.static(rootdirectory));
 
@@ -129,25 +128,26 @@ app.get('/admin', (req: express.Request, res: express.Response) => {
 io.use(sharedSession(sessionMiddleware, {
 
 }));
+fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
+	fs.readFile(logJsonPath, (err, data) => {
+		let temp = JSON.parse(data.toString() || "null");
+		io.sockets.emit('newLog', {
+			value: temp.slice(-1)
+		});
+	})
+});
+fs.watchFile(adminlogJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
+	fs.readFile(adminlogJsonPath, (err, data) => {
+		let temp = JSON.parse(data.toString() || "null");
+		io.sockets.emit('newLog', {
+			value: temp.slice(-1)
+		});
+	})
+});
 io.sockets.on('connection', async (socket: any) => {
 	let taskManagerTimer = setInterval(() => { functions.taskManager(socket); }, 1000);
 	// console.log(JSON.stringify(socket.handshake.address));
-	fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
-		fs.readFile(logJsonPath, (err, data) => {
-			let temp = JSON.parse(data.toString() || "null");
-			socket.emit('newLog', {
-				value: temp.slice(-1)
-			});
-		})
-	});
-	fs.watchFile(adminlogJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
-		fs.readFile(adminlogJsonPath, (err, data) => {
-			let temp = JSON.parse(data.toString() || "null");
-			socket.emit('newLog', {
-				value: temp.slice(-1)
-			});
-		})
-	});
+
 	socket.on('command', async (input: any) => {
 		functions.parseCommand(input.command, socket);
 	});
