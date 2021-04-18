@@ -180,7 +180,24 @@ io.sockets.on('connection', async (socket: any) => {
 	});
 	socket.on('usersGet', async (input: any) => {
 		User.find().then((err: any, docs: any[]) => {
-			
+			let users: userData[] = [];
+			docs.forEach((element: any) => {
+				let temp: userData = {
+					id: element.username,
+					username: element.displayName,
+					avatar: "",
+					email: element.email
+				}
+				users.push(temp);
+			})
+			socket.emit('usersReturn', {
+				users: users
+			})
+		})
+	});
+	socket.on('blacklistGet', async (input: any) => {
+		socket.emit('blacklistReturn', {
+			value: ipList
 		})
 	})
 	socket.on('disconnect', () => {
