@@ -207,6 +207,27 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         socket.on('usersGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 User.find().then(function (err, docs) {
+                    var users = [];
+                    docs.forEach(function (element) {
+                        var temp = {
+                            id: element.username,
+                            username: element.displayName,
+                            avatar: "",
+                            email: element.email
+                        };
+                        users.push(temp);
+                    });
+                    socket.emit('usersReturn', {
+                        users: users
+                    });
+                });
+                return [2 /*return*/];
+            });
+        }); });
+        socket.on('blacklistGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                socket.emit('blacklistReturn', {
+                    value: ipList
                 });
                 return [2 /*return*/];
             });
