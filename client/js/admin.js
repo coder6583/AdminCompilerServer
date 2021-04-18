@@ -417,15 +417,11 @@ $(function () {
     });
     $('#log-fold-all').on('click', function () {
         $('.log-main').removeClass('show');
-        $('.log-detail').animate({ height: 0 }, 100);
+        $('.log-detail').css('height', 0);
     });
     $('#log-unfold-all').on('click', function () {
         $('.log-main').addClass('show');
-        var details = $('.log-detail');
-        for (var i = 0; i < details.length; i++) {
-            var autoHeight = $(this).next().css('height', 'auto').height();
-            details.height(0).animate({ height: autoHeight }, 100);
-        }
+        $('.log-detail').css('height', 'auto');
     });
     parseServerLog([{
             server: 'main',

@@ -375,15 +375,11 @@ $(() => {
 
 	$('#log-fold-all').on('click', function() {
 		$('.log-main').removeClass('show');
-		$('.log-detail').animate({height: 0}, 100);
+		$('.log-detail').css('height', 0);
 	});
 	$('#log-unfold-all').on('click', function() {
 		$('.log-main').addClass('show');
-		const details = $('.log-detail');
-		for (let i = 0; i < details.length; i++) {
-			const autoHeight = $(this).next().css('height', 'auto').height();
-			details.height(0).animate({height: autoHeight}, 100);
-		}
+		$('.log-detail').css('height', 'auto');
 	});
 
 	parseServerLog([{
