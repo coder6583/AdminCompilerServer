@@ -383,6 +383,7 @@ div.tab-server-log {
 			visibility: hidden;
 			transition: all .1s;
 			height: 0;
+			overflow-y: hidden;
 
 			td {
 				width: 100%;
