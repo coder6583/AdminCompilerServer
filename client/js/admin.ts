@@ -372,6 +372,14 @@ $(() => {
 		$('#disk-read-rate').text(SI(read));
 		$('#disk-write-rate').text(SI(write));
 	});
+
+	parseServerLog([{
+		server: 'main',
+		category: 'info',
+		timestamp: moment().unix()*1000,
+		title: 'ログ',
+		value: 'ログの内容だよ～'
+	}])
 });
 
 // @ts-ignore
