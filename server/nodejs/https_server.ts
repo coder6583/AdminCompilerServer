@@ -143,17 +143,21 @@ io.use(sharedSession(sessionMiddleware, {
 fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 	fs.readFile(logJsonPath, (err, data) => {
 		let temp = JSON.parse(data.toString() || "null");
-		io.sockets.emit('newLog', {
-			value: temp.slice(-1)
-		});
+		if(temp !== undefined){
+			io.sockets.emit('newLog', {
+				value: temp.slice(-1)
+			});
+		}
 	})
 });
 fs.watchFile(adminlogJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 	fs.readFile(adminlogJsonPath, (err, data) => {
 		let temp = JSON.parse(data.toString() || "null");
-		io.sockets.emit('newLog', {
-			value: temp.slice(-1)
-		});
+		if(temp !== undefined){
+			io.sockets.emit('newLog', {
+				value: temp.slice(-1)
+			});
+		}
 	})
 });
 io.sockets.on('connection', async (socket: any) => {

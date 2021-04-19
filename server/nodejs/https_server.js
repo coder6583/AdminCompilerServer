@@ -160,17 +160,21 @@ io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 fs_1.default.watchFile(logJsonPath, function (curr, prev) {
     fs_1.default.readFile(logJsonPath, function (err, data) {
         var temp = JSON.parse(data.toString() || "null");
-        io.sockets.emit('newLog', {
-            value: temp.slice(-1)
-        });
+        if (temp !== undefined) {
+            io.sockets.emit('newLog', {
+                value: temp.slice(-1)
+            });
+        }
     });
 });
 fs_1.default.watchFile(adminlogJsonPath, function (curr, prev) {
     fs_1.default.readFile(adminlogJsonPath, function (err, data) {
         var temp = JSON.parse(data.toString() || "null");
-        io.sockets.emit('newLog', {
-            value: temp.slice(-1)
-        });
+        if (temp !== undefined) {
+            io.sockets.emit('newLog', {
+                value: temp.slice(-1)
+            });
+        }
     });
 });
 io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0, function () {
