@@ -160,7 +160,7 @@ io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 fs_1.default.watchFile(logJsonPath, function (curr, prev) {
     fs_1.default.readFile(logJsonPath, function (err, data) {
         var temp = JSON.parse(data.toString() || "null");
-        if (temp !== undefined) {
+        if (temp) {
             io.sockets.emit('newLog', {
                 value: temp.slice(-1)
             });
@@ -170,7 +170,7 @@ fs_1.default.watchFile(logJsonPath, function (curr, prev) {
 fs_1.default.watchFile(adminlogJsonPath, function (curr, prev) {
     fs_1.default.readFile(adminlogJsonPath, function (err, data) {
         var temp = JSON.parse(data.toString() || "null");
-        if (temp !== undefined) {
+        if (temp) {
             io.sockets.emit('newLog', {
                 value: temp.slice(-1)
             });

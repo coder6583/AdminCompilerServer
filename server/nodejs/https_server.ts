@@ -143,7 +143,7 @@ io.use(sharedSession(sessionMiddleware, {
 fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 	fs.readFile(logJsonPath, (err, data) => {
 		let temp = JSON.parse(data.toString() || "null");
-		if(temp !== undefined){
+		if(temp){
 			io.sockets.emit('newLog', {
 				value: temp.slice(-1)
 			});
@@ -153,7 +153,7 @@ fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 fs.watchFile(adminlogJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 	fs.readFile(adminlogJsonPath, (err, data) => {
 		let temp = JSON.parse(data.toString() || "null");
-		if(temp !== undefined){
+		if(temp){
 			io.sockets.emit('newLog', {
 				value: temp.slice(-1)
 			});
