@@ -416,19 +416,11 @@ function parseCommand(command, socket) {
     }
 }
 function parseServerFilter(filter) {
-    if (filter.length == 0) {
-        return { main: true, admin: true };
+    if (filter.includes('main') && !filter.includes('admin')) {
+        return { main: true, admin: false };
     }
-    else if (filter.length == 1) {
-        if (filter.includes('main')) {
-            return { main: true, admin: false };
-        }
-        else if (filter.includes('admin')) {
-            return { main: false, admin: true };
-        }
-    }
-    else if (filter.length == 2) {
-        return { main: true, admin: true };
+    else if (!filter.includes('main') && filter.includes('admin')) {
+        return { main: false, admin: true };
     }
     else {
         return { main: true, admin: true };
