@@ -472,7 +472,7 @@ var resolveServer = function (server) { return servers[server] || ''; };
 var escapeLog = function (log) { return log.replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>'); };
 var serverLogAdd = function (log, first) {
     if (first === void 0) { first = false; }
-    if (!log.value) {
+    if (typeof log.value === 'undefined') {
         console.error('log.value undefined detected', log);
     }
     var tr = "<tr class=\"log-main\"><td class=\"" + log.server + "\">" + resolveServer(log.server) + "</td><td class=\"" + log.category + "\">" + resolveCategory(log.category) + "</td><td>" + log.title + "</td><td>" + moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td></tr><tr class=\"log-detail\"><td>" + escapeLog(log.value) + "</td></tr>";
@@ -502,7 +502,7 @@ function parseServerLog(logs) {
     logs.forEach(function (log) { return serverLogAdd(log); });
 }
 socket.on('newLog', function (result) {
-    var logs = result.value.slice(-1);
+    var logs = result.value;
     console.log(logs);
     logs.forEach(function (log) {
         serverLogAdd(log, true);

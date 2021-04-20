@@ -426,7 +426,7 @@ const resolveCategory = (category :string) => categorys[category] || '';
 const resolveServer = (server :string) => servers[server] || '';
 const escapeLog = (log :string) => log.replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
 const serverLogAdd = (log: serverLog, first=false) => {
-	if (!log.value) {
+	if (typeof log.value === 'undefined') {
 		console.error('log.value undefined detected', log);
 	}
 	const tr = `<tr class="log-main"><td class="${log.server}">${resolveServer(log.server)}</td><td class="${log.category}">${resolveCategory(log.category)}</td><td>${log.title}</td><td>${moment(new Date(log.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td></tr><tr class="log-detail"><td>${escapeLog(log.value)}</td></tr>`;
@@ -455,7 +455,7 @@ function parseServerLog(logs :serverLog[]) {
 	logs.forEach(log => serverLogAdd(log));
 }
 socket.on('newLog', (result: {value: serverLog[]}) => {
-	const logs = result.value.slice(-1);
+	const logs = result.value;
 	console.log(logs);
 	logs.forEach(log => {
 		serverLogAdd(log, true);
