@@ -502,12 +502,13 @@ function parseServerLog(logs) {
     logs.forEach(function (log) { return serverLogAdd(log); });
 }
 socket.on('newLog', function (result) {
-    var logs = result.value.reverse();
-    console.log(logs);
-    logs.forEach(function (log) {
-        serverLogAdd(log, true);
-    });
+    var logs = result.value;
 });
+console.log(logs);
+logs.forEach(function (log) {
+    serverLogAdd(log, true);
+});
+;
 function parseBanIP(banIPs) {
     banIPs.forEach(function (banIP) {
         $('#ban-ip > tbody').append("<tr><td>" + banIP.ip + "</td><td>" + banIP.memo + "</td><td>" + moment(new Date(banIP.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
