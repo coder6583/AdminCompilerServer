@@ -155,9 +155,8 @@ fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 		if(temp){
 			io.sockets.emit('newLog', {
 				value: temp.slice(logSize)
-			}, () => {
-				logSize = temp.length;
 			});
+			logSize = temp.length;
 		}
 	})
 });
@@ -167,11 +166,9 @@ fs.watchFile(adminlogJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 		if(temp){
 			io.sockets.emit('newLog', {
 				value: temp.slice(adminlogSize)
-			}, () => {
-				adminlogSize = temp.length;
 			});
+			adminlogSize = temp.length;
 		}
-
 	})
 });
 io.sockets.on('connection', async (socket: any) => {

@@ -172,9 +172,8 @@ fs_1.default.watchFile(logJsonPath, function (curr, prev) {
         if (temp) {
             io.sockets.emit('newLog', {
                 value: temp.slice(logSize)
-            }, function () {
-                logSize = temp.length;
             });
+            logSize = temp.length;
         }
     });
 });
@@ -184,9 +183,8 @@ fs_1.default.watchFile(adminlogJsonPath, function (curr, prev) {
         if (temp) {
             io.sockets.emit('newLog', {
                 value: temp.slice(adminlogSize)
-            }, function () {
-                adminlogSize = temp.length;
             });
+            adminlogSize = temp.length;
         }
     });
 });
