@@ -455,7 +455,7 @@ function parseServerLog(logs :serverLog[]) {
 	logs.forEach(log => serverLogAdd(log));
 }
 socket.on('newLog', (result: {value: serverLog[]}) => {
-	const logs = result.value);
+	const logs = result.value;
 	console.log(logs);
 	logs.forEach(log => {
 		serverLogAdd(log, true);
