@@ -140,12 +140,23 @@ app.get('/avatar/id', (req: express.Request, res: express.Response) => {
 io.use(sharedSession(sessionMiddleware, {
 
 }));
+let logSize = 0, adminlogSize = 0;
+fs.readFile(logJsonPath, (err, data) => {
+	let temp = JSON.parse(data.toString() || "null");
+	logSize = temp.length;
+});
+fs.readFile(adminlogJsonPath, (err, data) => {
+	let temp = JSON.parse(data.toString() || "null");
+	adminlogSize = temp.length;
+})
 fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 	fs.readFile(logJsonPath, (err, data) => {
 		let temp = JSON.parse(data.toString() || "null");
 		if(temp){
 			io.sockets.emit('newLog', {
-				value: temp.slice(-1)
+				value: temp.slice(logSize)
+			}, () => {
+				logSize = temp.length;
 			});
 		}
 	})
@@ -155,9 +166,12 @@ fs.watchFile(adminlogJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 		let temp = JSON.parse(data.toString() || "null");
 		if(temp){
 			io.sockets.emit('newLog', {
-				value: temp.slice(-1)
+				value: temp.slice(adminlogSize)
+			}, () => {
+				adminlogSize = temp.length;
 			});
 		}
+
 	})
 });
 io.sockets.on('connection', async (socket: any) => {
