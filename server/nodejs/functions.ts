@@ -439,7 +439,7 @@ function parseServerFilter(filter: string[])
 }
 async function parseFilter(jsonPath: string, filter: logFilter)
 {
-  console.error(filter);
+  // console.error(filter);
   return new Promise((resolve, reject) => {
     let filteredLog: serverLog[] = [];
     fs.readFile(jsonPath, (err: any, data: any) => {
