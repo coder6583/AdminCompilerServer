@@ -432,10 +432,10 @@ async function parseFilter(jsonPath: string, filter: logFilter)
   return new Promise((resolve, reject) => {
     let filteredLog: serverLog[] = [];
     fs.readFile(jsonPath, (err: any, data: any) => {
-      if(err) console.error(err);
+      if(err){}
       else
       {
-        let logArray = JSON.parse(data||"null");
+        let logArray = JSON.parse(data.toString()||"null");
         logArray.forEach((element: any) => {
           if(filter.before && filter.after)
           {

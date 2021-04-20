@@ -433,10 +433,9 @@ function parseFilter(jsonPath, filter) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     var filteredLog = [];
                     fs_1.default.readFile(jsonPath, function (err, data) {
-                        if (err)
-                            console.error(err);
+                        if (err) { }
                         else {
-                            var logArray = JSON.parse(data || "null");
+                            var logArray = JSON.parse(data.toString() || "null");
                             logArray.forEach(function (element) {
                                 if (filter.before && filter.after) {
                                     if (!(filter.before <= element.timestamp && element.timestamp <= filter.after)) {
