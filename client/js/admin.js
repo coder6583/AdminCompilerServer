@@ -499,9 +499,11 @@ function parseServerLog(logs) {
     logs.forEach(function (log) { return serverLogAdd(log); });
 }
 socket.on('newLog', function (result) {
-    var log = result.value;
-    console.log(log);
-    serverLogAdd(log, true);
+    var logs = result.value.slice(-1);
+    console.log(logs);
+    logs.forEach(function (log) {
+        serverLogAdd(log, true);
+    });
 });
 function parseBanIP(banIPs) {
     banIPs.forEach(function (banIP) {
