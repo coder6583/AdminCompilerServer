@@ -451,10 +451,12 @@ const serverLogAdd = (log: serverLog, first=false) => {
 function parseServerLog(logs :serverLog[]) {
 	logs.forEach(log => serverLogAdd(log));
 }
-socket.on('newLog', (result: {value: serverLog}) => {
-	const log = result.value;
-	console.log(log);
-	serverLogAdd(log, true);
+socket.on('newLog', (result: {value: serverLog[]}) => {
+	const logs = result.value.slice(-1);
+	console.log(logs);
+	logs.forEach(log => {
+		serverLogAdd(log, true);
+	});
 });
 
 function parseBanIP(banIPs :banIP[]) {
