@@ -502,7 +502,7 @@ function parseServerLog(logs) {
     logs.forEach(function (log) { return serverLogAdd(log); });
 }
 socket.on('newLog', function (result) {
-    var logs = result.value.slice(-1);
+    var logs = result.value.reverse();
     console.log(logs);
     logs.forEach(function (log) {
         serverLogAdd(log, true);
