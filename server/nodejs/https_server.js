@@ -145,21 +145,36 @@ app.post('/login', function (req, res, next) {
 app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
 });
+app.get('/avatar/id', function (req, res) {
+    var avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
+    fs_1.default.access(avatarPath, function (err) {
+        if (err) {
+            res.sendFile('./guest.png');
+        }
+        else {
+            res.sendFile(avatarPath);
+        }
+    });
+});
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 fs_1.default.watchFile(logJsonPath, function (curr, prev) {
     fs_1.default.readFile(logJsonPath, function (err, data) {
         var temp = JSON.parse(data.toString() || "null");
-        io.sockets.emit('newLog', {
-            value: temp.slice(-1)
-        });
+        if (temp) {
+            io.sockets.emit('newLog', {
+                value: temp.slice(-1)
+            });
+        }
     });
 });
 fs_1.default.watchFile(adminlogJsonPath, function (curr, prev) {
     fs_1.default.readFile(adminlogJsonPath, function (err, data) {
         var temp = JSON.parse(data.toString() || "null");
-        io.sockets.emit('newLog', {
-            value: temp.slice(-1)
-        });
+        if (temp) {
+            io.sockets.emit('newLog', {
+                value: temp.slice(-1)
+            });
+        }
     });
 });
 io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0, void 0, function () {
@@ -195,7 +210,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         return b.timestamp - a.timestamp;
                     });
                     filteredLog = filteredLog.slice(input.from - 1, input.until);
-                    console.error(filteredLog);
+                    // console.error(filteredLog);
                     socket.emit('logReturn', {
                         value: filteredLog,
                         max: input.until - input.from + 1
@@ -207,6 +222,27 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         socket.on('usersGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 User.find().then(function (err, docs) {
+                    var users = [];
+                    docs.forEach(function (element) {
+                        var temp = {
+                            id: element.username,
+                            username: element.displayName,
+                            avatar: "",
+                            email: element.email
+                        };
+                        users.push(temp);
+                    });
+                    socket.emit('usersReturn', {
+                        users: users
+                    });
+                });
+                return [2 /*return*/];
+            });
+        }); });
+        socket.on('blacklistGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                socket.emit('blacklistReturn', {
+                    value: ipList
                 });
                 return [2 /*return*/];
             });

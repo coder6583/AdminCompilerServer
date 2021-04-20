@@ -123,7 +123,19 @@ app.post('/login', (req: express.Request, res: express.Response, next: express.N
 })
 app.get('/admin', (req: express.Request, res: express.Response) => {
 	res.sendFile('admin.html', { root: rootdirectory });
-})
+});
+
+app.get('/avatar/id', (req: express.Request, res: express.Response) => {
+	let avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
+	fs.access(avatarPath, (err) => {
+		if(err){
+			res.sendFile('./guest.png');
+		}
+		else{
+			res.sendFile(avatarPath);
+		}
+	})
+});
 
 io.use(sharedSession(sessionMiddleware, {
 
@@ -131,17 +143,21 @@ io.use(sharedSession(sessionMiddleware, {
 fs.watchFile(logJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 	fs.readFile(logJsonPath, (err, data) => {
 		let temp = JSON.parse(data.toString() || "null");
-		io.sockets.emit('newLog', {
-			value: temp.slice(-1)
-		});
+		if(temp){
+			io.sockets.emit('newLog', {
+				value: temp.slice(-1)
+			});
+		}
 	})
 });
 fs.watchFile(adminlogJsonPath, (curr: fs.Stats, prev: fs.Stats) => {
 	fs.readFile(adminlogJsonPath, (err, data) => {
 		let temp = JSON.parse(data.toString() || "null");
-		io.sockets.emit('newLog', {
-			value: temp.slice(-1)
-		});
+		if(temp){
+			io.sockets.emit('newLog', {
+				value: temp.slice(-1)
+			});
+		}
 	})
 });
 io.sockets.on('connection', async (socket: any) => {
@@ -171,7 +187,7 @@ io.sockets.on('connection', async (socket: any) => {
 				return b.timestamp - a.timestamp;
 			})
 			filteredLog = filteredLog.slice(input.from - 1, input.until);
-			console.error(filteredLog);
+			// console.error(filteredLog);
 			socket.emit('logReturn', {
 				value: filteredLog,
 				max: input.until - input.from + 1
@@ -180,7 +196,24 @@ io.sockets.on('connection', async (socket: any) => {
 	});
 	socket.on('usersGet', async (input: any) => {
 		User.find().then((err: any, docs: any[]) => {
-			
+			let users: userData[] = [];
+			docs.forEach((element: any) => {
+				let temp: userData = {
+					id: element.username,
+					username: element.displayName,
+					avatar: "",
+					email: element.email
+				}
+				users.push(temp);
+			})
+			socket.emit('usersReturn', {
+				users: users
+			})
+		})
+	});
+	socket.on('blacklistGet', async (input: any) => {
+		socket.emit('blacklistReturn', {
+			value: ipList
 		})
 	})
 	socket.on('disconnect', () => {
