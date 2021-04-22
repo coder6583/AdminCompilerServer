@@ -470,7 +470,7 @@ function parseBanIP(banIPs :banIP[]) {
 
 function parseUsers(users: userData[]) {
 	users.forEach(user => {
-		$('#users > tbody').append(`<tr><td><img src="${user.avatar}"></td><td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td><button class="btn btn-outline-secondary edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary remove"><i class="bi bi-x"></i></button></td></tr>`)
+		$('#users > tbody').append(`<tr><td><img src="/avatar/id?id=${user.id}"></td><td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td><button class="btn btn-outline-secondary edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary remove"><i class="bi bi-x"></i></button></td></tr>`)
 	});	
 }
 
