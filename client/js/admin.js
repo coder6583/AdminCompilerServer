@@ -238,6 +238,16 @@ $(function () {
     });
     // submit無効化
     $('.disable-submit').on('submit', function () { return false; });
+    // ユーザーの一覧を取得→反映
+    socket.emit('usersGet');
+    socket.on('usersReturn', function (users) {
+        parseUsers(users.value);
+    });
+    // banIP一覧取得→反映
+    socket.emit('blacklistGet');
+    socket.on('blacklistReturn', function (blacklist) {
+        parseBanIP(blacklist.value.map(function (ip) { return { ip: ip, memo: '', timestamp: 0 }; }));
+    });
     // banIP
     $('#add-ban-ip').on('submit', function () {
         var banIP = $('#ban-ip-box').val();
@@ -469,7 +479,7 @@ var servers = {
 };
 var resolveCategory = function (category) { return categorys[category] || ''; };
 var resolveServer = function (server) { return servers[server] || ''; };
-var escapeLog = function (log) { return log.replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>'); };
+var escapeLog = function (log) { return log.join('').replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>'); };
 var serverLogAdd = function (log, first) {
     if (first === void 0) { first = false; }
     if (typeof log.value === 'undefined') {
@@ -515,13 +525,13 @@ function parseBanIP(banIPs) {
 }
 function parseUsers(users) {
     users.forEach(function (user) {
-        $('#users > tbody').append("<tr><td><img src=\"" + user.avatar + "\"></td><td>" + user.id + "</td><td>" + user.username + "</td><td>" + user.email + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
+        $('#users > tbody').append("<tr><td><img src=\"/avatar/id?id=" + user.id + "\"></td><td>" + user.id + "</td><td>" + user.username + "</td><td>" + user.email + "</td><td><button class=\"btn btn-outline-secondary edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
     });
 }
 function popupMessage(value, style) {
     var _a, _b;
     if (style === void 0) { style = 'info'; }
-    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + escapeLog(value) + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
+    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + escapeLog([value]) + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
     (_a = document.querySelector('#overlay-popup .popup-message:last-of-type')) === null || _a === void 0 ? void 0 : _a.addEventListener('animationend', function (e) {
         // @ts-ignore
         if (e.animationName.startsWith('popup-end'))

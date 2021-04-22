@@ -197,6 +197,18 @@ $(() => {
 	// submit無効化
 	$('.disable-submit').on('submit', () => false);
 
+	// ユーザーの一覧を取得→反映
+	socket.emit('usersGet');
+	socket.on('usersReturn', (users :{value: userData[]}) => {
+		parseUsers(users.value);
+	});
+
+	// banIP一覧取得→反映
+	socket.emit('blacklistGet');
+	socket.on('blacklistReturn', (blacklist :{value: string[]}) => {
+		parseBanIP(blacklist.value.map(ip => {return {ip: ip, memo: '', timestamp: 0}}));
+	});
+
 	// banIP
 	$('#add-ban-ip').on('submit', () => {
 		const banIP = $('#ban-ip-box').val();
@@ -424,7 +436,7 @@ const servers :{[key:string]:string} = {
 }
 const resolveCategory = (category :string) => categorys[category] || '';
 const resolveServer = (server :string) => servers[server] || '';
-const escapeLog = (log :string) => log.replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
+const escapeLog = (log :string[]) => log.join('').replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
 const serverLogAdd = (log: serverLog, first=false) => {
 	if (typeof log.value === 'undefined') {
 		console.error('log.value undefined detected', log);
@@ -470,12 +482,12 @@ function parseBanIP(banIPs :banIP[]) {
 
 function parseUsers(users: userData[]) {
 	users.forEach(user => {
-		$('#users > tbody').append(`<tr><td><img src="${user.avatar}"></td><td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td><button class="btn btn-outline-secondary edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary remove"><i class="bi bi-x"></i></button></td></tr>`)
+		$('#users > tbody').append(`<tr><td><img src="/avatar/id?id=${user.id}"></td><td>${user.id}</td><td>${user.username}</td><td>${user.email}</td><td><button class="btn btn-outline-secondary edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary remove"><i class="bi bi-x"></i></button></td></tr>`)
 	});	
 }
 
 function popupMessage(value :string, style='info') {
-	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${escapeLog(value)}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
+	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${escapeLog([value])}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
 	document.querySelector('#overlay-popup .popup-message:last-of-type')?.addEventListener('animationend', function(e) {
 		// @ts-ignore
 		if (e.animationName.startsWith('popup-end')) this.remove();

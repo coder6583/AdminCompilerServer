@@ -215,10 +215,13 @@ div.list-tab {
 						border-radius: 2px;
 						visibility: hidden;
 						opacity: 0;
+						transform-origin: top;
+						transform: scale(0);
 						transition: all .2s;
 					}
 					&:hover::after {
 						visibility: visible;
+						transform: scale(1);
 						opacity: 1;
 					}
 				}
@@ -544,16 +547,21 @@ div.tab-ban-ip {
 		min-width: 600px;
 	}
 
+	.label h2 span {
+		margin-right: 20px;
+	}
 	.label form {
 		margin: auto 20px 10px auto;
-		width: 200px;
+		flex: 1;
+		max-width: 325px;
 		height: 25px;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 
 		input {
-			width: 175px;
+			max-width: 300px;
+			flex: 1;
 			height: 25px;
 			font-size: .9rem;
 			outline: 0;

@@ -57,7 +57,7 @@ interface serverLog {
 	server: string,
 	category: string;
 	title: string;
-	value: string;
+	value: string[];
 	timestamp: number;
 }
 
