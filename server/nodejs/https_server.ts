@@ -99,7 +99,8 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 			res.end();
 		}
 		else {
-			functions.LOG(`Request URL: ${req.originalUrl} \nIP: ${req.socket.remoteAddress}`, 'ip');
+			if(!req.originalUrl.startsWith('/avatar/'))
+				functions.LOG(`Request URL: ${req.originalUrl} \nIP: ${req.socket.remoteAddress}`, 'ip');
 			next();
 		}
 	}
