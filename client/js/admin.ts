@@ -487,7 +487,7 @@ function parseUsers(users: userData[]) {
 }
 
 function popupMessage(value :string, style='info') {
-	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${escapeLog(value)}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
+	$('#overlay-popup').append(`<div class="popup-message ${style}"><span>${escapeLog([value])}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button></div>`);
 	document.querySelector('#overlay-popup .popup-message:last-of-type')?.addEventListener('animationend', function(e) {
 		// @ts-ignore
 		if (e.animationName.startsWith('popup-end')) this.remove();

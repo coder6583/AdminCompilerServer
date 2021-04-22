@@ -531,7 +531,7 @@ function parseUsers(users) {
 function popupMessage(value, style) {
     var _a, _b;
     if (style === void 0) { style = 'info'; }
-    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + escapeLog(value) + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
+    $('#overlay-popup').append("<div class=\"popup-message " + style + "\"><span>" + escapeLog([value]) + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button></div>");
     (_a = document.querySelector('#overlay-popup .popup-message:last-of-type')) === null || _a === void 0 ? void 0 : _a.addEventListener('animationend', function (e) {
         // @ts-ignore
         if (e.animationName.startsWith('popup-end'))
