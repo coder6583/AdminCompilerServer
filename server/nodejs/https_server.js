@@ -232,7 +232,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         }); });
         socket.on('usersGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                User.find().then(function (err, docs) {
+                User.find({}, function (err, docs) {
                     var users = [];
                     docs.forEach(function (element) {
                         var temp = {

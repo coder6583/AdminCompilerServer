@@ -206,7 +206,7 @@ io.sockets.on('connection', async (socket: any) => {
 		});
 	});
 	socket.on('usersGet', async (input: any) => {
-		User.find().then((err: any, docs: any[]) => {
+		User.find({}, (err: any, docs: any[]) => {
 			let users: userData[] = [];
 			docs.forEach((element: any) => {
 				let temp: userData = {

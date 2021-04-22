@@ -414,6 +414,12 @@ function parseCommand(command, socket) {
             result: 'list'
         });
     }
+    else {
+        socket.emit('result', {
+            success: true,
+            result: 'コマンドが見つかりません'
+        });
+    }
 }
 function parseServerFilter(filter) {
     if (filter.includes('main') && !filter.includes('admin')) {
