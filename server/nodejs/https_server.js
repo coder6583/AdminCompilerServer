@@ -146,6 +146,7 @@ app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
 });
 app.get('/avatar/id', function (req, res) {
+    functions.LOG("" + req.query, 'avatar image debug');
     var avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
     fs_1.default.access(avatarPath, function (err) {
         if (err) {

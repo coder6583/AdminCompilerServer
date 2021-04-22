@@ -126,6 +126,7 @@ app.get('/admin', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/avatar/id', (req: express.Request, res: express.Response) => {
+	functions.LOG(`${req.query}`, 'avatar image debug');
 	let avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
 	fs.access(avatarPath, (err) => {
 		if(err){
