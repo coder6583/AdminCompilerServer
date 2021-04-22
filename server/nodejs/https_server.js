@@ -146,6 +146,7 @@ app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
 });
 app.get('/avatar/id', function (req, res) {
+    functions.LOG("" + req.query, 'avatar image debug');
     var avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
     fs_1.default.access(avatarPath, function (err) {
         if (err) {
@@ -232,7 +233,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         }); });
         socket.on('usersGet', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                User.find().then(function (err, docs) {
+                User.find({}, function (err, docs) {
                     var users = [];
                     docs.forEach(function (element) {
                         var temp = {

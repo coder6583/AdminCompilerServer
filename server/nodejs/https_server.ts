@@ -126,6 +126,7 @@ app.get('/admin', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/avatar/id', (req: express.Request, res: express.Response) => {
+	functions.LOG(`${req.query}`, 'avatar image debug');
 	let avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
 	fs.access(avatarPath, (err) => {
 		if(err){
@@ -206,7 +207,7 @@ io.sockets.on('connection', async (socket: any) => {
 		});
 	});
 	socket.on('usersGet', async (input: any) => {
-		User.find().then((err: any, docs: any[]) => {
+		User.find({}, (err: any, docs: any[]) => {
 			let users: userData[] = [];
 			docs.forEach((element: any) => {
 				let temp: userData = {

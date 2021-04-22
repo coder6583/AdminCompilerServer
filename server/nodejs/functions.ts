@@ -410,6 +410,13 @@ function parseCommand(command: string, socket: any)
         result: 'list'
       });
     }
+    else
+    {
+      socket.emit('result', {
+        success: true,
+        result: 'コマンドが見つかりません'
+      });
+    }
 }
 function parseServerFilter(filter: string[])
 {
