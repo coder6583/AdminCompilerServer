@@ -436,7 +436,7 @@ const servers :{[key:string]:string} = {
 }
 const resolveCategory = (category :string) => categorys[category] || '';
 const resolveServer = (server :string) => servers[server] || '';
-const escapeLog = (log :string) => log.replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
+const escapeLog = (log :string[]) => log.join('').replace(/\<br\>/g, '\n').replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/\n/g, '<br>');
 const serverLogAdd = (log: serverLog, first=false) => {
 	if (typeof log.value === 'undefined') {
 		console.error('log.value undefined detected', log);
