@@ -150,7 +150,7 @@ app.get('/avatar/id', function (req, res) {
     var avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
     fs_1.default.access(avatarPath, function (err) {
         if (err) {
-            res.sendFile('./guest.png');
+            res.sendFile(path.resolve(__dirname, 'guest.png'));
         }
         else {
             res.sendFile(avatarPath);

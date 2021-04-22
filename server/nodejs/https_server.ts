@@ -130,7 +130,7 @@ app.get('/avatar/id', (req: express.Request, res: express.Response) => {
 	let avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
 	fs.access(avatarPath, (err) => {
 		if(err){
-			res.sendFile('./guest.png');
+			res.sendFile(path.resolve(__dirname, 'guest.png'));
 		}
 		else{
 			res.sendFile(avatarPath);
