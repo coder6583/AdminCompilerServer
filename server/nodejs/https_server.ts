@@ -218,7 +218,7 @@ io.sockets.on('connection', async (socket: any) => {
 				users.push(temp);
 			})
 			socket.emit('usersReturn', {
-				users: users
+				value: users
 			})
 		})
 	});

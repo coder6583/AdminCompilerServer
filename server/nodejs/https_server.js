@@ -244,7 +244,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                         users.push(temp);
                     });
                     socket.emit('usersReturn', {
-                        users: users
+                        value: users
                     });
                 });
                 return [2 /*return*/];
