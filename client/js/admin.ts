@@ -197,6 +197,18 @@ $(() => {
 	// submit無効化
 	$('.disable-submit').on('submit', () => false);
 
+	// ユーザーの一覧を取得→反映
+	socket.emit('usersGet');
+	socket.on('usersReturn', (users :{value: userData[]}) => {
+		parseUsers(users.value);
+	});
+
+	// banIP一覧取得→反映
+	socket.emit('blacklistGet');
+	socket.on('blacklistReturn', (blacklist :{value: string[]}) => {
+		parseBanIP(blacklist.value.map(ip => {return {ip: ip, memo: '', timestamp: 0}}));
+	});
+
 	// banIP
 	$('#add-ban-ip').on('submit', () => {
 		const banIP = $('#ban-ip-box').val();

@@ -238,6 +238,16 @@ $(function () {
     });
     // submit無効化
     $('.disable-submit').on('submit', function () { return false; });
+    // ユーザーの一覧を取得→反映
+    socket.emit('usersGet');
+    socket.on('usersReturn', function (users) {
+        parseUsers(users.value);
+    });
+    // banIP一覧取得→反映
+    socket.emit('blacklistGet');
+    socket.on('blacklistReturn', function (blacklist) {
+        parseBanIP(blacklist.value.map(function (ip) { return { ip: ip, memo: '', timestamp: 0 }; }));
+    });
     // banIP
     $('#add-ban-ip').on('submit', function () {
         var banIP = $('#ban-ip-box').val();
