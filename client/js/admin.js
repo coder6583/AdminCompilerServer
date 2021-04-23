@@ -203,7 +203,7 @@ $(function () {
     var logMax = 1000000;
     var getLogs = function () {
         var currentLogs = $('#server-log tbody').children().length;
-        if (logMax <= currentLogs)
+        if (logMax <= currentLogs / 2)
             return;
         socket.emit('logGet', {
             from: currentLogs + 1,
