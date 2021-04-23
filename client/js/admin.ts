@@ -155,7 +155,7 @@ $(() => {
 	const linesPerPage = 50;
 	let logMax = 1000000;
 	const getLogs = () => {
-		const currentLogs = $('#server-log tbody').children().length;
+		const currentLogs = $('#server-log tbody .log-main').length;
 		if (logMax <= currentLogs / 2) return;
 		socket.emit('logGet', {
 			from: currentLogs + 1,

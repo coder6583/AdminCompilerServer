@@ -202,7 +202,7 @@ $(function () {
     var linesPerPage = 50;
     var logMax = 1000000;
     var getLogs = function () {
-        var currentLogs = $('#server-log tbody').children().length;
+        var currentLogs = $('#server-log tbody .log-main').length;
         if (logMax <= currentLogs / 2)
             return;
         socket.emit('logGet', {
