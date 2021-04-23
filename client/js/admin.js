@@ -200,19 +200,24 @@ $(function () {
         }, 200);
     });
     var linesPerPage = 50;
+    var logGetting = false;
     var getLogs = function () {
-        var currentLogs = $('#server-log tbody').children().length;
-        socket.emit('logGet', {
-            from: currentLogs + 1,
-            until: currentLogs + linesPerPage,
-            filter: filter,
-        });
+        if (!logGetting) {
+            var currentLogs = $('#server-log tbody').children().length;
+            socket.emit('logGet', {
+                from: currentLogs + 1,
+                until: currentLogs + linesPerPage,
+                filter: filter,
+            });
+            logGetting = true;
+        }
     };
     getLogs();
     socket.on('logReturn', function (log) {
         console.log(log);
         parseServerLog(log.value);
         $('#server-log ~ .loading-div').removeClass('show');
+        logGetting = false;
     });
     // 無限スクロール
     $('#server-log tbody').on('scroll', function () {
