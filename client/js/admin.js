@@ -186,6 +186,7 @@ $(function () {
                 });
                 return result;
             })();
+            $('#server-log > tbody').html('');
             getLogs();
             // 読み込み中
             var labelHeight = $('#server-log').parent().find('.label').height() || 0;

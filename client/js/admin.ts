@@ -138,6 +138,7 @@ $(() => {
 				});
 				return result;
 			})();
+			$('#server-log > tbody').html('');
 			getLogs();
 
 			// 読み込み中
