@@ -459,12 +459,13 @@ function parseFilter(jsonPath, filter) {
                                         return;
                                     }
                                 }
+                                var logValue = element.value.join('');
                                 if (filter.keyword.length > 0) {
-                                    if (!filter.keyword.every(function (s) { return element.value.includes(s); })) {
+                                    if (!filter.keyword.every(function (s) { return logValue.includes(s); })) {
                                         return;
                                     }
                                 }
-                                if (element.value == "") {
+                                if (logValue == "") {
                                     return;
                                 }
                                 filteredLog.push(element);

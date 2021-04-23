@@ -222,11 +222,12 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                     filteredLog.sort(function (a, b) {
                         return b.timestamp - a.timestamp;
                     });
+                    var logSize = filteredLog.length;
                     filteredLog = filteredLog.slice(input.from - 1, input.until);
                     // console.error(filteredLog);
                     socket.emit('logReturn', {
                         value: filteredLog,
-                        max: input.until - input.from + 1
+                        max: logSize
                     });
                 });
                 return [2 /*return*/];
