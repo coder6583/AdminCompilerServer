@@ -70,7 +70,7 @@ var User = require('./database');
 mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(function () { functions.LOG('connected to database.', 'status'); });
+}).then(function () { functions.LOG('connected to database.', 'connected to database.'); });
 mongoose_1.default.Promise = global.Promise;
 //passport
 var passport_1 = __importDefault(require("passport"));
@@ -260,6 +260,18 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 return [2 /*return*/];
             });
         }); });
+        socket.on('blacklistAdd', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                fs_1.default.appendFile('/home/pi/ipBlacklist', input.value + ";\n", function (err) {
+                    if (err)
+                        console.error(err);
+                    else {
+                        functions.LOG(ipList.length + 1 + " blocked ip addresses.", ipList.length + 1 + " blocked ip addresses.");
+                    }
+                });
+                return [2 /*return*/];
+            });
+        }); });
         socket.on('disconnect', function () {
             socket.removeAllListeners('command');
         });
@@ -272,5 +284,5 @@ app.use(function (req, res, next) {
     res.sendFile('err404.html', { root: rootdirectory });
 });
 httpServer.listen(port, function () {
-    functions.LOG('Server at https://rootlang.ddns.net', 'status');
+    functions.LOG('Server at https://rootlang.ddns.net', 'Server at https://rootlang.ddns.net');
 });

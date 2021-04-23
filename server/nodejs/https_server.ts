@@ -35,7 +35,7 @@ const User: mongoose.Model<any, any> = require('./database');
 mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
 	useNewUrlParser: true,
 	useUnifiedTopology: true
-}).then(() => { functions.LOG('connected to database.', 'status'); });
+}).then(() => { functions.LOG('connected to database.', 'connected to database.'); });
 
 mongoose.Promise = global.Promise;
 //passport
@@ -228,6 +228,15 @@ io.sockets.on('connection', async (socket: any) => {
 		socket.emit('blacklistReturn', {
 			value: ipList
 		})
+	});
+	socket.on('blacklistAdd', async (input: any) => {
+		fs.appendFile('/home/pi/ipBlacklist', `${input.value};\n`, (err: NodeJS.ErrnoException | null) => {
+			if(err) console.error(err);
+			else
+			{
+				functions.LOG(`${ipList.length + 1} blocked ip addresses.`, `${ipList.length + 1} blocked ip addresses.`);
+			}
+		})
 	})
 	socket.on('disconnect', () => {
 		socket.removeAllListeners('command');
@@ -242,5 +251,5 @@ app.use((req: express.Request, res: express.Response, next) => {
 });
 
 httpServer.listen(port, () => {
-	functions.LOG('Server at https://rootlang.ddns.net', 'status');
+	functions.LOG('Server at https://rootlang.ddns.net', 'Server at https://rootlang.ddns.net');
 })
