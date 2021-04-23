@@ -114,18 +114,18 @@ function everyRequest(req, res, next) {
             failureRedirect: '/login'
         })(req, res, next);
         // console.log(req.user);
-        functions.LOG('not logged in', 'login');
+        functions.LOG('not logged in', 'not logged in');
     }
     else {
         if (ipList.includes(req.socket.remoteAddress)) {
-            functions.LOG("Blacklisted-ip tried to access. IP: " + req.socket.remoteAddress, 'ip');
+            functions.LOG("Blacklisted-ip tried to access. IP: " + req.socket.remoteAddress, 'banned ip tried to access');
             // console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
             res.send('banned L');
             res.end();
         }
         else {
             if (!req.originalUrl.startsWith('/avatar/'))
-                functions.LOG("Request URL: " + req.originalUrl + " \nIP: " + req.socket.remoteAddress, 'ip');
+                functions.LOG("Request URL: " + req.originalUrl + " \nIP: " + req.socket.remoteAddress, 'request url');
             next();
         }
     }
@@ -147,7 +147,6 @@ app.get('/admin', function (req, res) {
     res.sendFile('admin.html', { root: rootdirectory });
 });
 app.get('/avatar/id', function (req, res) {
-    functions.LOG("" + req.query, 'avatar image debug');
     var avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
     fs_1.default.access(avatarPath, function (err) {
         if (err) {

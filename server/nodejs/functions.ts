@@ -10,14 +10,14 @@ function mountUsb(accountsDir: string)
             {
               exec('sudo umount /media/pi/A042-416A', () => {
                 exec('sudo mount /dev/sda1 /media/usb', () => {
-                  LOG('mounted usb', 'status');
+                  LOG('mounted usb', 'mounted usb');
                 })
               });
             }
             else
             {
               exec('sudo mount /dev/sda1 /media/usb', () => {
-                LOG('mounted usb', 'status')
+                LOG('mounted usb', 'mounted usb')
               });
             }
           })
@@ -31,13 +31,13 @@ async function updateIpBlacklist(blacklistDir: string)
       fs.readFile(blacklistDir, (err, data) => {
           if(err)
           {
-            LOG('Could not read blacklist.', 'status');
+            LOG('Could not read blacklist.', 'Could not read blacklist.');
           }
           else
           {
             let blacklistData: string = data.toString();
             ipList = blacklistData.split(';\n');
-            LOG(ipList.length + ' blocked ip addresses.', 'status');
+            LOG(ipList.length + ' blocked ip addresses.', ipList.length + ' blocked ip addresses.');
           }
           resolve(ipList);
       });
@@ -47,14 +47,14 @@ import bcrypt from 'bcrypt';
 function loginCheck(username: string, password: string, done: any)
 {
     const hash = "$2b$10$ieCh/0DZR.B/T2pAwzNHVO757UQ1PtTpkv9XdF/T51ag1KCkMstXi";
-    LOG('Login Attempt', 'login');
+    LOG('Login Attempt', 'Login Attempt');
     if(username == 'admin')
     {
       bcrypt.compare(password, hash, (err, isMatch) => {
-        if(err) LOG(err, 'login');
+        if(err) LOG(err, 'login error');
         if(isMatch)
         {
-          LOG('logged in!', 'login');
+          LOG('logged in!', 'logged in!');
           return done(null, username);
         }
         else 
@@ -105,7 +105,7 @@ const io = require('socket.io');
 function parseCommand(command: string, socket: any)
 {
     let words = command.split(' ');
-    LOG(words[0], 'debug');
+    // LOG(words[0], 'debug');
     //update
     if(words[0] == 'update')
     {
@@ -404,7 +404,6 @@ function parseCommand(command: string, socket: any)
     }
     else if(words[0] == 'list')
     {
-      LOG('aaaa', 'debug');
       socket.emit('result', {
         success: true,
         result: 'list'

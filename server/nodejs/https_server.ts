@@ -89,18 +89,18 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 			failureRedirect: '/login'
 		})(req, res, next);
 		// console.log(req.user);
-		functions.LOG('not logged in', 'login');
+		functions.LOG('not logged in', 'not logged in');
 	}
 	else {
 		if (ipList.includes(req.socket.remoteAddress!)) {
-			functions.LOG(`Blacklisted-ip tried to access. IP: ${req.socket.remoteAddress}`, 'ip');
+			functions.LOG(`Blacklisted-ip tried to access. IP: ${req.socket.remoteAddress}`, 'banned ip tried to access');
 			// console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
 			res.send('banned L');
 			res.end();
 		}
 		else {
 			if(!req.originalUrl.startsWith('/avatar/'))
-				functions.LOG(`Request URL: ${req.originalUrl} \nIP: ${req.socket.remoteAddress}`, 'ip');
+				functions.LOG(`Request URL: ${req.originalUrl} \nIP: ${req.socket.remoteAddress}`, 'request url');
 			next();
 		}
 	}
@@ -127,7 +127,6 @@ app.get('/admin', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/avatar/id', (req: express.Request, res: express.Response) => {
-	functions.LOG(`${req.query}`, 'avatar image debug');
 	let avatarPath = path.resolve('/media/usb/compilerserver/accounts', req.query.id, 'avatar.png');
 	fs.access(avatarPath, (err) => {
 		if(err){

@@ -48,13 +48,13 @@ function mountUsb(accountsDir) {
                 if (!err) {
                     exec('sudo umount /media/pi/A042-416A', function () {
                         exec('sudo mount /dev/sda1 /media/usb', function () {
-                            LOG('mounted usb', 'status');
+                            LOG('mounted usb', 'mounted usb');
                         });
                     });
                 }
                 else {
                     exec('sudo mount /dev/sda1 /media/usb', function () {
-                        LOG('mounted usb', 'status');
+                        LOG('mounted usb', 'mounted usb');
                     });
                 }
             });
@@ -69,12 +69,12 @@ function updateIpBlacklist(blacklistDir) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     fs_1.default.readFile(blacklistDir, function (err, data) {
                         if (err) {
-                            LOG('Could not read blacklist.', 'status');
+                            LOG('Could not read blacklist.', 'Could not read blacklist.');
                         }
                         else {
                             var blacklistData = data.toString();
                             ipList = blacklistData.split(';\n');
-                            LOG(ipList.length + ' blocked ip addresses.', 'status');
+                            LOG(ipList.length + ' blocked ip addresses.', ipList.length + ' blocked ip addresses.');
                         }
                         resolve(ipList);
                     });
@@ -85,13 +85,13 @@ function updateIpBlacklist(blacklistDir) {
 var bcrypt_1 = __importDefault(require("bcrypt"));
 function loginCheck(username, password, done) {
     var hash = "$2b$10$ieCh/0DZR.B/T2pAwzNHVO757UQ1PtTpkv9XdF/T51ag1KCkMstXi";
-    LOG('Login Attempt', 'login');
+    LOG('Login Attempt', 'Login Attempt');
     if (username == 'admin') {
         bcrypt_1.default.compare(password, hash, function (err, isMatch) {
             if (err)
-                LOG(err, 'login');
+                LOG(err, 'login error');
             if (isMatch) {
-                LOG('logged in!', 'login');
+                LOG('logged in!', 'logged in!');
                 return done(null, username);
             }
             else {
@@ -138,7 +138,7 @@ function taskManager(socket) {
 var io = require('socket.io');
 function parseCommand(command, socket) {
     var words = command.split(' ');
-    LOG(words[0], 'debug');
+    // LOG(words[0], 'debug');
     //update
     if (words[0] == 'update') {
         if (words.length == 1) {
@@ -408,7 +408,6 @@ function parseCommand(command, socket) {
         }
     }
     else if (words[0] == 'list') {
-        LOG('aaaa', 'debug');
         socket.emit('result', {
             success: true,
             result: 'list'
