@@ -107,8 +107,13 @@
 				<!-- ユーザーの一覧 -->
 				<div class="content tab-users list-tab container-fluid p-0">
 					<div class="label row m-0">
-						<h2 class="m-0">
+						<h2 class="m-0 col">
 							<span>登録済みユーザーの一覧</span>
+							<button class="refresh-button" id="users-refresh">
+								<span class="material-icons-outlined">
+									refresh
+								</span>
+							</button>
 						</h2>
 					</div>
 					<table id="users" class="table table-fixed row m-0">
@@ -133,10 +138,15 @@
 							<span>アクセス禁止IPの一覧</span>
 							<form id="add-ban-ip">
 								<input id="ban-ip-box" type="text" placeholder="アクセス禁止IPアドレスを入力" autocomplete="off">
-								<button>
+								<button type="submit">
 									<i class="bi bi-plus"></i>
 								</button>
 							</form>
+							<button class="refresh-button" id="users-refresh">
+								<span class="material-icons-outlined">
+									refresh
+								</span>
+							</button>
 						</h2>
 					</div>
 					<table id="ban-ip" class="table table-fixed row m-0">

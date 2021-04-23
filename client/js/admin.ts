@@ -231,6 +231,16 @@ $(() => {
 		return false;
 	});
 
+	// リストリフレッシュ
+	$('#users-refresh').on('click', () => {
+		$('#users > tbody').html('');
+		socket.emit('usersGet');
+	});
+	$('#ban-ip-refresh').on('click', () => {
+		$('#ban-ip > tbody').html('');
+		socket.emit('blacklistGet');
+	});
+
 	// モニター
 	let chartData = {
 		CPU: 0,

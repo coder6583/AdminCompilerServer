@@ -273,6 +273,15 @@ $(function () {
         }
         return false;
     });
+    // リストリフレッシュ
+    $('#users-refresh').on('click', function () {
+        $('#users > tbody').html('');
+        socket.emit('usersGet');
+    });
+    $('#ban-ip-refresh').on('click', function () {
+        $('#ban-ip > tbody').html('');
+        socket.emit('blacklistGet');
+    });
     // モニター
     var chartData = {
         CPU: 0,
