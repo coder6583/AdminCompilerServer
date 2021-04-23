@@ -180,7 +180,7 @@ io.sockets.on('connection', async (socket: any) => {
 		functions.parseCommand(input.command, socket);
 	});
 	socket.on('logGet', async (input: any) => {
-		functions.LOG(input, 'debug');
+		functions.LOG(input, 'log filter');
 		let serverFilter = functions.parseServerFilter(input.filter.server);
 		let filteredLog: serverLog[] = [];
 		let jsonLogs: Promise<serverLog[]>[] = [];
