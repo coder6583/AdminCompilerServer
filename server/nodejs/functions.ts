@@ -465,14 +465,16 @@ async function parseFilter(jsonPath: string, filter: logFilter)
               return;
             }
           }
+          let logValue = element.value.join('');
           if(filter.keyword.length > 0)
           {
-            if(!filter.keyword.every((s: string) => element.value.includes(s)))
+            if(!filter.keyword.every((s: string) => logValue.includes(s)))
             {
               return;
             }
           }
-          if(element.value == "")
+          
+          if(logValue == "")
           {
             return;
           }
