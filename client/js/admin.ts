@@ -153,17 +153,15 @@ $(() => {
 		}, 200);
 	});
 	const linesPerPage = 50;
-	let logGetting = false;
+	let logMax = 1000000;
 	const getLogs = () => {
-		if (!logGetting) {
-			const currentLogs = $('#server-log tbody').children().length;
-			socket.emit('logGet', {
-				from: currentLogs + 1,
-				until: currentLogs + linesPerPage,
-				filter: filter,
-			});
-			logGetting = true;
-		}
+		const currentLogs = $('#server-log tbody').children().length;
+		if (logMax <= currentLogs / 2) return;
+		socket.emit('logGet', {
+			from: currentLogs + 1,
+			until: currentLogs + linesPerPage,
+			filter: filter,
+		});
 	};
 	getLogs();
 
@@ -171,7 +169,7 @@ $(() => {
 		console.log(log);
 		parseServerLog(log.value);
 		$('#server-log ~ .loading-div').removeClass('show');
-		logGetting = false;
+		logMax = log.max;
 	});
 
 	// 無限スクロール
