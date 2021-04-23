@@ -259,6 +259,7 @@ $(function () {
             socket.emit('blacklistAdd', {
                 value: "::ffff:" + banIP
             });
+            banIPRefresh();
             $('#ban-ip-box').val('');
         }
         else if (banIP.match(/^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/)) {
@@ -266,6 +267,7 @@ $(function () {
             socket.emit('blacklistAdd', {
                 value: banIP
             });
+            banIPRefresh();
             $('#ban-ip-box').val('');
         }
         else {
@@ -274,14 +276,16 @@ $(function () {
         return false;
     });
     // リストリフレッシュ
-    $('#users-refresh').on('click', function () {
+    var usersRefresh = function () {
         $('#users > tbody').html('');
         socket.emit('usersGet');
-    });
-    $('#ban-ip-refresh').on('click', function () {
+    };
+    $('#users-refresh').on('click', usersRefresh);
+    var banIPRefresh = function () {
         $('#ban-ip > tbody').html('');
         socket.emit('blacklistGet');
-    });
+    };
+    $('#ban-ip-refresh').on('click', banIPRefresh);
     // モニター
     var chartData = {
         CPU: 0,
