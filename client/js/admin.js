@@ -200,24 +200,23 @@ $(function () {
         }, 200);
     });
     var linesPerPage = 50;
-    var logGetting = false;
+    var logMax = 1000000;
     var getLogs = function () {
-        if (!logGetting) {
-            var currentLogs = $('#server-log tbody').children().length;
-            socket.emit('logGet', {
-                from: currentLogs + 1,
-                until: currentLogs + linesPerPage,
-                filter: filter,
-            });
-            logGetting = true;
-        }
+        var currentLogs = $('#server-log tbody').children().length;
+        if (logMax <= currentLogs)
+            return;
+        socket.emit('logGet', {
+            from: currentLogs + 1,
+            until: currentLogs + linesPerPage,
+            filter: filter,
+        });
     };
     getLogs();
     socket.on('logReturn', function (log) {
         console.log(log);
         parseServerLog(log.value);
         $('#server-log ~ .loading-div').removeClass('show');
-        logGetting = false;
+        logMax = log.max;
     });
     // 無限スクロール
     $('#server-log tbody').on('scroll', function () {
