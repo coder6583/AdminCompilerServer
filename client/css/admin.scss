@@ -524,6 +524,7 @@ div.tab-users {
 		& > *:nth-child(4) {
 			flex: 1;
 			min-width: 200px;
+			word-break: break-all;
 		}
 		& > *:nth-child(5) {
 			display: flex;
