@@ -246,6 +246,7 @@ $(() => {
 		socket.emit('blacklistRemove', {
 			value: banIP
 		});
+		setTimeout(banIPRefresh, 500);
 	});
 
 	// リストリフレッシュ
