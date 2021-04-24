@@ -280,8 +280,8 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
         socket.on('blacklistRemove', function (input) { return __awaiter(void 0, void 0, void 0, function () {
             var index, temp;
             return __generator(this, function (_a) {
+                functions.LOG(input, "blacklist remove debug");
                 while (ipList.indexOf(input.value) != -1) {
-                    functions.LOG(input, "blacklist remove debug");
                     index = ipList.indexOf(input.value);
                     ipList.splice(index, 1);
                 }

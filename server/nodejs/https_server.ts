@@ -243,9 +243,10 @@ io.sockets.on('connection', async (socket: any) => {
 		});
 	})
 	socket.on('blacklistRemove', async (input: any) => {
+		functions.LOG(input, "blacklist remove debug");
 		while(ipList.indexOf(input.value) != -1)
 		{
-			functions.LOG(input, "blacklist remove debug");
+			
 			let index = ipList.indexOf(input.value);
 			ipList.splice(index, 1);
 		}
