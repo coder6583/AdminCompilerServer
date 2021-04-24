@@ -280,17 +280,6 @@ $(function () {
         }
         return false;
     });
-    // banIP編集
-    $('.ban-ip-edit').on('click', function () {
-    });
-    // banIP削除
-    $('.ban-ip-remove').on('click', function () {
-        var banIP = $(this).parents('tr').find('td:first-child').text();
-        socket.emit('blacklistRemove', {
-            value: banIP
-        });
-        setTimeout(banIPRefresh, 500);
-    });
     // リストリフレッシュ
     var usersRefresh = function () {
         $('#users > tbody').html('');
@@ -571,6 +560,20 @@ socket.on('newLog', function (result) {
 function parseBanIP(banIPs) {
     banIPs.forEach(function (banIP) {
         $('#ban-ip > tbody').append("<tr><td>" + banIP.ip + "</td><td>" + banIP.memo + "</td><td>" + moment(new Date(banIP.timestamp)).format('YYYY/MM/DD HH:mm:ss') + "</td><td><button class=\"btn btn-outline-secondary ban-ip-edit\"><i class=\"bi bi-pencil\"></i></button><button class=\"btn btn-outline-secondary ban-ip-remove\"><i class=\"bi bi-x\"></i></button></td></tr>");
+    });
+    // banIP編集
+    $('.ban-ip-edit').on('click', function () {
+    });
+    // banIP削除
+    $('.ban-ip-remove').on('click', function () {
+        var banIP = $(this).parents('tr').find('td:first-child').text();
+        socket.emit('blacklistRemove', {
+            value: banIP
+        });
+        setTimeout(function () {
+            $('#ban-ip > tbody').html('');
+            socket.emit('blacklistGet');
+        }, 500);
     });
 }
 function parseUsers(users) {
