@@ -21,7 +21,7 @@ const port: number = 8080;
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
 functions.mountUsb(accountsDir);
 //ip filter
-const blacklistPath: string = '/home/pi/ipBlacklist';
+const blacklistPath: string = '/home/pi/ipBlacklist.json';
 var ipList: Array<string>;
 functions.updateIpBlacklist(blacklistPath).then((value: any) => ipList = value);
 // const ipfilter = require('express-ipfilter').IpFilter;

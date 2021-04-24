@@ -57,7 +57,7 @@ var port = 8080;
 var accountsDir = '/media/usb/compilerserver/accounts/';
 functions.mountUsb(accountsDir);
 //ip filter
-var blacklistPath = '/home/pi/ipBlacklist';
+var blacklistPath = '/home/pi/ipBlacklist.json';
 var ipList;
 functions.updateIpBlacklist(blacklistPath).then(function (value) { return ipList = value; });
 // const ipfilter = require('express-ipfilter').IpFilter;
