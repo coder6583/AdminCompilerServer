@@ -57,7 +57,7 @@ var port = 8080;
 var accountsDir = '/media/usb/compilerserver/accounts/';
 functions.mountUsb(accountsDir);
 //ip filter
-var blacklistPath = '/home/pi/ipBlacklist';
+var blacklistPath = '/home/pi/ipBlacklist.json';
 var ipList;
 functions.updateIpBlacklist(blacklistPath).then(function (value) { return ipList = value; });
 // const ipfilter = require('express-ipfilter').IpFilter;
@@ -93,7 +93,9 @@ var rootdirectory = path.resolve(rootDir, 'client');
 var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //request時に実行するmiddleware function
-app.use(express_1.default.static(rootdirectory));
+app.use(express_1.default.static(rootdirectory, {
+    index: false
+}));
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -261,8 +263,30 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
             });
         }); });
         socket.on('blacklistAdd', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            var temp;
             return __generator(this, function (_a) {
-                fs_1.default.appendFile('/home/pi/ipBlacklist', input.value + ";\n", function (err) {
+                ipList.push(input.value);
+                temp = { value: ipList };
+                fs_1.default.writeFile('/home/pi/ipBlacklist.json', JSON.stringify(temp), function (err) {
+                    if (err)
+                        console.error(err);
+                    else {
+                        functions.LOG(ipList.length + 1 + " blocked ip addresses.", ipList.length + 1 + " blocked ip addresses.");
+                    }
+                });
+                return [2 /*return*/];
+            });
+        }); });
+        socket.on('blacklistRemove', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            var index, temp;
+            return __generator(this, function (_a) {
+                functions.LOG(input, "blacklist remove debug");
+                while (ipList.indexOf(input.value) != -1) {
+                    index = ipList.indexOf(input.value);
+                    ipList.splice(index, 1);
+                }
+                temp = { value: ipList };
+                fs_1.default.writeFile('/home/pi/ipBlacklist.json', JSON.stringify(temp), function (err) {
                     if (err)
                         console.error(err);
                     else {

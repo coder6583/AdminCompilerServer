@@ -72,8 +72,8 @@ function updateIpBlacklist(blacklistDir) {
                             LOG('Could not read blacklist.', 'Could not read blacklist.');
                         }
                         else {
-                            var blacklistData = data.toString();
-                            ipList = blacklistData.split(';\n');
+                            var blacklistData = JSON.parse(data.toString() || "null");
+                            ipList = blacklistData.value;
                             LOG(ipList.length + ' blocked ip addresses.', ipList.length + ' blocked ip addresses.');
                         }
                         resolve(ipList);
