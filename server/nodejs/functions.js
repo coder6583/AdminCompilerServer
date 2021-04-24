@@ -460,7 +460,8 @@ function parseFilter(jsonPath, filter) {
                                 }
                                 var logValue = element.value.join('');
                                 if (filter.keyword.length > 0) {
-                                    if (!filter.keyword.every(function (s) { return logValue.includes(s); })) {
+                                    var keywordRegex = new RegExp(filter.keyword.join('|'), 'i');
+                                    if (!logValue.match(keywordRegex)) {
                                         return;
                                     }
                                 }
