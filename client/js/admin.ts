@@ -213,7 +213,7 @@ $(() => {
 		parseBanIP(blacklist.value.map(ip => {return {ip: ip, memo: '', timestamp: 0}}));
 	});
 
-	// banIP
+	// banIP追加
 	$('#add-ban-ip').on('submit', () => {
 		const banIP = $('#ban-ip-box').val()?.toString();
 		if (!banIP) return false;
@@ -235,6 +235,17 @@ $(() => {
 			popupMessage('IPアドレスの形式が有効ではありません', 'err');
 		}
 		return false;
+	});
+	// banIP編集
+	$('.ban-ip-edit').on('click', () => {
+
+	});
+	// banIP削除
+	$('.ban-ip-remove').on('click', function() {
+		const banIP = $(this).parents('tr').find('td:first-child').text();
+		socket.emit('blacklistRemove', {
+			value: banIP
+		});
 	});
 
 	// リストリフレッシュ
