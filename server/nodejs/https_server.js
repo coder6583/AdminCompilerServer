@@ -276,12 +276,20 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
             });
         }); });
         socket.on('blacklistRemove', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-            var index;
+            var index, temp;
             return __generator(this, function (_a) {
                 while (ipList.indexOf(input.value) != -1) {
                     index = ipList.indexOf(input.value);
                     ipList.splice(index, 1);
                 }
+                temp = { value: ipList };
+                fs_1.default.writeFile('/home/pi/ipBlacklist.json', JSON.stringify(temp), function (err) {
+                    if (err)
+                        console.error(err);
+                    else {
+                        functions.LOG(ipList.length + 1 + " blocked ip addresses.", ipList.length + 1 + " blocked ip addresses.");
+                    }
+                });
                 return [2 /*return*/];
             });
         }); });

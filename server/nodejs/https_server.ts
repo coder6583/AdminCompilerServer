@@ -246,6 +246,14 @@ io.sockets.on('connection', async (socket: any) => {
 			let index = ipList.indexOf(input.value);
 			ipList.splice(index, 1);
 		}
+		let temp = { value: ipList };
+		fs.writeFile('/home/pi/ipBlacklist.json', JSON.stringify(temp), (err: NodeJS.ErrnoException | null) => {
+			if(err) console.error(err);
+			else
+			{
+				functions.LOG(`${ipList.length + 1} blocked ip addresses.`, `${ipList.length + 1} blocked ip addresses.`);
+			}
+		});
 	})
 	socket.on('disconnect', () => {
 		socket.removeAllListeners('command');
