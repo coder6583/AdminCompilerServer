@@ -230,13 +230,15 @@ io.sockets.on('connection', async (socket: any) => {
 		})
 	});
 	socket.on('blacklistAdd', async (input: any) => {
-		fs.appendFile('/home/pi/ipBlacklist', `${input.value};\n`, (err: NodeJS.ErrnoException | null) => {
+		ipList.push(input.value);
+		let temp = { value: ipList };
+		fs.writeFile('/home/pi/ipBlacklist.json', JSON.stringify(temp), (err: NodeJS.ErrnoException | null) => {
 			if(err) console.error(err);
 			else
 			{
 				functions.LOG(`${ipList.length + 1} blocked ip addresses.`, `${ipList.length + 1} blocked ip addresses.`);
 			}
-		})
+		});
 	})
 	socket.on('disconnect', () => {
 		socket.removeAllListeners('command');

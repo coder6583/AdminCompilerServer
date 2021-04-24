@@ -35,8 +35,8 @@ async function updateIpBlacklist(blacklistDir: string)
           }
           else
           {
-            let blacklistData: string = data.toString();
-            ipList = blacklistData.split(';\n');
+            let blacklistData: any = JSON.parse(data.toString()||"null");
+            ipList = blacklistData.value;
             LOG(ipList.length + ' blocked ip addresses.', ipList.length + ' blocked ip addresses.');
           }
           resolve(ipList);

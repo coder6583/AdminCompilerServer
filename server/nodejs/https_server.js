@@ -261,8 +261,11 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
             });
         }); });
         socket.on('blacklistAdd', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            var temp;
             return __generator(this, function (_a) {
-                fs_1.default.appendFile('/home/pi/ipBlacklist', input.value + ";\n", function (err) {
+                ipList.push(input.value);
+                temp = { value: ipList };
+                fs_1.default.writeFile('/home/pi/ipBlacklist.json', JSON.stringify(temp), function (err) {
                     if (err)
                         console.error(err);
                     else {
