@@ -467,7 +467,8 @@ async function parseFilter(jsonPath: string, filter: logFilter)
           let logValue = element.value.join('');
           if(filter.keyword.length > 0)
           {
-            if(!filter.keyword.every((s: string) => logValue.includes(s)))
+            let keywordRegex = new RegExp(filter.keyword.join('|'), 'i');
+            if(!(logValue.match(keywordRegex) && element.title.match(keywordRegex)))
             {
               return;
             }
