@@ -93,7 +93,9 @@ var rootdirectory = path.resolve(rootDir, 'client');
 var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //request時に実行するmiddleware function
-app.use(express_1.default.static(rootdirectory));
+app.use(express_1.default.static(rootdirectory, {
+    index: false
+}));
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -279,6 +281,7 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
             var index, temp;
             return __generator(this, function (_a) {
                 while (ipList.indexOf(input.value) != -1) {
+                    functions.LOG(input, "blacklist remove debug");
                     index = ipList.indexOf(input.value);
                     ipList.splice(index, 1);
                 }

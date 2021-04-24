@@ -66,7 +66,9 @@ import sharedSession from 'express-socket.io-session';
 import { debuglog } from "util";
 
 //request時に実行するmiddleware function
-app.use(express.static(rootdirectory));
+app.use(express.static(rootdirectory, {
+	index: false
+}));
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -243,6 +245,7 @@ io.sockets.on('connection', async (socket: any) => {
 	socket.on('blacklistRemove', async (input: any) => {
 		while(ipList.indexOf(input.value) != -1)
 		{
+			functions.LOG(input, "blacklist remove debug");
 			let index = ipList.indexOf(input.value);
 			ipList.splice(index, 1);
 		}
