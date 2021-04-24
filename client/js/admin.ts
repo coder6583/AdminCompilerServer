@@ -213,7 +213,7 @@ $(() => {
 		parseBanIP(blacklist.value.map(ip => {return {ip: ip, memo: '', timestamp: 0}}));
 	});
 
-	// banIP
+	// banIP追加
 	$('#add-ban-ip').on('submit', () => {
 		const banIP = $('#ban-ip-box').val()?.toString();
 		if (!banIP) return false;
@@ -222,19 +222,30 @@ $(() => {
 			socket.emit('blacklistAdd', {
 				value: `::ffff:${banIP}`
 			});
-			banIPRefresh();
+			setTimeout(banIPRefresh, 500);
 			$('#ban-ip-box').val('');
 		}else if (banIP.match(/^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/)) {
 			// IPv6
 			socket.emit('blacklistAdd', {
 				value: banIP
 			});
-			banIPRefresh();
+			setTimeout(banIPRefresh, 500);
 			$('#ban-ip-box').val('');
 		}else {
 			popupMessage('IPアドレスの形式が有効ではありません', 'err');
 		}
 		return false;
+	});
+	// banIP編集
+	$('.ban-ip-edit').on('click', () => {
+
+	});
+	// banIP削除
+	$('.ban-ip-remove').on('click', function() {
+		const banIP = $(this).parents('tr').find('td:first-child').text();
+		socket.emit('blacklistRemove', {
+			value: banIP
+		});
 	});
 
 	// リストリフレッシュ
@@ -511,7 +522,7 @@ socket.on('newLog', (result: {value: serverLog[]}) => {
 
 function parseBanIP(banIPs :banIP[]) {
 	banIPs.forEach(banIP => {
-		$('#ban-ip > tbody').append(`<tr><td>${banIP.ip}</td><td>${banIP.memo}</td><td>${moment(new Date(banIP.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td><td><button class="btn btn-outline-secondary edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary remove"><i class="bi bi-x"></i></button></td></tr>`)
+		$('#ban-ip > tbody').append(`<tr><td>${banIP.ip}</td><td>${banIP.memo}</td><td>${moment(new Date(banIP.timestamp)).format('YYYY/MM/DD HH:mm:ss')}</td><td><button class="btn btn-outline-secondary ban-ip-edit"><i class="bi bi-pencil"></i></button><button class="btn btn-outline-secondary ban-ip-remove"><i class="bi bi-x"></i></button></td></tr>`)
 	});
 }
 
