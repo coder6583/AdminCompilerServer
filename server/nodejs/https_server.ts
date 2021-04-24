@@ -240,6 +240,13 @@ io.sockets.on('connection', async (socket: any) => {
 			}
 		});
 	})
+	socket.on('blacklistRemove', async (input: any) => {
+		while(ipList.indexOf(input.value) != -1)
+		{
+			let index = ipList.indexOf(input.value);
+			ipList.splice(index, 1);
+		}
+	})
 	socket.on('disconnect', () => {
 		socket.removeAllListeners('command');
 	})

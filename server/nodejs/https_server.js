@@ -275,6 +275,16 @@ io.sockets.on('connection', function (socket) { return __awaiter(void 0, void 0,
                 return [2 /*return*/];
             });
         }); });
+        socket.on('blacklistRemove', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+            var index;
+            return __generator(this, function (_a) {
+                while (ipList.indexOf(input.value) != -1) {
+                    index = ipList.indexOf(input.value);
+                    ipList.splice(index, 1);
+                }
+                return [2 /*return*/];
+            });
+        }); });
         socket.on('disconnect', function () {
             socket.removeAllListeners('command');
         });
