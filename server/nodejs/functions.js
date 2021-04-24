@@ -461,7 +461,7 @@ function parseFilter(jsonPath, filter) {
                                 var logValue = element.value.join('');
                                 if (filter.keyword.length > 0) {
                                     var keywordRegex = new RegExp(filter.keyword.join('|'), 'i');
-                                    if (!logValue.match(keywordRegex)) {
+                                    if (!(logValue.match(keywordRegex) && element.title.match(keywordRegex))) {
                                         return;
                                     }
                                 }
